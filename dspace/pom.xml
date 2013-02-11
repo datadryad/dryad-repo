@@ -653,6 +653,35 @@
 
 	<build>
 		<plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.atmire</groupId>
+                                    <artifactId>atmire-responselogging-common</artifactId>
+                                    <version>1.10.0</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/atmire-modules</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                            <overWriteReleases>true</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
 			<!--  overall project assembly -->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -781,6 +810,12 @@
             <groupId>com.atmire</groupId>
             <artifactId>atmire-authority</artifactId>
             <version>${pom.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.atmire</groupId>
+            <artifactId>atmire-responselogging-api</artifactId>
+            <version>1.10.0</version>
         </dependency>
 
 	</dependencies>

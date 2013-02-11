@@ -7,34 +7,49 @@
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
 
-	<fileSets>
-		<fileSet>
-			<directory>src/main/config</directory>
-			<outputDirectory>.</outputDirectory>
-			<includes>
-				<include>build.xml</include>
-			</includes>
-		</fileSet>
-		<fileSet>
-			<outputDirectory>.</outputDirectory>
-			<includes>
-				<include>bin/**</include>
-				<include>config/**</include>
-				<include>docs/**</include>
-				<include>etc/**</include>
-				<include>solr/**</include>
+    <fileSets>
+        <fileSet>
+            <directory>src/main/config</directory>
+            <outputDirectory>.</outputDirectory>
+            <includes>
                 <include>build.xml</include>
-				<include>LICENSE*</include>
-				<include>CHANGES</include>
-				<include>KNOWN_BUGS</include>
-				<include>README</include>
-			</includes>
-			<excludes>
-				<exclude>src</exclude>
-				<exclude>config/dspace.cfg</exclude>
-			</excludes>
-		</fileSet>
-	</fileSets>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>.</outputDirectory>
+            <includes>
+                <include>bin/**</include>
+                <include>config/**</include>
+                <include>docs/**</include>
+                <include>etc/**</include>
+                <include>solr/**</include>
+                <include>build.xml</include>
+                <include>LICENSE*</include>
+                <include>CHANGES</include>
+                <include>KNOWN_BUGS</include>
+                <include>README</include>
+            </includes>
+            <excludes>
+                <exclude>src</exclude>
+                <exclude>config/dspace.cfg</exclude>
+                <exclude>config/modules/**</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>.</outputDirectory>
+            <includes>
+                <include>config/modules/**</include>
+            </includes>
+            <filtered>true</filtered>
+        </fileSet>
+        <fileSet>
+            <directory>target/atmire-modules</directory>
+            <outputDirectory>.</outputDirectory>
+            <includes>
+                <include>**</include>
+            </includes>
+        </fileSet>
+    </fileSets>
 
 	<files>
 		<file>

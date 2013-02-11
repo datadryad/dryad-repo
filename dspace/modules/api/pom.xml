@@ -35,7 +35,31 @@
       Runtime and Compile Time dependencies for DSpace.
    -->
 
-   <dependencies>
+    <profiles>
+        <profile>
+            <id>env-prod</id>
+            <repositories>
+                <repository>
+                    <id>atmire.com-releases</id>
+                    <name>atmire.com-releases</name>
+                    <url>https://atmire.com/artifactory/atmire.com-releases</url>
+                    <releases>
+                        <enabled>true</enabled>
+                        <checksumPolicy>fail</checksumPolicy>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <updatePolicy>never</updatePolicy>
+                        <checksumPolicy>fail</checksumPolicy>
+                    </snapshots>
+                </repository>
+            </repositories>
+        </profile>
+
+    </profiles>
+
+
+    <dependencies>
 
        <!-- DSpace API -->
        <dependency>
@@ -126,6 +150,12 @@
 			<artifactId>dspace-perst</artifactId>
 			<version>4.21</version>
 		</dependency>
+
+       <dependency>
+           <groupId>com.atmire</groupId>
+           <artifactId>atmire-responselogging-api</artifactId>
+           <version>1.10.0</version>
+       </dependency>
 
    </dependencies>
 
