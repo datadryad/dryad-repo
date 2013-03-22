@@ -221,17 +221,17 @@ public class MembershipApplicationForm extends AbstractDSpaceTransformer impleme
         membershipYearComposite.setLabel(message(message_prefix + "fields.membership_year.label1"));
         membershipYearComposite.setHelp(message(message_prefix + "fields.membership_year.label2"));
 
-        Select membershipYearEndSelect = membershipYear.addSelect("membership_how_many_years");
-        membershipYearEndSelect.setLabel(message(message_prefix + "fields.membership_year.how_many_years.label"));
-        membershipYearEndSelect.addOption("1", message(message_prefix + "fields.membership_year.how_many_years.1"));
-        membershipYearEndSelect.addOption("2", message(message_prefix + "fields.membership_year.how_many_years.2"));
-        membershipYearEndSelect.addOption("3", message(message_prefix + "fields.membership_year.how_many_years.3"));
-        membershipYearEndSelect.addOption("4", message(message_prefix + "fields.membership_year.how_many_years.4"));
-        membershipYearEndSelect.addOption("5", message(message_prefix + "fields.membership_year.how_many_years.5"));
-        membershipYearEndSelect.setOptionSelected(parameters.getParameter("membership_how_many_years", ""));
-        membershipYearEndSelect.setRequired();
+        Select membershipHowManyYearsSelect = membershipYear.addSelect("membership_how_many_years");
+        membershipHowManyYearsSelect.setLabel(message(message_prefix + "fields.membership_year.how_many_years.label"));
+        membershipHowManyYearsSelect.addOption("1", message(message_prefix + "fields.membership_year.how_many_years.1"));
+        membershipHowManyYearsSelect.addOption("2", message(message_prefix + "fields.membership_year.how_many_years.2"));
+        membershipHowManyYearsSelect.addOption("3", message(message_prefix + "fields.membership_year.how_many_years.3"));
+        membershipHowManyYearsSelect.addOption("4", message(message_prefix + "fields.membership_year.how_many_years.4"));
+        membershipHowManyYearsSelect.addOption("5", message(message_prefix + "fields.membership_year.how_many_years.5"));
+        membershipHowManyYearsSelect.setOptionSelected(parameters.getParameter("membership_how_many_years", ""));
+        membershipHowManyYearsSelect.setRequired();
         if(errorFieldList.contains("membership_how_many_years")) {
-            membershipYearEndSelect.addError(message(message_prefix + "errors.how_many_years"));
+            membershipHowManyYearsSelect.addError(message(message_prefix + "errors.how_many_years"));
         }
 
         Select membershipYearStartSelect = membershipYear.addSelect("membership_year_start");
