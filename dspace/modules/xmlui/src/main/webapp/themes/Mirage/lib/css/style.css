@@ -395,11 +395,11 @@ p {
 }
 
 #aspect_eperson_PasswordLogin_div_login {
-    margin: 20px 0px 40px 18px; /* top right bottom left */
+    margin: 20px 0px 40px; /* top right bottom left */
     float: right;
 }
 #aspect_eperson_PasswordLogin_div_register {
-    margin: 20px 18px 20px 0px;
+    margin: 20px 0px;
     float: left;
 }
 
@@ -1842,7 +1842,7 @@ fieldset.ds-checkbox-field label,fieldset.ds-radio-field label {
 }
 /* Sub sections within a form */
 fieldset.ds-form-list {
-    border: 2px solid gray;
+    border: none;
     padding: 0;
     margin-left: 0;
     margin-right: 0;
