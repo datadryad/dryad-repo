@@ -122,11 +122,13 @@
         #aspect_statistics_StatisticsTransformer_div_stats tr.odd td {
 	        background-color: #eee;
 	    }
+        #aspect_statistics_StatisticsTransformer_div_stats th,
         #aspect_statistics_StatisticsTransformer_div_stats td {
             padding: 0 8px;
+            text-align: right
         }
-        #aspect_statistics_StatisticsTransformer_div_stats td:last-child {
-            text-align: right;
+        #aspect_statistics_StatisticsTransformer_div_stats td:first-child {
+            text-align: left;
         }
 
         #recently_integrated_journals img.pub-cover {
@@ -322,7 +324,7 @@
                         </p>
                         <p>
                             <a href="/pages/journalIntegration">Submission integration</a> 
-                            is a free service that allow publishers to
+                            is a free service that allows publishers to
                             coordinate manuscript and data submissions.
                             It makes submitting data easy for researchers; makes linking
                             articles and data easy for journals; and enables
@@ -332,7 +334,7 @@
                             <img src="/themes/Mirage/images/seed-1.png" style="float: left; margin-left: -8px;" 
                                  alt="New data is added to Dryad, and the cycle continues."
                                  title="New data is added to Dryad, and the cycle continues."/>
-                            Submission fees keep Dryad's content free for research and educational reuse.
+                            Submission fees support the cost of keeping Dryad's content free to use.
                             Flexible <a href="/pages/pricing">pricing plans</a> 
                             provide volume discounts.
                         </p>
@@ -635,7 +637,7 @@
                         <xsl:attribute name="id"><xsl:value-of select="$currentName"/></xsl:attribute>
 
                         <xsl:if test="$currentName!='unknown_doi'">
-                            <td style='width:35%'>
+                            <td style='padding: 0px 8px; width:35%'>
                                 <label class="ds-form-label-select-publication">
                                     <xsl:attribute name="for">
                                         <xsl:value-of select="translate($currentId,'.','_')"/>
@@ -652,12 +654,8 @@
                         </xsl:if>
 
                         <xsl:if test="$currentName='unknown_doi'">
-                            <td style='font-weight:bold; border-left: 1px solid gray; padding:0px;width:5%'>&#160;&#160;&#160;&#160;&#160;&#160;OR</td>
-
-                            <td style='font-weight:bold; border-right: 1px solid gray;'>
-                                <span style=''></span>
-                            </td>
-                            <td>
+                            <td style="font-weight:bold; border-left: 2px dotted #ccc; border-right: 2px dotted #ccc; padding: 0px 8px; width:5%">OR</td>
+                            <td style="padding: 0px 8px;">
                                 <xsl:apply-templates select="../dri:field[@id=$currentId]"/>
                                 <xsl:apply-templates select="../dri:field[@id=$currentId]/dri:error"/>
                             </td>
@@ -673,7 +671,6 @@
     <xsl:template match="dri:list/dri:item[@n='select_publication_new' or @n='select_publication_exist']">
         <li>
             <table id="status_other_than_published">
-                <tr><td>
                     <!--xsl:call-template name="standardAttributes">
                     <xsl:with-param name="class">
                         <xsl:text>ds-form-item </xsl:text>
@@ -757,9 +754,6 @@
 
 
                     </xsl:for-each>
-
-                    <!--/div-->
-                </td></tr>
             </table>
         </li>
     </xsl:template>
