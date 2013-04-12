@@ -23,6 +23,15 @@
 
 
     <xsl:template match="dri:referenceSet[@type = 'embeddedView']" priority="2">
+    <xsl:choose>
+      <xsl:when test="//dim:field[@element='rights'][.='http://creativecommons.org/publicdomain/zero/1.0/']">
+        <!-- if ANY item here uses the normal CC0 license, display cc-zero.png && opendata.png -->
+        <div class="license-badges">
+          <a href="http://creativecommons.org/publicdomain/zero/1.0/" target="_blank" class="single-image-link"><img src="/themes/Dryad/images/cc-zero.png"/></a>
+          <a href="http://opendefinition.org/" target="_blank" class="single-image-link"><img src="/themes/Dryad/images/opendata.png"/></a>
+        </div>
+        </xsl:when>
+      </xsl:choose>
       <h2 class="ds-list-head">Files in this package</h2>
         <div class="file-list">
           <xsl:apply-templates select="*[not(name()='head')]" mode="embeddedView"/>
@@ -151,18 +160,11 @@
 
                     <xsl:text>View&#160;File&#160;Details</xsl:text>
                 </a>
-                <xsl:choose>
-                  <xsl:when test="//dim:field[@element='rights'][.='http://creativecommons.org/publicdomain/zero/1.0/']">
-                    <!-- For items with the normal CC0 license, display cc-zero.png && opendata.png -->
-                    <div class="license-badges">
-                      <a href="http://creativecommons.org/publicdomain/zero/1.0/" target="_blank" class="single-image-link"><img src="/themes/Dryad/images/cc-zero.png"/></a>
-                      <a href="http://opendefinition.org/" target="_blank" class="single-image-link"><img src="/themes/Dryad/images/opendata.png"/></a>
-                    </div>
-                    </xsl:when>
-                  </xsl:choose>
               </xsl:if>
             </td>
           </tr>
+          <!-- spacer between files -->
+          <tr><td style="line-height: 5px;">&#160;</td></tr>
 
           </xsl:for-each>
           </tbody>
