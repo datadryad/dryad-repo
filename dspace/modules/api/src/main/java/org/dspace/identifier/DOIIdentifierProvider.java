@@ -145,6 +145,10 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
             DOI doi_ = new DOI(doi, item);
             String collection = getCollection(context, item);
             moveCanonical(item, true, collection, myDataPkgColl, doi_);
+
+            // if 1st version mint .1
+            mintDOIFirstVersion(context, item, true);
+
         }catch (Exception e) {
             log.error(LogManager.getHeader(context, "Error while attempting to moveCanonical doi", "Item id: " + dso.getID()));
             throw new IdentifierException("Error while moving doi identifier", e);
@@ -246,22 +250,6 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
                 mint(doi_, register, createListMetadata(item));
             }
 
-            // CASE B1: Versioned DataPackage or DataFiles
-            if (history != null) {
-                log.debug("it's a new version; need to move the canonical identifier");
-                Version version = history.getVersion(item);
-                // if it is the first time that is called "create version": mint identifier ".1"
-                Version previous = history.getPrevious(version);
-                if (history.isFirstVersion(previous)) {
-                    DOI firstDOI = calculateDOIFirstVersion(context, previous);
-                    if(DryadDOIRegistrationHelper.isDataPackageInPublicationBlackout(item)) {
-                        mint(firstDOI, "http://datadryad.org/publicationBlackout", register, createListMetadata(previous.getItem()));
-                    } else {
-                        mint(firstDOI, register, createListMetadata(previous.getItem()));
-                    }
-                }
-            }
-
             // CASE B2: new DataFiles for a versioned DataPackage
             Item dataPackage = DryadWorkflowUtils.getDataPackage(context, item);
             if(!collection.equals(myDataPkgColl) && retrieveVersionHistory(context, dataPackage)!=null){
@@ -291,10 +279,28 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
     }
 
 
+    private void mintDOIFirstVersion(Context context, Item item, boolean register) throws SQLException, IOException, AuthorizeException
+    {
+        VersionHistory history = retrieveVersionHistory(context, item);
+
+        if (history != null) {
+            Version version = history.getVersion(item);
+            // if it is the first time that is called "create version": mint identifier ".1"
+            Version previous = history.getPrevious(version);
+            if (history.isFirstVersion(previous)) {
+                String previousDOI= updateIdentifierPreviousItem(previous.getItem());
+                DOI firstDOI = new DOI(previousDOI, previous.getItem());
+                if(DryadDOIRegistrationHelper.isDataPackageInPublicationBlackout(item)) {
+                    mint(firstDOI, "http://datadryad.org/publicationBlackout", register, createListMetadata(previous.getItem()));
+                } else {
+                    mint(firstDOI, register, createListMetadata(previous.getItem()));
+                }
+            }
+        }
+    }
 
 
-
-    private void moveCanonical(Item item, boolean register, String collection, String myDataPkgColl, DOI doi_) throws IOException
+    private void moveCanonical(Item item, boolean register, String collection, String myDataPkgColl, DOI doi_) throws IOException, SQLException
     {
         // move the canonical
         DOI canonical = null;
@@ -492,14 +498,6 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
     }
 
 
-    private DOI calculateDOIFirstVersion(Context c, Version previous) throws SQLException {
-        DOI doi;
-        String idDoi = DOIIdentifierProvider.getDoiValue(previous.getItem());
-        doi = new DOI(idDoi, previous.getItem());
-        return doi;
-    }
-
-
     private DOI getDOI(String aDoi, Item item) {
         DOI doi = null;
         if (aDoi == null) return null;
@@ -519,14 +517,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
         if (history != null) {
             Version version = history.getVersion(item);
             Version previous = history.getPrevious(version);
-            String previousDOI = DOIIdentifierProvider.getDoiValue(previous.getItem());
-
-            // FIRST time a VERSION is created: update identifier of the previous item adding ".1"
-            if (history.isFirstVersion(previous)) {
-                previousDOI= updateIdentifierPreviousItem(previous.getItem());
-            }
-
-            String canonical = previousDOI.substring(0, previousDOI.lastIndexOf(DOT));
+            String canonical = DOIIdentifierProvider.getDoiValue(previous.getItem());
             String versionNumber = "" + DOT + (version.getVersionNumber());
             doi = new DOI(canonical + versionNumber, item);
         } else {
