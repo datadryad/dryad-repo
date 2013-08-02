@@ -27,7 +27,7 @@ public class PaymentSystemConfigurationManager {
     private static Properties sizeFileFee = null;
     private static Properties notIntegratedJournalFee = null;
     private static Properties sizeFileFeeAfter = null;
-
+    private static Properties symbols = null;
     private static String maxFileSize = ConfigurationManager.getProperty("payment-system", "dryad.paymentsystem.maxFileSize");
 
     private static String currencyConfig = ConfigurationManager.getProperty("payment-system", "dryad.paymentsystem.currency");
@@ -45,6 +45,7 @@ public class PaymentSystemConfigurationManager {
 
     private static String UnitSize = ConfigurationManager.getProperty("payment-system","dryad.paymentsystem.unitSize");
 
+    private static String currencySymbolList = ConfigurationManager.getProperty("payment-system","dryad.paymentsystem.currencySymbol");
     static
     {
         country = new Properties();
@@ -52,12 +53,13 @@ public class PaymentSystemConfigurationManager {
         sizeFileFee = new Properties();
         notIntegratedJournalFee = new Properties();
         sizeFileFeeAfter = new Properties();
+        symbols = new Properties();
         String[] currencyArray = currencyConfig.split(";");
         String[] prices = priceList.split(";");
         String[] countryArray = countryList.split(";");
         String[] notIntegratedJournalFees = notIntegratedJournalFeeList.split(";");
         String[] sizeFileFeeAfterArray = sizeFileFeeAfterList.split(";");
-
+        String[] currencySymbolArray = currencySymbolList.split(";");
         for(String countryTemp:countryArray)
         {
             String[] countryTempArray = countryTemp.split(":");
@@ -86,6 +88,11 @@ public class PaymentSystemConfigurationManager {
             String[] temp = sizeFileFeeAfterTemp.split(":");
             sizeFileFeeAfter.setProperty(temp[0],temp[1]);
         }
+        for(String symbol:currencySymbolArray)
+        {
+            String[] temp = symbol.split(":");
+            symbols.setProperty(temp[0],temp[1]);
+        }
 
     }
 
@@ -102,6 +109,12 @@ public class PaymentSystemConfigurationManager {
     {
         String value = country.getProperty(property);
         return (value != null) ? value.trim() : null;
+    }
+
+    public static String getCurrencySymbol(String currency)
+    {
+        String value = symbols.getProperty(currency);
+        return (value != null) ? value.trim() : "";
     }
 
     public static Double getCurrencyProperty(String property)

@@ -112,8 +112,8 @@ public class ShoppingCartTransformer extends AbstractDSpaceTransformer{
 
             org.dspace.app.xmlui.wing.element.Item help = options.addList("need-help").addItem();
             help.addContent("Email us at ");
-            help.addXref(ConfigurationManager.getProperty("payment-system", "paypal.help.email"), ConfigurationManager.getProperty("payment-system", "paypal.help.email"));
-            help.addContent(" or call us at "+ConfigurationManager.getProperty("payment-system","paypal.help.call"));
+            help.addXref(ConfigurationManager.getProperty("payment-system", "dryad.paymentsystem.help.email"), ConfigurationManager.getProperty("payment-system", "dryad.paymentsystem.help.email"));
+            help.addContent(" or call us at "+ConfigurationManager.getProperty("payment-system","dryad.paymentsystem.help.call"));
 
         }catch (Exception pe)
         {
@@ -154,6 +154,8 @@ public class ShoppingCartTransformer extends AbstractDSpaceTransformer{
                 currencyList.addOption(false, currencyTemp, currencyTemp);
             }
         }
+        String symbol = PaymentSystemConfigurationManager.getCurrencySymbol(transaction.getCurrency());
+
         info.addLabel(T_Payer);
         EPerson e = EPerson.find(context,transaction.getDepositor());
         info.addItem("payer","payer").addContent(e.getFullName());
@@ -162,35 +164,35 @@ public class ShoppingCartTransformer extends AbstractDSpaceTransformer{
         info.addLabel(T_Price);
         if(paymentSystemService.hasDiscount(context,transaction,null))
         {
-            info.addItem("price","price").addContent("0.0");
+            info.addItem("price","price").addContent(symbol+"0.0");
         }
         else
         {
-            info.addItem("price","price").addContent(Double.toString(transaction.getBasicFee()));
+            info.addItem("price","price").addContent(symbol+Double.toString(transaction.getBasicFee()));
         }
 
 
 
         //add the large file surcharge section
         info.addLabel(T_Surcharge);
-        info.addItem("surcharge","surcharge").addContent(Double.toString(paymentSystemService.getSurchargeLargeFileFee(context,transaction)));
+        info.addItem("surcharge","surcharge").addContent(symbol+Double.toString(paymentSystemService.getSurchargeLargeFileFee(context,transaction)));
 
         Double noIntegrateFee =  paymentSystemService.getNoIntegrateFee(context,transaction,null);
         //add the no integrate fee if it is not 0
         info.addLabel(T_noInteg);
         if(!paymentSystemService.hasDiscount(context,transaction,null)&&noIntegrateFee>0&&!paymentSystemService.hasDiscount(context,transaction,null))
             {
-                info.addItem("no-integret","no-integret").addContent(Double.toString(noIntegrateFee));
+                info.addItem("no-integret","no-integret").addContent(symbol+Double.toString(noIntegrateFee));
             }
         else
         {
-            info.addItem("no-integret","no-integret").addContent("0.0");
+            info.addItem("no-integret","no-integret").addContent(symbol+"0.0");
         }
 
 
         //add the total price
         info.addLabel(T_Total);
-        info.addItem("total","total").addContent(Double.toString(transaction.getTotal()));
+        info.addItem("total","total").addContent(symbol+Double.toString(transaction.getTotal()));
 
         info.addLabel(T_Country);
         Select countryList = info.addItem("country-list", "select-list").addSelect("country");
@@ -234,6 +236,8 @@ public class ShoppingCartTransformer extends AbstractDSpaceTransformer{
                 currencyList.addOption(true, currencyTemp, currencyTemp);
             }
         }
+        String symbol = PaymentSystemConfigurationManager.getCurrencySymbol(transaction.getCurrency());
+
         info.addLabel(T_Payer);
         EPerson e = EPerson.find(context,transaction.getDepositor());
         info.addItem("payer","payer").addContent(e.getFullName());
@@ -243,16 +247,16 @@ public class ShoppingCartTransformer extends AbstractDSpaceTransformer{
         String currencyTemp = transaction.getCurrency();
         if(paymentSystemService.hasDiscount(context,transaction,null))
         {
-            info.addItem("final-price","price").addContent("0.0");
+            info.addItem("final-price","price").addContent(symbol+"0.0");
         }
         else
         {
-            info.addItem("final-price","price").addContent(Double.toString(transaction.getBasicFee()));
+            info.addItem("final-price","price").addContent(symbol+Double.toString(transaction.getBasicFee()));
         }
 
         //add the large file surcharge section
         info.addLabel(T_Surcharge);
-        info.addItem("surcharge","surcharge").addContent(Double.toString(paymentSystemService.getSurchargeLargeFileFee(context,transaction)));
+        info.addItem("surcharge","surcharge").addContent(symbol+Double.toString(paymentSystemService.getSurchargeLargeFileFee(context,transaction)));
 
 
         Double noIntegrateFee = paymentSystemService.getNoIntegrateFee(context,transaction,null);
@@ -260,12 +264,12 @@ public class ShoppingCartTransformer extends AbstractDSpaceTransformer{
         info.addLabel(T_noInteg);
         if(!paymentSystemService.hasDiscount(context,transaction,null)&&noIntegrateFee>0&&!paymentSystemService.hasDiscount(context,transaction,null)){
 
-            info.addItem("no-integret","no-integret").addContent(Double.toString(noIntegrateFee));
+            info.addItem("no-integret","no-integret").addContent(symbol+Double.toString(noIntegrateFee));
         }
 
         //add the total price
         info.addLabel(T_Total);
-        info.addItem("total","total").addContent(Double.toString(transaction.getTotal()));
+        info.addItem("total","total").addContent(symbol+Double.toString(transaction.getTotal()));
 
         info.addLabel(T_Voucher);
         org.dspace.app.xmlui.wing.element.Item voucher = info.addItem("voucher-list","voucher-list");
