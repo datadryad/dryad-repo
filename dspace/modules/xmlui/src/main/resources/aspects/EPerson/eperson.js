@@ -409,6 +409,11 @@ function updateInformation(eperson)
 	{
 	    errors[idx++] = "last_name";
 	}
+
+    if (phone == null || phone.equals(""))
+    {
+        errors[idx++] = "phone";
+    }
 	
 	if (idx > 0) 
 	{
