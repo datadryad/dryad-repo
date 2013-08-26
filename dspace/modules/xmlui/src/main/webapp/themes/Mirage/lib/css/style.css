@@ -2349,3 +2349,9 @@ li#aspect_paymentsystem_ShoppingCartTransformer_item_voucher-list div{
     list-style: none;
     padding:10px;
 }
+#aspect_submission_StepTransformer_field_journalIDStatusIntegrated{
+    display:none;
+}
+#journalIDStatusIntegrated label{
+    display:none;
+}

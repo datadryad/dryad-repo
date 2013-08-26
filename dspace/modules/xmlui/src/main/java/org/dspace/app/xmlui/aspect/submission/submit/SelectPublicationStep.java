@@ -173,6 +173,10 @@ public class SelectPublicationStep extends AbstractSubmissionStep {
         // case D: (radio selected ==>  In Review)
         addJournalSelectStatusInReview(selectedJournalId, newItem, journalStatus, pBean, request);
 
+        // hidden select fields that populate integrated journals
+        addJournalSelectStatusIntegrated(selectedJournalId, newItem, journalStatus, pBean);
+
+
         // Add manuscriptNumber in any case
         addManuscriptNumber(request, newItem, journalStatus, manuscriptNumber, pBean);
 
@@ -455,6 +459,23 @@ public class SelectPublicationStep extends AbstractSubmissionStep {
         licensebox.addOption(String.valueOf(Boolean.TRUE), T_PUB_LICENSE);
         if(this.errorFlag == org.dspace.submit.step.SelectPublicationStep.STATUS_LICENSE_NOT_ACCEPTED)
             licensebox.addError(T_PUB_LICENSE_ERROR);
+    }
+
+    private void addJournalSelectStatusIntegrated(String selectedJournalId, Item newItem, String journalStatus, PublicationBean pBean) throws WingException {
+        Composite optionsList = newItem.addComposite("journalID_status_integrated");
+        Select journalID = optionsList.addSelect("journalIDStatusIntegrated");
+        java.util.List<String> journalVals = org.dspace.submit.step.SelectPublicationStep.journalVals;
+        java.util.List<String> journalNames = org.dspace.submit.step.SelectPublicationStep.journalNames;
+
+        for (int i = 0; i < journalVals.size(); i++){
+            String val =  journalVals.get(i);
+            String name =  journalNames.get(i);
+            String no_asterisk = name;
+            if(org.dspace.submit.step.SelectPublicationStep.integratedJournals.contains(val))
+                name += "*";
+                journalID.addOption(val.equals(selectedJournalId), no_asterisk, name);
+
+        }
     }
 
 
