@@ -151,12 +151,40 @@
                     <groupId>com.atmire</groupId>
                     <artifactId>atmire-responselogging-api</artifactId>
                     <version>1.10.0</version>
+                    <exclusions>
+                        <exclusion>
+                           <groupId>org.dspace</groupId>
+                           <artifactId>dspace-api</artifactId>
+                        </exclusion>
+                        <exclusion>
+                           <groupId>org.dspace</groupId>
+                           <artifactId>dspace-xmlui-wing</artifactId>
+			</exclusion>
+			<exclusion>
+			   <groupId>org.dspace</groupId>
+			   <artifactId>dspace-xmlui-api</artifactId>
+			</exclusion>
+		    </exclusions>
                 </dependency>
 
                 <dependency>
                     <groupId>com.atmire</groupId>
                     <artifactId>atmire-responselogging-xmlui</artifactId>
                     <version>1.10.0</version>
+                    <exclusions>
+                        <exclusion>
+                           <groupId>org.dspace</groupId>
+                           <artifactId>dspace-api</artifactId>
+                        </exclusion>
+                        <exclusion>
+                           <groupId>org.dspace</groupId>
+                           <artifactId>dspace-xmlui-wing</artifactId>
+			</exclusion>
+			<exclusion>
+			   <groupId>org.dspace</groupId>
+			   <artifactId>dspace-xmlui-api</artifactId>
+			</exclusion>
+		    </exclusions>
                 </dependency>
             </dependencies>
         </profile>
