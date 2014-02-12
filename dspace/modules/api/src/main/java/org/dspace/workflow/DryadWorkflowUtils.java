@@ -51,9 +51,6 @@ public class DryadWorkflowUtils {
                 IdentifierService service = new DSpace().getSingletonService(IdentifierService.class);
                 Item dataPackage = (Item) service.resolve(context, dataPackageUrl[0].value);
                 //Perhaps we are dealing with a workspaceitem, so try to resolve by id
-                if(dataPackage == null)
-                    dataPackage = WorkspaceItem.find(context, Integer.parseInt(dataPackageUrl[0].value)).getItem();
-
                 return dataPackage;
             } catch (Exception e){
                 log.error(LogManager.getHeader(context, "Error while retrieving data package", "datafile: " + dataFile.getID()), e);

@@ -109,8 +109,8 @@ public class MostDownloadedBitstream extends AbstractFiltersTransformer {
         queryArgs = prepareDefaultFilters(getView());
 
         queryArgs.setQuery("search.resourcetype:" + Constants.ITEM);
-
-        queryArgs.setRows(1000);
+        queryArgs.addFilterQuery("archived:true");
+        queryArgs.setRows(-1);
 
         String sortField = SearchUtils.getConfig().getString("recent.submissions.sort-option");
         if(sortField != null){
@@ -201,7 +201,12 @@ public class MostDownloadedBitstream extends AbstractFiltersTransformer {
             statListing.setId("list1");
 
             DatasetDSpaceObjectGenerator dsoAxis = new DatasetDSpaceObjectGenerator();
-            dsoAxis.addDsoChild(Constants.BITSTREAM, -1, false, -1);
+
+             if(queryResults==null)
+             {
+                 performSearch(null);
+             }
+            dsoAxis.addDsoChild(Constants.BITSTREAM, (int)queryResults.getResults().getNumFound(), false, -1);
 
 
             statListing.addDatasetGenerator(dsoAxis);
@@ -230,7 +235,6 @@ public class MostDownloadedBitstream extends AbstractFiltersTransformer {
             if(itemId!=null){
                 DSpaceObject dso = Item.find(context,Constants.ITEM,Integer.parseInt(itemId));
 
-                int totalDownload = 0;
                 if(dso instanceof Item)
                 {
                     Item item = (Item)dso;
@@ -241,48 +245,17 @@ public class MostDownloadedBitstream extends AbstractFiltersTransformer {
                         }
                         if(dataPackage!=null){
 
-                            DCValue[] vals = dataPackage.getMetadata("dc", "title", null, Item.ANY);
-
-                            if(vals != null && 0 < vals.length)
+                            Integer id = dataPackage.getID();
+                            if(!downloadCount.containsKey(id)||downloadCount.get(id)<Integer.parseInt(strings[i]))
                             {
-                                if(downloadCount.get(dataPackage.getID())!=null){
-                                    totalDownload=Integer.parseInt(strings[i])+downloadCount.get(dataPackage.getID()).intValue();
-                                }
-                                else
-                                {
-                                    totalDownload=Integer.parseInt(strings[i]);
-                                }
-                                downloadCount.put(dataPackage.getID(),totalDownload);
-
+                                String[] temp = {Integer.toString(id),strings[i]};
+                                values.add(temp);
                             }
                         }
                     }
                 }
-                else
-                {
-                    String bitstreamId = map.get("bitstream");
-                }
             }
             i++;
-        }
-        ArrayList<Integer> arrayList = new ArrayList<Integer>();
-        for(Integer id : downloadCount.keySet()){
-            arrayList.add(downloadCount.get(id));
-        }
-
-        Collections.sort(arrayList);
-        int topItemCount=0;
-        if(downloadCount.size()>2){
-            topItemCount = arrayList.get(2);
-        }
-
-        for(Integer id : downloadCount.keySet()){
-            if(downloadCount.get(id)>=topItemCount){
-                String[] temp=new String[2];
-                temp[0]=Integer.toString(id);
-                temp[1]=downloadCount.get(id).toString();
-                values.add(temp);
-            }
         }
         return values;
     }
