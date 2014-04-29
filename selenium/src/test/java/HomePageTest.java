@@ -32,7 +32,7 @@ public class HomePageTest extends TestCase {
     public void testHomePageDisplay() throws Exception {
 	driver.get(baseUrl + "/");
 	assertEquals("Dryad Digital Repository - Dryad", driver.getTitle());
-	assertTrue("recently published list", isElementPresent(By.cssSelector("li.ds-artifact-item.even")));
+	assertTrue("recently published list", isElementPresent(By.cssSelector("li.ds-artifact-item.odd")));
     }
     
     @After
