@@ -287,7 +287,7 @@
                     </div>
                     <!-- only show citation/share if viewing from page with real handle (not in process) -->
                     <xsl:if
-                            test="$meta[@element='request'][@qualifier='URI'][contains(.,'handle')]">
+                            test="$meta[@element='request'][@qualifier='URI'][contains(.,'handle') or contains(.,'resource')]">
                         <xsl:variable name="pkgDOI"
                                       select="$meta[@element='identifier'][@qualifier='package']"/>
                         <!-- Here we give links to expost the citation and share options available
