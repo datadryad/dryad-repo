@@ -209,6 +209,7 @@ public class EditItemMetadataForm extends AbstractDSpaceTransformer {
                 header.addCell().addContent(T_column1);
                 header.addCell().addContent(T_column2);
                 header.addCell().addContent(T_column3);
+                header.addCell().addContent(T_column4);
 
                 ChoiceAuthorityManager cmgr = ChoiceAuthorityManager.getManager();
                 for(DCValue value : values)
@@ -252,8 +253,8 @@ public class EditItemMetadataForm extends AbstractDSpaceTransformer {
                         else
                         {
                             TextArea mdValue = mdCell.addTextArea("value_"+index);
-                            mdValue.setSize(4,35);
-                            mdValue.setValue(value.value);
+                        mdValue.setSize(4,35);
+                        mdValue.setValue(value.value);
                             boolean isAuth = MetadataAuthorityManager.getManager().isAuthorityControlled(fieldKey);
                             if (isAuth)
                             {
@@ -271,6 +272,9 @@ public class EditItemMetadataForm extends AbstractDSpaceTransformer {
                                 mdValue.setChoicesClosed(ChoiceAuthorityManager.getManager().isClosed(fieldKey));
                             }
                         }
+                        Text mdLang = row.addCell().addText("language_"+index);
+                        mdLang.setSize(6);
+                        mdLang.setValue(value.language);
 
                         // Tick the index counter;
                         index++;
