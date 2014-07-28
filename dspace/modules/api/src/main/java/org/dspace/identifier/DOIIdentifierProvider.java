@@ -848,7 +848,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
         String possibleDoiSuffix = "("+ myLocalPartSuffix + "|" + myLocalPartTestSuffix + ")";
         Pattern doipattern = Pattern.compile("(("+doiPrefix+")" + possibleDoiPrefix + "/" + possibleDoiSuffix + "\\w+)\\.*(\\d*)\\/*(\\d*)\\.*(\\d*)");
         Matcher m = doipattern.matcher(doi);
-        String token = "test";
+        String token = doipattern.toString();
         if (m.matches()) {
 //            DOI is doi:10.5061/dryad.9054.2/3.4
 //            pattern is ((info:doi/|doi:|http://dx.doi.org/)(10.5061|10.5072)/(dryad.|FK2.5061.dryad.)\w+)\.*(\d*)\/*(\d*)\.*(\d*)
