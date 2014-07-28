@@ -882,7 +882,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
         return tokenizeDOIString(doi, DOI_PACKAGE);
     }
 
-    protected DOI getCanonicalDataPackage(DOI doi, Item item) {
+    private DOI getCanonicalDataPackage(DOI doi, Item item) {
         String canonicalID = getCanonicalDataPackage(doi.toString());
         DOI canonical = new DOI(canonicalID, item);
         return canonical;
@@ -892,10 +892,15 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
      * input doi.toString()=   doi:10.5061/dryad.9054.1/1.1
      * output doi.toString()=  doi:10.5061/dryad.9054/1
      */
-    protected DOI getCanonicalDataFile(DOI doi, Item item) {
+    protected String getCanonicalDataFile(String doi) {
         String canonicalDP = tokenizeDOIString(doi.toString(), DOI_PACKAGE);
         String canonicalDF = tokenizeDOIString(doi.toString(), DOI_FILE);
-        DOI canonical = new DOI(canonicalDP + SLASH + canonicalDF, item);
+        return canonicalDP + SLASH + canonicalDF;
+    }
+
+    private DOI getCanonicalDataFile(DOI doi, Item item) {
+        String canonicalID = getCanonicalDataFile(doi.toString());
+        DOI canonical = new DOI(canonicalID, item);
         return canonical;
     }
 
