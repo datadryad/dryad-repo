@@ -878,11 +878,11 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
         return token;
     }
 
-    private String getCanonicalDataPackage(String doi) {
+    protected String getCanonicalDataPackage(String doi) {
         return tokenizeDOIString(doi, DOI_PACKAGE);
     }
 
-    protected DOI getCanonicalDataPackage(DOI doi, Item item) {
+    private DOI getCanonicalDataPackage(DOI doi, Item item) {
         String canonicalID = getCanonicalDataPackage(doi.toString());
         DOI canonical = new DOI(canonicalID, item);
         return canonical;
