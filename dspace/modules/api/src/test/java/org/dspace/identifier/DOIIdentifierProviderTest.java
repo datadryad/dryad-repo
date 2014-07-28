@@ -55,8 +55,7 @@ public class DOIIdentifierProviderTest extends DOIIdentifierProvider{
         System.out.println("DOI "+doi+ " has a canonical ID of "+ canonicalID);
         assertTrue("Versioned file DOI " + doi + " canonical ID incorrect: " + canonicalID, canonicalID.equals("doi:10.5061/dryad.64274"));
 
-        Item i = new Item();
-        canonicalID = dip.getCanonicalDataFile(doi, i);
+        canonicalID = dip.getCanonicalDataFile(doi);
         System.out.println("DOI "+doi+ " has a canonical ID of "+ canonicalID);
         assertTrue("Versioned file DOI " + doi + " canonical ID incorrect: " + canonicalID, canonicalID.equals("doi:10.5061/dryad.64274/2"));
     }
