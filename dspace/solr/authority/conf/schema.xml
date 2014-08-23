@@ -298,6 +298,12 @@
      <field name="display-value" type="string" multiValued="false" indexed="true" stored="true" required="true" />
      <field name="full-text" type="text_autocomplete" multiValued="false" indexed="true" stored="true" required="true" />
 
+     <field name="last_modified_date" type="date" indexed="true" stored="true" required="true" />
+     <field name="creation_date" type="date" indexed="true" stored="true" required="true" />
+
+     <field name="deleted" type="boolean" multiValued="false" indexed="true" stored="true" required="false"/>
+     <field name="authority_type" type="string" multiValued="false" indexed="true" stored="true" required="false"/>
+
      <!--Used for matching on all other fields-->
      <dynamicField name="*" type="text" multiValued="true"/>
 

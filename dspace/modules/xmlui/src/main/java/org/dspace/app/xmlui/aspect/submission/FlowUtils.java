@@ -40,33 +40,28 @@
 
 package org.dspace.app.xmlui.aspect.submission;
 
+import com.atmire.authority.util.LoadCustomerCredit;
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.environment.http.HttpEnvironment;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.log4j.Logger;
-import org.dspace.app.packager.Packager;
 import org.dspace.app.util.*;
 import org.dspace.app.xmlui.aspect.administrative.FlowResult;
-import org.dspace.app.xmlui.aspect.paymentsystem.PayPalConfirmationTransformer;
 import org.dspace.app.xmlui.utils.ContextUtil;
 import org.dspace.app.xmlui.utils.UIException;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.content.*;
 import org.dspace.content.authority.Choices;
+import org.dspace.content.authority.Concept;
+import org.dspace.content.authority.Scheme;
 import org.dspace.content.packager.PackageDisseminator;
 import org.dspace.content.packager.PackageParameters;
 import org.dspace.core.*;
 import org.dspace.eperson.EPerson;
 import org.dspace.handle.HandleManager;
-import org.dspace.paymentsystem.PaymentSystemException;
 import org.dspace.paymentsystem.PaymentSystemService;
-import org.dspace.paymentsystem.PaypalService;
 import org.dspace.paymentsystem.ShoppingCart;
-import org.dspace.storage.rdbms.DatabaseManager;
-import org.dspace.storage.rdbms.TableRow;
 import org.dspace.submit.AbstractProcessingStep;
 import org.dspace.utils.DSpace;
 import org.dspace.workflow.*;
@@ -77,7 +72,6 @@ import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.File;
@@ -752,6 +746,7 @@ public class FlowUtils {
                     if(shoppingCart.getTotal()==0||shoppingCart.getStatus().equals(ShoppingCart.STATUS_COMPLETED)||shoppingCart.getStatus().equals(ShoppingCart.STATUS_VERIFIED))
                     {
                         //already entered cc information
+                        //checkJournalSubscriptionCredit(request, context, publication);
                         finishSubmission(request, context, publication);
                         return request.getContextPath() + "/deposit-confirmed?itemID=" + publication.getID();
                     }
@@ -863,6 +858,7 @@ public class FlowUtils {
         if(request.getParameter(AbstractProcessingStep.NEXT_BUTTON) != null||request.getParameter("skip_payment") != null){
             if(workItem instanceof WorkspaceItem){
                 EventLogger.log(context, "submission-checkout", "button=done");
+                //checkJournalSubscriptionCredit(request, context, publication);
                 finishSubmission(request, context, publication);
                 return request.getContextPath() + "/deposit-confirmed?itemID=" + publication.getID();
             } else {
@@ -888,30 +884,28 @@ public class FlowUtils {
     }
 
     public static boolean processReAuthorization(Context context, String id,WorkflowActionConfig action,Request request) throws SQLException, UIException, ServletException, AuthorizeException, IOException
-	{
+    {
         try{
 //		WorkflowItem workflowItem = findWorkflow(context, id);
-        WorkflowItem wfi = WorkflowItem.find(context, Integer.parseInt(id));
-        Workflow workflow = WorkflowFactory.getWorkflow(wfi.getCollection());
-        WorkflowActionConfig actionConfig = action;//workflow.getStep(id).getActionConfig(actionId);
-        WorkflowActionConfig wfPublication = WorkflowManager.doState(context, context.getCurrentUser(), request, Integer.parseInt(id), workflow, actionConfig);
+            WorkflowItem wfi = WorkflowItem.find(context, Integer.parseInt(id));
+            Workflow workflow = WorkflowFactory.getWorkflow(wfi.getCollection());
+            WorkflowActionConfig actionConfig = action;//workflow.getStep(id).getActionConfig(actionId);
+            WorkflowActionConfig wfPublication = WorkflowManager.doState(context, context.getCurrentUser(), request, Integer.parseInt(id), workflow, actionConfig);
 
 
-        context.commit();
-        if(wfPublication!=null&&wfPublication.getName().contains("reAuthorizationPayment"))
-            return false;
+            context.commit();
+            if(wfPublication!=null&&wfPublication.getName().contains("eAuthorizationPayment"))
+                return false;
         }catch (Exception e)
         {
             log.error("error when reauthorize payment:"+e.getMessage());
         }
         return true;
-	}
+    }
     public static String processDepositConfirmedStep(Context context, Request request, HttpServletResponse response, String workItemID)
             throws SQLException, AuthorizeException, IOException, ServletException, TransformerException, WorkflowException, SAXException, WorkflowConfigurationException, MessagingException, ParserConfigurationException {
         return request.getContextPath() + "/submissions";
     }
-
-
 
 
     private static void finishSubmission(Request request, Context context, Item publication) throws SQLException, AuthorizeException, IOException, TransformerException, WorkflowException, SAXException, WorkflowConfigurationException, MessagingException, ParserConfigurationException {

@@ -1,0 +1,88 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>com.atmire</groupId>
+   <artifactId>atmire-authority-xmlui</artifactId>
+   <packaging>war</packaging>
+   <name>Atmire Authority Control :: XMLUI Aspect</name>
+
+   <parent>
+      <groupId>com.atmire</groupId>
+      <artifactId>atmire-authority</artifactId>
+       <version>1.7.3-SNAPSHOT</version>
+      <relativePath>..</relativePath>
+   </parent>
+
+   <build>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-war-plugin</artifactId>
+              <configuration>
+                  <attachClasses>true</attachClasses>
+                  <!-- In version 2.1-alpha-1, this was incorrectly named warSourceExcludes -->
+                  <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
+                  <warSourceExcludes>WEB-INF/lib/*.jar</warSourceExcludes>
+                  <webResources>
+                      <resource>
+                          <filtering>true</filtering>
+                          <directory>${basedir}/src/main/webapp</directory>
+                          <includes>
+                              <include>WEB-INF/web.xml</include>
+                          </includes>
+                      </resource>
+                  </webResources>
+              </configuration>
+              <executions>
+                  <execution>
+                      <phase>prepare-package</phase>
+                  </execution>
+              </executions>
+          </plugin>
+
+      </plugins>
+   </build>
+
+   <profiles>
+      <profile>
+         <id>oracle-support</id>
+         <activation>
+            <property>
+               <name>db.name</name>
+               <value>oracle</value>
+            </property>
+         </activation>
+         <dependencies>
+            <dependency>
+               <groupId>com.oracle</groupId>
+               <artifactId>ojdbc6</artifactId>
+            </dependency>
+         </dependencies>
+      </profile>
+   </profiles>
+
+   <dependencies>
+
+      <dependency>
+         <groupId>com.atmire</groupId>
+         <artifactId>atmire-authority-api</artifactId>
+         <version>${version}</version>
+         <type>jar</type>
+      </dependency>
+
+
+       <dependency>
+           <groupId>org.dspace</groupId>
+           <artifactId>dspace-xmlui-api</artifactId>
+           <type>jar</type>
+           <version>1.7.3-SNAPSHOT</version>
+       </dependency>
+
+      <dependency>
+         <groupId>javax.servlet</groupId>
+         <artifactId>servlet-api</artifactId>
+         <scope>provided</scope>
+      </dependency>
+
+   </dependencies>
+
+</project>

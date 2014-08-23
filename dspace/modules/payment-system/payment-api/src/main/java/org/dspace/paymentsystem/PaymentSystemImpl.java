@@ -250,6 +250,7 @@ public class PaymentSystemImpl implements PaymentSystemService {
         double nonIntegratedFee = getNoIntegrateFee(context, shoppingcart, journal);
         double price = calculateTotal(discount, fileSizeSurcharge, basicFee, nonIntegratedFee);
         return price;
+
     }
 
     /**
@@ -405,7 +406,7 @@ public class PaymentSystemImpl implements PaymentSystemService {
     public boolean hasDiscount(Context context,ShoppingCart shoppingcart,String journal)throws SQLException{
         //this method check all the discount: journal,country,voucher
             Boolean journalSubscription =  getJournalSubscription(context, shoppingcart, journal);
-            Boolean countryDiscount = getCountryWaiver(context,shoppingcart,journal);
+            Boolean countryDiscount = getCountryWaiver(context,shoppingcart);
             Boolean voucherDiscount = voucherValidate(context,shoppingcart);
 
             if(journalSubscription||countryDiscount||voucherDiscount){
@@ -420,7 +421,7 @@ public class PaymentSystemImpl implements PaymentSystemService {
     public int getWaiver(Context context,ShoppingCart shoppingcart,String journal)throws SQLException{
         //this method check all the discount: journal,country,voucher
         Boolean journalSubscription =  getJournalSubscription(context, shoppingcart, journal);
-        Boolean countryDiscount = getCountryWaiver(context,shoppingcart,journal);
+        Boolean countryDiscount = getCountryWaiver(context,shoppingcart);
         Boolean voucherDiscount = voucherValidate(context,shoppingcart);
 
         if(countryDiscount){
@@ -434,7 +435,7 @@ public class PaymentSystemImpl implements PaymentSystemService {
         return ShoppingCart.NO_WAIVER;
     }
     
-    public boolean getCountryWaiver(Context context, ShoppingCart shoppingCart, String journal) throws SQLException{
+    public boolean getCountryWaiver(Context context, ShoppingCart shoppingCart) throws SQLException{
         PaymentSystemConfigurationManager manager = new PaymentSystemConfigurationManager();
         Properties countryArray = manager.getAllCountryProperty();
 
@@ -514,7 +515,7 @@ public class PaymentSystemImpl implements PaymentSystemService {
                 result += format("Price",symbol+Double.toString(shoppingCart.getBasicFee()));
             }
 
-            Double noIntegrateFee =  getNoIntegrateFee(c,shoppingCart,null);
+            Double noIntegrateFee =  getNoIntegrateFee(c, shoppingCart, null);
 
             //add the no integrate fee if it is not 0
             if(!hasDiscount(c,shoppingCart,null)&&noIntegrateFee>0&&!hasDiscount(c,shoppingCart,null))
@@ -767,7 +768,7 @@ public class PaymentSystemImpl implements PaymentSystemService {
         {
             info.addItem("price","price").addContent(String.format("%s%.0f", symbol, shoppingCart.getBasicFee()));
         }
-        Double noIntegrateFee =  this.getNoIntegrateFee(context,shoppingCart,null);
+        Double noIntegrateFee =  this.getNoIntegrateFee(context, shoppingCart, null);
 
         //add the no integrate fee if it is not 0
         info.addLabel(T_noInteg);

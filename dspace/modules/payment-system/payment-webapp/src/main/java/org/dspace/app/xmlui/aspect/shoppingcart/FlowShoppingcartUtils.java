@@ -48,6 +48,9 @@ public class FlowShoppingcartUtils {
             String noInteg = request.getParameter("noInteg");
             String surCharge = request.getParameter("surCharge");
             String transactionId = request.getParameter("transactionId");
+
+            String status = request.getParameter("status");
+
             PaymentSystemService paymentSystemService = new DSpace().getSingletonService(PaymentSystemService.class);
             VoucherValidationService voucherValidationService = new DSpace().getSingletonService(VoucherValidationService.class);
             Voucher voucher = null;
@@ -152,6 +155,11 @@ public class FlowShoppingcartUtils {
                             shoppingCart.setTransactionId(transactionId);
                         }
                     }
+
+//                if(status!=null&&status.length()>0)
+//                {
+//                    shoppingCart.setStatus(status);
+//                }
                 
                 paymentSystemService.updateTotal(context,shoppingCart,null);
                 context.commit();

@@ -4,6 +4,9 @@ import org.apache.log4j.Logger;
 import org.dspace.content.Collection;
 import org.dspace.content.DCValue;
 import org.dspace.content.Item;
+import org.dspace.content.authority.AuthorityMetadataValue;
+import org.dspace.content.authority.Concept;
+import org.dspace.content.authority.Scheme;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Context;
 import org.dspace.workflow.DryadWorkflowUtils;
@@ -13,10 +16,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -46,38 +46,33 @@ public class DryadJournalSubmissionUtils {
 
     public static final java.util.Map<String, Map<String, String>> journalProperties = new HashMap<String, Map<String, String>>();
     static{
-        String journalPropFile = ConfigurationManager.getProperty("submit.journal.config");
+        Context context = null;
+        String journalPropFile = ConfigurationManager.getProperty("solrauthority.searchscheme.prism_publicationName");
         Properties properties = new Properties();
         try {
-            properties.load(new InputStreamReader(new FileInputStream(journalPropFile), "UTF-8"));
-            String journalTypes = properties.getProperty("journal.order");
-
-            for (int i = 0; i < journalTypes.split(",").length; i++) {
-                String journalType = journalTypes.split(",")[i].trim();
-
-                String str = "journal." + journalType + ".";
-                
-                log.debug("reading config for journal " + journalType);
-                log.debug("fullname " + properties.getProperty(str + FULLNAME));
-                log.debug("subscription? " + properties.getProperty(str + SUBSCRIPTION_PAID));
-
+            context = new Context();
+            Scheme scheme = Scheme.findByIdentifier(context,ConfigurationManager.getProperty("solrauthority.searchscheme.prism_publicationName"));
+            Concept[] concepts = scheme.getConcepts();
+            //todo:add the journal order
+            //String journalTypes = properties.getProperty("journal.order");
+            for(Concept concept:concepts){
+                String key = concept.getPreferredLabel();
+                ArrayList<AuthorityMetadataValue> metadataValues = concept.getMetadata();
                 Map<String, String> map = new HashMap<String, String>();
-                map.put(FULLNAME, properties.getProperty(str + FULLNAME));
-                map.put(METADATADIR, properties.getProperty(str + METADATADIR));
-                map.put(INTEGRATED, properties.getProperty(str + INTEGRATED));
-                map.put(PUBLICATION_BLACKOUT, properties.getProperty(str + PUBLICATION_BLACKOUT, "false"));
-                map.put(NOTIFY_ON_REVIEW, properties.getProperty(str + NOTIFY_ON_REVIEW));
-                map.put(NOTIFY_ON_ARCHIVE, properties.getProperty(str + NOTIFY_ON_ARCHIVE));
-                map.put(JOURNAL_ID, journalType);
-                map.put(SUBSCRIPTION_PAID, properties.getProperty(str + SUBSCRIPTION_PAID));
+                for(AuthorityMetadataValue metadataValue : metadataValues){
 
-                String key = properties.getProperty(str + FULLNAME);
-                if(key!=null&&key.length()>0){
-                journalProperties.put(key, map);
+                    map.put(metadataValue.qualifier,metadataValue.value);
+                    if(key!=null&&key.length()>0){
+                        journalProperties.put(key, map);
+                    }
                 }
             }
-
-        }catch (IOException e) {
+            context.complete();
+        }catch (Exception e) {
+            if(context!=null)
+            {
+                context.abort();
+            }
             log.error("Error while loading journal properties", e);
         }
     }

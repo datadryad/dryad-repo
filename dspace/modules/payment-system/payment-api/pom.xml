@@ -39,9 +39,17 @@
     </profiles>
 
     <dependencies>
+
+
         <dependency>
             <groupId>org.dspace.modules</groupId>
             <artifactId>api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.atmire</groupId>
+            <artifactId>atmire-authority-api</artifactId>
+            <version>1.7.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.dspace</groupId>

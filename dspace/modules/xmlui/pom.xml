@@ -344,9 +344,22 @@
 
        <dependency>
            <groupId>com.atmire</groupId>
-           <artifactId>atmire-authority</artifactId>
+           <artifactId>atmire-authority-api</artifactId>
+           <version>1.7.3-SNAPSHOT</version>
        </dependency>
-
+       <dependency>
+           <groupId>com.atmire</groupId>
+           <artifactId>atmire-authority-xmlui</artifactId>
+           <version>1.7.3-SNAPSHOT</version>
+           <type>jar</type>
+           <classifier>classes</classifier>
+       </dependency>
+       <dependency>
+           <groupId>com.atmire</groupId>
+           <artifactId>atmire-authority-xmlui</artifactId>
+           <version>1.7.3-SNAPSHOT</version>
+           <type>war</type>
+       </dependency>
        <dependency>
            <artifactId>dspace-cocoon-servlet-service-impl</artifactId>
            <groupId>org.dspace.dependencies.cocoon</groupId>

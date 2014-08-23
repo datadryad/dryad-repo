@@ -325,4 +325,12 @@
 		</step>
 	</command>
 
+    <command>
+        <name>import-authority</name>
+        <description>Import authority from solr to database</description>
+        <step>
+            <class>com.atmire.authority.ImportJournal2Authority</class>
+        </step>
+    </command>
+
 </commands>

@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.atmire</groupId>
+	<artifactId>atmire-authority</artifactId>
+	<packaging>pom</packaging>
+	<name>Atmire Authority Control</name>
+    <version>1.7.3-SNAPSHOT</version>
+	<parent>
+		<groupId>org.dspace</groupId>
+		<artifactId>modules</artifactId>
+        <version>1.7.3-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+
+    <properties>
+        <!-- This is the path to the root [dspace-src] directory. -->
+        <root.basedir>${basedir}/../../..</root.basedir>
+    </properties>
+
+    <!-- The 'additions' module must *always* be built, as it is included
+         as a dependency in most other modules in [src]/dspace/modules -->
+    <modules>
+        <module>atmire-authority-api</module>
+        <module>atmire-authority-xmlui</module>
+    </modules>
+
+</project>

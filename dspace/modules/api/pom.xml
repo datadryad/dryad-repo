@@ -84,13 +84,24 @@
 
 
    <dependencies>
-
+       <!-- DSpace API -->
+       <dependency>
+           <groupId>com.atmire</groupId>
+           <artifactId>atmire-authority-api</artifactId>
+           <version>1.7.3-SNAPSHOT</version>
+       </dependency>
        <!-- DSpace API -->
        <dependency>
            <groupId>com.atmire</groupId>
            <artifactId>atmire-workflow-api</artifactId>
            <version>1.7.3-SNAPSHOT</version>
        </dependency>
+
+       <!--<dependency>-->
+           <!--<groupId>com.atmire</groupId>-->
+           <!--<artifactId>atmire-authority-api</artifactId>-->
+           <!--<version>1.7.3-SNAPSHOT</version>-->
+       <!--</dependency>-->
 
        <dependency>
            <groupId>org.dspace.discovery</groupId>
