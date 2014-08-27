@@ -31,6 +31,7 @@
         <module>xmlui</module>
         <module>bagit</module>
         <module>oai</module>
+        <module>sword</module>
         <module>solr</module>
         <module>api-stats</module>
         <module>doi</module>

@@ -120,10 +120,16 @@
          <groupId>org.dspace</groupId>
          <artifactId>dspace-sword-api</artifactId>
       </dependency>
+      <!-- 
+        This appears to be a phantom dependency, so I'm excluding 
+        it, bu I'm not completely sure of that, so I'll leave 
+        it here commented out.
+	- JAR
       <dependency>
          <groupId>org.dspace</groupId>
          <artifactId>dspace-discovery-provider</artifactId>
       </dependency>
+      -->
       <dependency>
          <groupId>javax.servlet</groupId>
          <artifactId>servlet-api</artifactId>
