@@ -33,6 +33,8 @@ import java.net.URL;
 import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * User: kevin (kevin at atmire.com)
@@ -64,18 +66,21 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
 
     private String myDataFileColl;
 
-    private String myLocalPartPrefix;
-
-    private String myDoiPrefix;
-
-    private int mySuffixVarLength;
+    protected String myLocalPartSuffix;
+    protected String myDoiPrefix;
+    protected String myDoiTestPrefix;
+    protected String myLocalPartTestSuffix;
+    protected int mySuffixVarLength;
 
     private final SecureRandom myRandom = new SecureRandom();
 
     Minter perstMinter = null;
 
     private String[] supportedPrefixes = new String[]{"info:doi/", "doi:" , "http://dx.doi.org/"};
-
+    protected static final int DOI_PACKAGE = 1;
+    protected static final int DOI_FILE = 2;
+    protected static final int DOI_PACKAGE_VERSION = 3;
+    protected static final int DOI_FILE_VERSION = 4;
 
     public void afterPropertiesSet() throws Exception {
 
@@ -83,18 +88,20 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
         myHostname = configurationService.getProperty("dryad.url");
         myDataPkgColl = configurationService.getProperty("stats.datapkgs.coll");
         myDataFileColl = configurationService.getProperty("stats.datafiles.coll");
-        if (configurationService.getPropertyAsType("doi.service.testmode", true)) {
-            myDoiPrefix = configurationService.getProperty("doi.testprefix");
-            myLocalPartPrefix = configurationService.getProperty("doi.localpart.testsuffix");
-        } else {
-            myDoiPrefix = configurationService.getProperty("doi.prefix");
-            myLocalPartPrefix = configurationService.getProperty("doi.localpart.suffix");
-        }
+        myDoiTestPrefix = configurationService.getProperty("doi.testprefix");
+        myLocalPartTestSuffix = configurationService.getProperty("doi.localpart.testsuffix");
 
         try{
             mySuffixVarLength = Integer.parseInt(configurationService.getProperty("doi.suffix.length"));
         }catch (NumberFormatException nfe){
             mySuffixVarLength=5;
+        }
+        if (configurationService.getPropertyAsType("doi.service.testmode", true)) {
+            myDoiPrefix = myDoiTestPrefix;
+            myLocalPartSuffix = myLocalPartTestSuffix;
+        } else {
+            myDoiPrefix = configurationService.getProperty("doi.prefix");
+            myLocalPartSuffix = configurationService.getProperty("doi.localpart.suffix");
         }
 
         identifierMetadata.schema = MetadataSchema.DC_SCHEMA;
@@ -523,7 +530,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
             doi = new DOI(canonical+ versionNumber, item);
         } else {
             String var = NoidGenerator.buildVar(mySuffixVarLength);
-            doi = new DOI(myDoiPrefix, myLocalPartPrefix + var, item);
+            doi = new DOI(myDoiPrefix, myLocalPartSuffix + var, item);
 
             if (existsIdDOI(doi.toString()))
                 return calculateDOIDataPackage(c, item, history);
@@ -828,54 +835,72 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
         return false;
     }
 
+    // This should be the master location for the processing of DOI components.
+    private String tokenizeDOIString (String doi, int part) {
+        // stringify possible prefixes:
+        String doiPrefix = "";
+        for(String prefix : supportedPrefixes) {
+            doiPrefix = doiPrefix + prefix + "|";
+        }
+        doiPrefix = doiPrefix.substring(0, doiPrefix.length()-1);
+
+        String possibleDoiPrefix = "("+ myDoiPrefix + "|" +  myDoiTestPrefix + ")";
+        String possibleDoiSuffix = "("+ myLocalPartSuffix + "|" + myLocalPartTestSuffix + ")";
+        Pattern doipattern = Pattern.compile("(("+doiPrefix+")" + possibleDoiPrefix + "/" + possibleDoiSuffix + "\\w+)\\.*(\\d*)\\/*(\\d*)\\.*(\\d*)");
+        Matcher m = doipattern.matcher(doi);
+        String token = "";
+        if (m.matches()) {
+//            DOI is doi:10.5061/dryad.9054.2/3.4
+//            pattern is ((info:doi/|doi:|http://dx.doi.org/)(10.5061|10.5072)/(dryad.|FK2.5061.dryad.)\w+)\.*(\d*)\/*(\d*)\.*(\d*)
+//            there are 7 matches
+//            group 1 is doi:10.5061/dryad.9054     (DOI_PACKAGE)
+//            group 2 is doi:
+//            group 3 is 10.5061
+//            group 4 is dryad.
+//            group 5 is 2                          (DOI_PACKAGE_VERSION)
+//            group 6 is 3                          (DOI_FILE)
+//            group 7 is 4                          (DOI_FILE_VERSION)
+            switch (part) {
+                case DOI_PACKAGE:
+                    token = m.group(1);
+                    break;
+                case DOI_FILE:
+                    token = m.group(6);
+                    break;
+                case DOI_PACKAGE_VERSION:
+                    token = m.group(5);
+                    break;
+                case DOI_FILE_VERSION:
+                    token = m.group(7);
+                    break;
+            }
+        }
+        return token;
+    }
+
+    protected String getCanonicalDataPackage(String doi) {
+        return tokenizeDOIString(doi, DOI_PACKAGE);
+    }
 
     private DOI getCanonicalDataPackage(DOI doi, Item item) {
-        String canonicalID = doi.toString().substring(0, doi.toString().lastIndexOf(DOT));
+        String canonicalID = getCanonicalDataPackage(doi.toString());
         DOI canonical = new DOI(canonicalID, item);
         return canonical;
     }
 
-    private String getCanonicalDataPackage(String doi) {
-        // no version present
-        if(countDots(doi) <=2) return doi;
-        String canonicalID = doi.toString().substring(0, doi.toString().lastIndexOf(DOT));
-        return canonicalID;
-    }
-
-    private short countDots(String doi){
-        short index=0;
-        int indexDot=0;
-        while( (indexDot=doi.indexOf(DOT))!=-1){
-            doi=doi.substring(indexDot+1);
-            index++;
-        }
-
-        return index;
-    }
-
-
     /**
      * input doi.toString()=   doi:10.5061/dryad.9054.1/1.1
-     * output doi.toString()=  2rdfer334/1
+     * output doi.toString()=  doi:10.5061/dryad.9054/1
      */
+    protected String getCanonicalDataFile(String doi) {
+        String canonicalDP = tokenizeDOIString(doi.toString(), DOI_PACKAGE);
+        String canonicalDF = tokenizeDOIString(doi.toString(), DOI_FILE);
+        return canonicalDP + SLASH + canonicalDF;
+    }
+
     private DOI getCanonicalDataFile(DOI doi, Item item) {
-
-        log.warn("getCanonicalDataFile() doi in input: " + doi);
-
-
-        // doi:10.5061/dryad.9054.1 (based on the input example)
-        String idDP = doi.toString().substring(0, doi.toString().lastIndexOf(SLASH));
-
-        // idDF=1.1
-        String idDF = doi.toString().substring(doi.toString().lastIndexOf(SLASH) + 1);
-
-
-        String canonicalDP = idDP.substring(0, idDP.lastIndexOf(DOT));
-        String canonicalDF = idDF;
-        if(idDF.lastIndexOf(DOT)!=-1){
-            canonicalDF=idDF.substring(0, idDF.lastIndexOf(DOT));
-        }
-        DOI canonical = new DOI(canonicalDP + SLASH + canonicalDF, item);
+        String canonicalID = getCanonicalDataFile(doi.toString());
+        DOI canonical = new DOI(canonicalID, item);
         return canonical;
     }
 
