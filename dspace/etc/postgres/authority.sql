@@ -74,7 +74,8 @@ CREATE TABLE Scheme
   modified DATE,
   status VARCHAR(256),
   lang VARCHAR(24),
-  topconcept BOOL
+  topconcept BOOL,
+  CONSTRAINT SchemeIndentifier UNIQUE(identifier)
 );
 
 
@@ -106,7 +107,8 @@ CREATE TABLE Concept
   status VARCHAR(256),
   lang VARCHAR(24),
   source VARCHAR(256),
-  topconcept BOOL
+  topconcept BOOL,
+  CONSTRAINT ConceptIndentifier UNIQUE(identifier)
 );
 
 
@@ -138,7 +140,8 @@ CREATE TABLE Term
   source VARCHAR(256),
   status VARCHAR(256),
   literalForm TEXT,
-  lang VARCHAR(24)
+  lang VARCHAR(24),
+  CONSTRAINT TermIndentifier UNIQUE(identifier)
 
 );
 
@@ -211,13 +214,19 @@ CREATE TABLE Scheme2Concept
 -- EXAMPLE DATA
 --------------------------------------------------------------------------------------------------------------
 --
+INSERT INTO Scheme VALUES (nextval('scheme_seq'),'Author','2014-09-20','2014-09-20','Accepted','en','true');
 
 INSERT INTO Concept2TermRole VALUES (nextval('concept2termrole_seq'),'prefLabel','prefLabel');
 INSERT INTO Concept2TermRole VALUES (nextval('concept2termrole_seq'),'alt','altfLabel');
 
-INSERT INTO Concept2ConceptRole VALUES (nextval('concept2conceptrole_seq'),'hire','Broder/Narower');
-INSERT INTO Concept2ConceptRole VALUES (nextval('concept2conceptrole_seq'),'associate','Associate');
-INSERT INTO Concept2ConceptRole VALUES (nextval('concept2conceptrole_seq'),'associate','Equal');
+INSERT INTO Concept2ConceptRole VALUES (nextval('concept2conceptrole_seq'),'hierarchical','Broader/Narrower');
+INSERT INTO Concept2ConceptRole VALUES (nextval('concept2conceptrole_seq'),'associative','Associate');
+INSERT INTO Concept2ConceptRole VALUES (nextval('concept2conceptrole_seq'),'associative','Equal');
+
+
+ALTER TABLE eperson ADD COLUMN orcid VARCHAR(256);
+
+ALTER TABLE eperson ADD COLUMN access_token VARCHAR(256);
 
 
 
