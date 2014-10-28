@@ -891,9 +891,8 @@
 		the file from reaching us correctly, or you have attempted to upload a file format marked for
 		internal system use only. Please try again.</message>
 	<message key="xmlui.Submission.submit.UploadStep.description">File Description</message>
-	<message key="xmlui.Submission.submit.UploadStep.description_help">Optionally, provide a brief
-		description of the file, for example "<i>Main article</i>", or "<i>Experiment data
-		readings</i>".</message>
+	<message key="xmlui.Submission.submit.UploadStep.description_help">Enter either 
+		"<i>dataset-file</i>", or "<i>dc_readme</i>".</message>
 	<message key="xmlui.Submission.submit.UploadStep.submit_upload"
 		>Upload file &amp; add another</message>
 	<message key="xmlui.Submission.submit.UploadStep.head2">Files Uploaded</message>
