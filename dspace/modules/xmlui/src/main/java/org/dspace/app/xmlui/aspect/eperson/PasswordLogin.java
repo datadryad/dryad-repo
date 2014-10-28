@@ -305,6 +305,28 @@ public class PasswordLogin extends AbstractDSpaceTransformer implements
 
 		login.addPara().addXref("/forgot", T_forgot_link);
                 EventLogger.log(context, "login-form", "previous-email=" + (previousEmail != null ? previousEmail : ""));
+
+
+        Division orcidDiv = body.addDivision("orcid");
+
+        if(request.getParameter("exist_orcid")!=null){
+            orcidDiv.addPara().addContent("There is already a eperson linked to this orcid id:");
+            orcidDiv.addPara().addContent(request.getParameter("exist_orcid"));
+        }
+        if(request.getParameter("exist_email")!=null){
+            orcidDiv.addPara().addContent("There is already a eperson has a same email address as the orcid record:");
+            orcidDiv.addPara().addContent(request.getParameter("exist_email"));
+        }
+        if(request.getParameter("set_orcid")!=null){
+            orcidDiv.addPara().addContent("Please change your orcid setup for privacy level to allow us get the email information:");
+            orcidDiv.addPara().addContent(request.getParameter("set_orcid"));
+        }
+        if(request.getParameter("create_eperson")!=null){
+            orcidDiv.addPara().addContent("There is no such eperson exist, please create a new eperson with this email address and then link it to orcid:");
+            orcidDiv.addPara().addContent(request.getParameter("create_eperson"));
+        }
+
+        orcidDiv.addPara().addXref("/oauth-login","Oauth login");
 	}
 
 	// HttpServletRequest  httpRequest  = (HttpServletRequest)  objectModel.get(HttpEnvironment.HTTP_REQUEST_OBJECT);

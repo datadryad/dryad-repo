@@ -2506,3 +2506,6 @@ ul#aspect_submission_submit_CheckoutStep_list_transaction{
 #SpiderTrap p a{
     color: transparent;
 }
+.orcid-error{
+    color:red;
+}
