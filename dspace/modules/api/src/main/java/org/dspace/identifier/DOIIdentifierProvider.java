@@ -316,7 +316,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
     private void mint(DOI doi, boolean register, Map<String, String> metadata) throws IOException {
         mint(doi, null, register, metadata);
     }
-    
+
     private void mint(DOI doi, String target, boolean register, Map<String, String> metadata) throws IOException {
         log.debug("mintDOI is going to be called on "+doi.toString());
         perstMinter.mintDOI(doi);
@@ -761,9 +761,10 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
 
         String prefix = id.substring(0, id.lastIndexOf(SLASH));
         String suffix = id.substring(id.lastIndexOf(SLASH));
-
+        log.debug("hi " + prefix + ", " + suffix);
         prefix = prefix.substring(0, prefix.lastIndexOf(DOT));
         suffix = suffix.substring(0, suffix.lastIndexOf(DOT));
+        log.debug ("reverting identifier from " + id + " to " + prefix + suffix);
 
         id = prefix + suffix;
 
