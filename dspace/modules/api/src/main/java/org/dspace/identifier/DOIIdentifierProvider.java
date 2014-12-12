@@ -174,6 +174,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
                     // if it is already registered it has to remain in DOI service and when someone looks for it go towards a "tombstone" page
                     // reassign the URL of the DOI
                     else{
+                        log.debug ("going to tombstone " + doi.toString());
                         DOI removedDOI = new DOI(doi.toString(), DOI.Type.TOMBSTONE);
                         mint(removedDOI, true, null);
                     }
