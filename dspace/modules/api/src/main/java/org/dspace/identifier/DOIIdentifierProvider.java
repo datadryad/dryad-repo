@@ -762,8 +762,8 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
         String prefix = id.substring(0, id.lastIndexOf(SLASH));
         String suffix = id.substring(id.lastIndexOf(SLASH));
         log.debug("hi " + prefix + ", " + suffix);
-        prefix = prefix.substring(0, prefix.lastIndexOf(DOT));
-        suffix = suffix.substring(0, suffix.lastIndexOf(DOT));
+//        prefix = prefix.substring(0, prefix.lastIndexOf(DOT));
+//        suffix = suffix.substring(0, suffix.lastIndexOf(DOT));
         log.debug ("reverting identifier from " + id + " to " + prefix + suffix);
 
         id = prefix + suffix;
