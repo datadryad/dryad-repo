@@ -191,6 +191,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
                     String myDataPkgColl = configurationService.getProperty("stats.datapkgs.coll");
                     log.debug ("moveCanonical will be called on " + getDoiValue(previous) + ", collection " + collection + ", myDataPkgColl " + myDataPkgColl);
                     moveCanonical(previous, true, collection, myDataPkgColl, doi_);
+                    log.debug ("okay, now if it's a file that we're deleting, remove it from its package");
                 }
 
                 //  IF Deleting a 1st version not archived yet:
@@ -905,10 +906,13 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
     private String getCollection(Context context, Item item) throws SQLException {
         String collectionResult = null;
 
-        if(item.getOwningCollection()!=null)
+        if(item.getOwningCollection()!=null) {
+            log.debug ("getCollection is getting " + item.getOwningCollection().getHandle());
             return item.getOwningCollection().getHandle();
+        }
 
         // If our item is a workspaceitem it cannot have a collection, so we will need to get our collection from the workspace item
+        log.debug ("getCollection is getting from WI " + getCollectionFromWI(context, item.getID()).getHandle());
         return getCollectionFromWI(context, item.getID()).getHandle();
     }
 
