@@ -180,7 +180,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
                     }
                 }
 
-
+                log.debug ("deleting " + doi);
                 // If it is the most current version occurs to move the canonical to the previous version
                 VersionHistory history = retrieveVersionHistory(context, item);
                 if(history!=null && history.getLatestVersion().getItem().equals(item) && history.size() > 1){
@@ -192,14 +192,11 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
                     moveCanonical(previous, true, collection, myDataPkgColl, doi_);
                 }
 
-//                //  IF Deleting a 1st version not archived yet:
-//                //  The DOI stored in the previous  should revert to the version without ".1".
-//                // Canonical DOI already point to the right item: no needs to move it
+                //  IF Deleting a 1st version not archived yet:
+                //  The DOI stored in the previous  should revert to the version without ".1".
+                // Canonical DOI already point to the right item: no needs to move it
 //                if(history!=null && history.size() == 2 && !item.isArchived()){
 //                    revertDoisFirstItem(context, history);
-//                }
-//
-
             }
         } catch (Exception e) {
             log.error(LogManager.getHeader(context, "Error while attempting to register doi", "Item id: " + dso.getID()));
@@ -270,9 +267,11 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
 
         if (collection.equals(myDataPkgColl)) {
             // replace doi metadata: dryad.2335.1 with  dryad.2335
+            log.debug("revert identifier item to " + previous.toString());
             revertIdentierItem(previous);
         } else {
             // replace doi metadata: dryad.2335.1/1.1 with  dryad.2335/1
+            log.debug("revert identifier df to " + previous.toString());
             revertIdentifierDF(previous);
 
         }
@@ -366,6 +365,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
         if (identifier != null && identifier.startsWith("doi:")) {
             DOI dbDOI = perstMinter.getKnownDOI(identifier);
             if(dbDOI==null) {
+                log.debug ("identifier " + identifier + " is not found");
                 throw new IdentifierNotFoundException();
             }
             String value = dbDOI.getInternalIdentifier();
