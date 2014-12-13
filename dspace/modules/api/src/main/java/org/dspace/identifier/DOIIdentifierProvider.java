@@ -192,13 +192,13 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
                     moveCanonical(previous, true, collection, myDataPkgColl, doi_);
                 }
 
-                //  IF Deleting a 1st version not archived yet:
-                //  The DOI stored in the previous  should revert to the version without ".1".
-                // Canonical DOI already point to the right item: no needs to move it
-                if(history!=null && history.size() == 2 && !item.isArchived()){
-                    revertDoisFirstItem(context, history);
-                }
-
+//                //  IF Deleting a 1st version not archived yet:
+//                //  The DOI stored in the previous  should revert to the version without ".1".
+//                // Canonical DOI already point to the right item: no needs to move it
+//                if(history!=null && history.size() == 2 && !item.isArchived()){
+//                    revertDoisFirstItem(context, history);
+//                }
+//
 
             }
         } catch (Exception e) {
