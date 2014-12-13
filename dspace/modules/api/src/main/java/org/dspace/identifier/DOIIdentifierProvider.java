@@ -189,6 +189,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
 
                     String collection = getCollection(context, previous);
                     String myDataPkgColl = configurationService.getProperty("stats.datapkgs.coll");
+                    log.debug ("moveCanonical will be called on " + getDoiValue(previous) + ", collection " + collection + ", myDataPkgColl " + myDataPkgColl);
                     moveCanonical(previous, true, collection, myDataPkgColl, doi_);
                 }
 
