@@ -174,12 +174,13 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
                     // if it is already registered it has to remain in DOI service and when someone looks for it go towards a "tombstone" page
                     // reassign the URL of the DOI
                     else{
+                        log.debug ("going to tombstone " + doi.toString());
                         DOI removedDOI = new DOI(doi.toString(), DOI.Type.TOMBSTONE);
                         mint(removedDOI, true, null);
                     }
                 }
 
-
+                log.debug ("deleting " + doi);
                 // If it is the most current version occurs to move the canonical to the previous version
                 VersionHistory history = retrieveVersionHistory(context, item);
                 if(history!=null && history.getLatestVersion().getItem().equals(item) && history.size() > 1){
@@ -188,17 +189,16 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
 
                     String collection = getCollection(context, previous);
                     String myDataPkgColl = configurationService.getProperty("stats.datapkgs.coll");
+                    log.debug ("moveCanonical will be called on " + getDoiValue(previous) + ", collection " + collection + ", myDataPkgColl " + myDataPkgColl);
                     moveCanonical(previous, true, collection, myDataPkgColl, doi_);
+                    log.debug ("okay, now if it's a file that we're deleting, remove it from its package");
                 }
 
                 //  IF Deleting a 1st version not archived yet:
                 //  The DOI stored in the previous  should revert to the version without ".1".
                 // Canonical DOI already point to the right item: no needs to move it
-                if(history!=null && history.size() == 2 && !item.isArchived()){
-                    revertDoisFirstItem(context, history);
-                }
-
-
+//                if(history!=null && history.size() == 2 && !item.isArchived()){
+//                    revertDoisFirstItem(context, history);
             }
         } catch (Exception e) {
             log.error(LogManager.getHeader(context, "Error while attempting to register doi", "Item id: " + dso.getID()));
@@ -269,9 +269,11 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
 
         if (collection.equals(myDataPkgColl)) {
             // replace doi metadata: dryad.2335.1 with  dryad.2335
+            log.debug("revert identifier item to " + previous.toString());
             revertIdentierItem(previous);
         } else {
             // replace doi metadata: dryad.2335.1/1.1 with  dryad.2335/1
+            log.debug("revert identifier df to " + previous.toString());
             revertIdentifierDF(previous);
 
         }
@@ -316,7 +318,7 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
     private void mint(DOI doi, boolean register, Map<String, String> metadata) throws IOException {
         mint(doi, null, register, metadata);
     }
-    
+
     private void mint(DOI doi, String target, boolean register, Map<String, String> metadata) throws IOException {
         log.debug("mintDOI is going to be called on "+doi.toString());
         perstMinter.mintDOI(doi);
@@ -365,7 +367,8 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
         if (identifier != null && identifier.startsWith("doi:")) {
             DOI dbDOI = perstMinter.getKnownDOI(identifier);
             if(dbDOI==null) {
-                throw new IdentifierNotFoundException();
+                log.debug ("identifier " + identifier + " is not found");
+                throw new IdentifierNotFoundException("identifier " + identifier + " is not found");
             }
             String value = dbDOI.getInternalIdentifier();
 
@@ -761,9 +764,10 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
 
         String prefix = id.substring(0, id.lastIndexOf(SLASH));
         String suffix = id.substring(id.lastIndexOf(SLASH));
-
-        prefix = prefix.substring(0, prefix.lastIndexOf(DOT));
-        suffix = suffix.substring(0, suffix.lastIndexOf(DOT));
+        log.debug("hi " + prefix + ", " + suffix);
+//        prefix = prefix.substring(0, prefix.lastIndexOf(DOT));
+//        suffix = suffix.substring(0, suffix.lastIndexOf(DOT));
+        log.debug ("reverting identifier from " + id + " to " + prefix + suffix);
 
         id = prefix + suffix;
 
@@ -879,11 +883,15 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
      * output doi.toString()=  2rdfer334/1
      */
     private DOI getCanonicalDataFile(DOI doi, Item item) {
+        return getCanonicalDataFile(doi.toString(), item);
+    }
+
+    private DOI getCanonicalDataFile(String doiString, Item item) {
         // doi:10.5061/dryad.9054.1 (based on the input example)
-        String idDP = doi.toString().substring(0, doi.toString().lastIndexOf(SLASH));
+        String idDP = doiString.substring(0, doiString.lastIndexOf(SLASH));
 
         // idDF=1.1
-        String idDF = doi.toString().substring(doi.toString().lastIndexOf(SLASH) + 1);
+        String idDF = doiString.substring(doiString.lastIndexOf(SLASH) + 1);
 
         String canonicalDP = idDP.substring(0, idDP.lastIndexOf(DOT));
         String canonicalDF = idDF;
@@ -898,10 +906,13 @@ public class DOIIdentifierProvider extends IdentifierProvider implements org.spr
     private String getCollection(Context context, Item item) throws SQLException {
         String collectionResult = null;
 
-        if(item.getOwningCollection()!=null)
+        if(item.getOwningCollection()!=null) {
+            log.debug ("getCollection is getting " + item.getOwningCollection().getHandle());
             return item.getOwningCollection().getHandle();
+        }
 
         // If our item is a workspaceitem it cannot have a collection, so we will need to get our collection from the workspace item
+        log.debug ("getCollection is getting from WI " + getCollectionFromWI(context, item.getID()).getHandle());
         return getCollectionFromWI(context, item.getID()).getHandle();
     }
 
