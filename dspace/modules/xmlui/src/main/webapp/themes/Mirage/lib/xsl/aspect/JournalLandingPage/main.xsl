@@ -36,16 +36,16 @@
         <div id="{translate(string(@id), '.', '_')}" class="ds-static-div primary">
             <table>
                 <xsl:if test="dri:div[@n='items']/dri:referenceSet/dri:head or dri:div[@n='vals']/dri:list/dri:head">
-                    <tr>
-                        <th style="float:left"><xsl:apply-templates select="dri:div[@n='items']/dri:referenceSet/dri:head"/></th>
-                        <th><xsl:apply-templates select="dri:div[@n='vals']/dri:list/dri:head"/></th>
+                    <tr style="width:100%">
+                        <th style="float:left; width:80%"><xsl:apply-templates select="dri:div[@n='items']/dri:referenceSet/dri:head"/></th>
+                        <th style="width:20%"><xsl:apply-templates select="dri:div[@n='vals']/dri:list/dri:head"/></th>
                     </tr>
                 </xsl:if>
                 <xsl:for-each select="dri:div[@n='items']/dri:referenceSet/dri:reference">
                     <xsl:variable name="position" select="position()"/>
                     <tr>
                         <td>
-                            <xsl:apply-templates select="." mode="summaryList"/>
+                            <xsl:apply-templates select="."/>
                         </td>
                         <td>
                             <xsl:apply-templates select="ancestor::dri:div[@n='items']/following-sibling::dri:div[@n='vals']/dri:list/dri:item[position()=$position]"/>
@@ -90,16 +90,16 @@
                         <xsl:if test="dri:div[@n='items']/dri:referenceSet/dri:head or 
                                       dri:div[@n='vals']/dri:list/dri:head"
                         >
-                            <tr>
+                            <tr style="width:100%">
                                 <th style="float:left"><xsl:apply-templates select="dri:div[@n='items']/dri:referenceSet/dri:head"/></th>
-                                <th><xsl:apply-templates select="dri:div[@n='vals']/dri:list/dri:head"/></th>
+                                <th style="width:20%"><xsl:apply-templates select="dri:div[@n='vals']/dri:list/dri:head"/></th>
                             </tr>
                         </xsl:if>
                         <xsl:for-each select="dri:div[@n='vals']/dri:list/dri:item">
                             <xsl:variable name="position" select="position()"/>
                             <tr>
                                 <td>
-                                    <xsl:apply-templates select="ancestor::dri:div[@n='items']/preceding-sibling::dri:div[@n='items']/dri:referneceSet/dri:reference[position()=$position]" mode="summaryList"/>
+                                    <xsl:apply-templates select="ancestor::dri:div[@n='items']/preceding-sibling::dri:div[@n='items']/dri:referneceSet/dri:reference[position()=$position]"/>
                                 </td>
                                 <td>
                                     <xsl:apply-templates select="."/>
@@ -165,5 +165,23 @@
             <xsl:apply-templates/>
         </div>
     </xsl:template>
+    
+    <xsl:template match="dri:reference">
+        <xsl:variable name="externalMetadataURL">
+            <xsl:text>cocoon:/</xsl:text>
+            <xsl:value-of select="@url"/>
+            <!-- Since this is a summary only grab the descriptive metadata, and the thumbnails -->
+            <xsl:text>?sections=dmdSec,fileSec&amp;fileGrpTypes=THUMBNAIL</xsl:text>
+        </xsl:variable>
+        <xsl:attribute name="class">
+            <xsl:choose>
+                <xsl:when test="position() mod 2 = 0">even</xsl:when>
+                <xsl:otherwise>odd</xsl:otherwise>
+            </xsl:choose>
+        </xsl:attribute>
+        <xsl:apply-templates select="document($externalMetadataURL)" mode="summaryList"/>
+        <xsl:apply-templates />
+    </xsl:template>
+    
     
 </xsl:stylesheet>
