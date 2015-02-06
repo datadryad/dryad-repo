@@ -86,9 +86,49 @@ public class DryadEmailSubmission extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest aRequest,
-            HttpServletResponse aResponse) throws ServletException, IOException {
-        aResponse.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED,
-        "GET is not supported, you must POST to this service");
+                         HttpServletResponse aResponse) throws ServletException, IOException {
+        String requestURI = aRequest.getRequestURI();
+        if (requestURI.contains("authorize")) {
+            String queryString = aRequest.getQueryString();
+            if (aRequest.getQueryString() == null) {
+                // If we've never gotten a credential from here before, do this.
+                String urlString = dryadGmailService.getAuthorizationURLString();
+                LOGGER.info("userID "+dryadGmailService.getMyUserID());
+                aResponse.sendRedirect(urlString);
+            }
+            else if (queryString.contains("code=")) {
+                String code = queryString.substring(queryString.indexOf("=")+1);
+                LOGGER.info("authorizing with code "+ code);
+                // Generate Credential using retrieved code.
+                dryadGmailService.authorize(code);
+            }
+            return;
+        } else if (requestURI.contains("test")) {
+            try {
+                LOGGER.info(DryadGmailService.testMethod());
+            } catch (IOException e) {
+                LOGGER.info(e.getMessage());
+                throw new RuntimeException(e.getMessage());
+            }
+            try {
+                ArrayList<MimeMessage> messages = DryadGmailService.processJournalEmails();
+                if (messages != null) {
+                    for (MimeMessage message : messages) {
+                        try {
+                            processMimeMessage(message);
+                        } catch (Exception details) {
+                            LOGGER.info("Exception thrown: " + details.getMessage() + ", " + details.getClass().getName());
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                LOGGER.info("Exception thrown: " + e.getMessage() + ", " + e.getClass().getName());
+            }
+        } else if (requestURI.contains("retrieve")) {
+        } else {
+            aResponse.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED,
+                    "GET is not supported, you must POST to this service");
+        }
     }
 
     /**
@@ -544,5 +584,25 @@ public class DryadEmailSubmission extends HttpServlet {
     throws IOException {
         aResponse.setContentType("xml/application; charset=UTF-8");
         return aResponse.getWriter();
+    }
+
+    private class DryadEmailSubmissionHarvester extends TimerTask {
+        @Override
+        public void run() {
+            try {
+                ArrayList<MimeMessage> messages = DryadGmailService.processJournalEmails();
+                if (messages != null) {
+                    for (MimeMessage message : messages) {
+                        try {
+                            processMimeMessage(message);
+                        } catch (Exception details) {
+                            LOGGER.info("Exception thrown: " + details.getMessage() + ", " + details.getClass().getName());
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                LOGGER.info("Exception thrown: " + e.getMessage() + ", " + e.getClass().getName());
+            }
+        }
     }
 }
