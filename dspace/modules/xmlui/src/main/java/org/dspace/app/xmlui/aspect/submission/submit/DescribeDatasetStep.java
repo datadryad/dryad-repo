@@ -49,11 +49,6 @@ public class DescribeDatasetStep extends AbstractSubmissionStep {
 
         pageMeta.addTrailLink(contextPath + "/", "Dryad Home");
         pageMeta.addTrail().addContent("Submission");
-        pageMeta.addMetadata("stylesheet", "screen", "datatables", true).addContent("../../static/Datatables/DataTables-1.8.0/media/css/datatables.css");
-//            pageMeta.addMetadata("stylesheet", "screen", null, true).addContent("../../themes/AtmireModules/lib/css/datatables-overrides.css");
-        pageMeta.addMetadata("stylesheet", "screen", "person-lookup", true).addContent("lib/css/person-lookup.css");
-        pageMeta.addMetadata("javascript", null, "person-lookup", true).addContent("lib/js/person-lookup.js");
-        pageMeta.addMetadata("javascript", null, "dryad-submisison-reorder-edit", true).addContent("/lib/js/dryad-submisison-reorder-edit.js");
     }
 
     @Override
@@ -235,12 +230,6 @@ public class DescribeDatasetStep extends AbstractSubmissionStep {
             actions.addButton(AbstractProcessingStep.NEXT_BUTTON).setValue(T_next);
     }
 
-    public void addOptions(Options options) throws SAXException, WingException,
-            SQLException, IOException, AuthorizeException
-    {
-        options.addList("human-subjects");
-        options.addList("large-data-packages");
-    }
 
 
     public List addReviewSection(List list) throws SAXException, WingException, SQLException, IOException, AuthorizeException {

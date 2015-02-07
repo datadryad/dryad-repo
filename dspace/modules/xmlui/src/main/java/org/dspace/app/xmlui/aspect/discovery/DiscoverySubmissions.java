@@ -33,7 +33,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.List;
-import org.xml.sax.SAXException;
 
 /**
  * User: kevin (kevin at atmire.com)
@@ -75,14 +74,6 @@ public class DiscoverySubmissions extends SimpleSearch {
         }
     }
 
-    @Override
-    public void addOptions(Options options) throws SAXException, WingException,
-            UIException, SQLException, IOException, AuthorizeException
-    {
-        super.addOptions(options);
-        options.addList("DryadSubmitData");
-    }
-    
     @Override
     protected void buildSearchResultsDivision(Division search) throws IOException, SQLException, WingException, SearchServiceException {
         try {
@@ -219,15 +210,7 @@ public class DiscoverySubmissions extends SimpleSearch {
 
         headerRow.addCell().addContent(message("xmlui.Submission.result-table.head.title"));
         headerRow.addCell().addContent(message("xmlui.Submission.result-table.head.datafiles"));
-        // add 'Last updated' col for the 'Unfinished Submissions' table for the div
-        //      <div id="aspect.discovery.DiscoverySubmissions.div.search-results-Submission"
-        // but not for the div
-        //      <div id="aspect.discovery.DiscoverySubmissions.div.search-results-Archived"
-        if (count.getName().equals("Submission")) {
-            headerRow.addCell().addContent(message("xmlui.Submission.result-table.head.lastupdated"));
-        }
-        
-        boolean showResult=false;
+                boolean showResult=false;
         for (SolrDocument doc : solrResults) {
             DSpaceObject resultDSO = SearchUtils.findDSpaceObject(context, doc);
 
@@ -286,20 +269,9 @@ public class DiscoverySubmissions extends SimpleSearch {
                         }
                     }
                 }
-                Item[] dataFiles = DryadWorkflowUtils.getDataFiles(context, item);
-                // add 'Number of data files' value
-                itemRow.addCell().addContent(dataFiles.length);
 
-                // add 'Last updated' value for the 'Unfinished submissions' table
-                if (count.getName().equals("Submission")) {
-                    Date lastModifiedDate = item.getLastModified();
-                    //Check our data files if one has been altered after this one
-                    for (Item dataFile : dataFiles) {
-                        if (dataFile.getLastModified().after(lastModifiedDate))
-                            lastModifiedDate = dataFile.getLastModified();
-                    }
-                    itemRow.addCell().addContent(lastModifiedDate.toString());
-                }
+                itemRow.addCell().addContent(DryadWorkflowUtils.getDataFiles(context, item).length);
+
             }
         }
 

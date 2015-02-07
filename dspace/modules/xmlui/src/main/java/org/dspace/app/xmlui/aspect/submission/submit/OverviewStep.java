@@ -81,17 +81,19 @@ public class OverviewStep extends AbstractStep {
         {
             Division pubDiv = actionsDiv.addDivision("puboverviewdivision", "odd subdiv");
 
-            pubDiv.setHead(T_STEPS_HEAD_1);
+            pubDiv.addPara("pub-label", "bold").addContent(T_STEPS_HEAD_1);
             //TODO: expand this !
 
-            // display a formatted reference to the data package
-            ReferenceSet refSet = pubDiv.addReferenceSet("submission", ReferenceSet.TYPE_SUMMARY_LIST);
-            refSet.addReference(publication);
+            pubDiv.addPara().addXref(HandleManager.resolveToURL(context, publication.getHandle()), publication.getName());
 
             //add an edit button for the publication (if we aren't archived)
             if(!publication.isArchived()){
                 Para actionsPara = pubDiv.addPara();
                 actionsPara.addButton("submit_edit_publication").setValue(T_BUTTON_PUBLICATION_EDIT);
+                if((submission instanceof WorkspaceItem)){
+                    WorkspaceItem pubWsItem = WorkspaceItem.findByItemId(context, publication.getID());
+                    actionsPara.addButton("submit_delete_datapack_" + pubWsItem.getID()).setValue(T_BUTTON_PUBLICATION_DELETE);
+                }
                 if(submission instanceof WorkflowItem){
                     //For a curator add an edit metadata button
                     actionsPara.addButton("submit_edit_metadata_" + submission.getID()).setValue(message("xmlui.Submission.Submissions.OverviewStep.edit-metadata-pub"));
@@ -109,7 +111,7 @@ public class OverviewStep extends AbstractStep {
             Division dataDiv = actionsDiv.addDivision("dataoverviewdivision", "even subdiv");
 
             //First of all add the current one !
-            dataDiv.setHead(T_STEPS_HEAD_2);
+            dataDiv.addPara("data-label", "bold").addContent(T_STEPS_HEAD_2);
 
             List dataSetList = dataDiv.addList("datasets");
 
@@ -225,17 +227,11 @@ public class OverviewStep extends AbstractStep {
             Division finDiv = actionsDiv.addDivision("finalizedivision", (submission instanceof WorkspaceItem ? "even" : "odd") + " subdiv");
 
             if(submission instanceof WorkspaceItem){
-                finDiv.setHead(T_STEPS_HEAD_4);
+                finDiv.addPara("data-label", "bold").addContent(T_STEPS_HEAD_4);
+
                 finDiv.addPara().addContent(T_FINALIZE_HELP);
 
-                // add Delete and Continue to Checkout buttons
-                Para bottomButtonPara = finDiv.addPara();
-                if (!publication.isArchived() && submission instanceof WorkspaceItem) {
-                    WorkspaceItem pubWsItem = WorkspaceItem.findByItemId(context, publication.getID());
-                    bottomButtonPara.addButton("submit_delete_datapack_" + pubWsItem.getID()).setValue(T_BUTTON_PUBLICATION_DELETE);
-                }
-
-                Button finishButton = bottomButtonPara.addButton(AbstractProcessingStep.NEXT_BUTTON);
+                Button finishButton = finDiv.addPara().addButton(AbstractProcessingStep.NEXT_BUTTON);
                 finishButton.setValue(T_FINALIZE_BUTTON);
                 if(submissionNotFinished || noDatasets){
                     finishButton.setDisabled(true);
@@ -290,12 +286,6 @@ public class OverviewStep extends AbstractStep {
         }
 
         dataItem.addButton("submit_delete_dataset_" + wsDataset.getID()).setValue(T_BUTTON_DATAFILE_DELETE);
-        
-        // add dc_description text if available
-        DCValue[] descriptions = dataset.getMetadata("dc", "description", org.dspace.content.Item.ANY, org.dspace.content.Item.ANY);
-        if (descriptions.length > 0)
-            dataItem.addHighlight("dataset-description").addContent(descriptions[0].value);
-        
         return submissionNotFinished;
     }
 }

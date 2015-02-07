@@ -28,19 +28,19 @@ public class ParsingResult {
 
 
     /** whether an parsed submission id is valid. */
-    private boolean flawedId = false;
+    private boolean hasFlawedId = false;
     /**
-     * @return the flawedId
+     * @return the hasFlawedId
      */
-    public boolean hasFlawedId() {
-        return flawedId;
+    public boolean isHasFlawedId() {
+        return hasFlawedId;
     }
 
     /**
-     * @param flawedId the flawedId to set
+     * @param hasFlawedId the hasFlawedId to set
      */
-    public void setHasFlawedId(boolean flawedId) {
-        this.flawedId = flawedId;
+    public void setHasFlawedId(boolean hasFlawedId) {
+        this.hasFlawedId = hasFlawedId;
     }
 
 
@@ -142,7 +142,7 @@ public class ParsingResult {
         return "********* ParsingResult: contents: start\n" + 
             "submissionId="+ submissionId + ",\n" +
             "senderEmailAddress=" + senderEmailAddress+ ",\n" +
-            "flawedId="+ flawedId + ",\n"+
+            "hasFlawedId="+hasFlawedId + ",\n"+
             "submissionData=" + submissionData.toString()
             + "\n********** ParsingResult: contents: end:\n";
     }

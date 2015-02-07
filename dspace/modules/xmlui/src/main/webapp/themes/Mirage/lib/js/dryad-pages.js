@@ -1,4 +1,3 @@
-
 /* JS behaviors for all Dryad pages */
 jQuery(document).ready(function() {
     var modal =jQuery("#aspect_eperson_TermsOfService_div_modal-content").val();
@@ -81,7 +80,9 @@ jQuery(document).ready(function() {
     // General support for simple tabs (styled as buttons)
     // NOTE: This logic supports multiple sets of tabs on a page.
     // NOTE: For now, we're only using this on the Home page!
-    if (jQuery('#aspect_discovery_RecentlyAdded_div_Home').length === 1) {
+    if (jQuery('#aspect_discovery_RecentlyAdded_div_Home').length === 1 ||
+        jQuery('#aspect_journal_landing_Banner_div_journal-landing-banner-outer').length === 1)
+    {
         var jQuerytabButtons = jQuery('.tab-buttons a');
         jQuerytabButtons.unbind('click').click(function() {
 
@@ -607,7 +608,7 @@ function shoeShoppingCartWaiver(obj){
 }
 
 function showEmptyCountry(){
-    //console.log("show empty country");
+    console.log("show empty country");
     jQuery('#aspect_paymentsystem_ShoppingCartTransformer_item_country-list').show();
     jQuery(':input[name="country"]').show();
     jQuery('#aspect_paymentsystem_ShoppingCartTransformer_item_country-list div').show();
@@ -616,7 +617,7 @@ function showEmptyCountry(){
     jQuery('#aspect_paymentsystem_ShoppingCartTransformer_item_remove-country a').hide();
 }
 function showEmptyVoucher(){
-    //console.log("show empty voucher");
+    console.log("show empty voucher");
     jQuery('#aspect_paymentsystem_ShoppingCartTransformer_item_voucher-list').show();
     jQuery('#aspect_paymentsystem_ShoppingCartTransformer_item_remove-voucher a').html('Remove voucher : ');
     jQuery('#aspect_paymentsystem_ShoppingCartTransformer_item_voucher-list div').show();

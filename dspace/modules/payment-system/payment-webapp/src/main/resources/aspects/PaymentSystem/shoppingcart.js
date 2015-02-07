@@ -483,7 +483,7 @@ function assertEditGroup(groupID)
  * administrator.
  */
 function isAdministrator() {
-    return AuthorizeManager.isCuratorOrAdmin(getDSContext());
+    return AuthorizeManager.isAdmin(getDSContext());
 }
 
 /**

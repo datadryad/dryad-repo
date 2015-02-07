@@ -137,7 +137,7 @@ references to stylesheets pulled directly from the pageMeta element. -->
             initial-scale = 1.0 retains dimensions instead of zooming out if page height > device height
             maximum-scale = 1.0 retains dimensions instead of zooming in if page width < device width
             -->
-            <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+            <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;"/>
 
             <link rel="shortcut icon">
                 <xsl:attribute name="href">
@@ -565,9 +565,9 @@ references to stylesheets pulled directly from the pageMeta element. -->
                             <xsl:otherwise>
                                 <li class="no-hover-highlight">
                                     <a href="/login">
-                                        <span id="login-item">Log in</span>
+                                        <span id="login-item">Login</span>
                                         <span class="accessibly-hidden"> or </span>
-                                        <span id="sign-up-item">Sign up</span>
+                                        <span id="sign-up-item">Sign Up</span>
                                     </a>
                                 </li>
                             </xsl:otherwise>
