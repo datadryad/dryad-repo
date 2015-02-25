@@ -239,6 +239,15 @@
                 <div id="dryad-home-carousel" class="ds-static-div primary">
                     <!-- REMINDER: slide publication dates are in the format YEAR-MONTH-DAY, eg, 2013-12-28 -->
                     <div class="bxslider" style="">
+                        <div><span class="publication-date">2015-02-15</span>
+                            <a href="/dryadlab">
+                                <img alt="" src="/themes/Mirage/images/dryadlab-promo.png" />
+                                <p style="width: 580px; color: #444; font-size: 80%; top: 75px; right: 10px; line-height: 1.2em; position: absolute; text-shadow: 1px 2px 2px rgba(33, 33, 33, 0.25);"> 
+                                    Use Dryad research data in the classroom! Our educational modules are hand-picked and carefully designed for secondary and undergraduate students.
+                                </p>
+                                <p style="drop-shadow: 4px 4px; position: absolute; right: 40px; bottom: 6px; font-size: 70%; text-align: right; text-shadow: 1px 2px 2px rgba(33, 33, 33, 0.25);">Learn More &#187;</p>
+                            </a>
+                        </div>
                         <div><span class="publication-date">2013-03-01</span>
                             <a href="/pages/pricing">
                                 <img alt="" src="/themes/Mirage/images/watering-can.png" />
