@@ -27,3 +27,6 @@ META-INF/
 *.properties
 !build.properties
 notes.txt
+
+## Ignore Vim swap files
+*.swp
