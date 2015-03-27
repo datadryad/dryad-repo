@@ -153,7 +153,7 @@ public class AssociationAnywhere {
             }
         }
         catch (Exception e) {
-            log.error("errors when loading customer information:", e);
+            log.error("errors when loading customer information:" + e.getMessage(), e);
             e.printStackTrace();
         }
 
@@ -378,9 +378,9 @@ public class AssociationAnywhere {
             transformer.transform(new StreamSource(new StringReader("<" + form + "/>")),new StreamResult(writer));
             return writer.toString();
         } catch (TransformerConfigurationException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         } catch (TransformerException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return null;
     }

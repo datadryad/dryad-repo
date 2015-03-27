@@ -124,7 +124,8 @@ public class ReAuthorizationCreditActionXMLUI extends AbstractXMLUIAction {
             }
         } catch (Exception e)
         {
-            return "Error when submitting the credit";
+            log.error(e.getMessage(),e);
+            return "Error when submitting the credit: " + e.getMessage();
         }
         return success;
     }

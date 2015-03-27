@@ -98,7 +98,7 @@ public class FinalPaymentAction extends ProcessingAction {
                     return new ActionResult(ActionResult.TYPE.TYPE_OUTCOME, ActionResult.OUTCOME_COMPLETE);
                 }catch (Exception e)
                 {
-                    log.error(e.getMessage());
+                    log.error(e.getMessage(),e);
                     sendPaymentErrorEmail(c, wfi, shoppingCart,"problem: credit not deducted successfully. \\n \\n " + e.getMessage());
                     return new ActionResult(ActionResult.TYPE.TYPE_OUTCOME, 2);
                 }

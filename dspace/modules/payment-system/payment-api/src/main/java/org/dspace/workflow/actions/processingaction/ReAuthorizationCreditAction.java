@@ -46,7 +46,7 @@ public class ReAuthorizationCreditAction extends ProcessingAction  {
 
 
         } catch (Exception e){
-
+            log.error(e.getMessage(),e);
         }
         return new ActionResult(ActionResult.TYPE.TYPE_OUTCOME, 1);
 
