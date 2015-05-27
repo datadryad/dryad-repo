@@ -318,11 +318,16 @@ public class WorkflowManager {
     public static void deleteClaimedTask(Context c, WorkflowItem wi, ClaimedTask task) throws SQLException, AuthorizeException {
         if(task != null){
             task.delete();
-            removeUserItemPolicies(c, wi.getItem(), EPerson.find(c, task.getOwnerID()));
+            EPerson e = EPerson.find(c, task.getOwnerID());
+            removeUserItemPolicies(c, wi.getItem(), e);
+            // add back the original owner's policies
+            grantUserAllItemPolicies(c, wi.getItem(), e);
             //Also make sure that the user gets policies on our data files
             Item[] dataFiles = DryadWorkflowUtils.getDataFiles(c, wi.getItem());
             for (Item dataFile : dataFiles) {
-                removeUserItemPolicies(c, dataFile, EPerson.find(c, task.getOwnerID()));
+                removeUserItemPolicies(c, dataFile, e);
+                // add back the original owner's policies
+                grantUserAllItemPolicies(c, dataFile, e);
             }
         }
     }
@@ -394,6 +399,8 @@ public class WorkflowManager {
             addPolicyToItem(context, item, Constants.WRITE, epa);
         if(!userHasPolicies.contains(Constants.DELETE))
             addPolicyToItem(context, item, Constants.DELETE, epa);
+        if(!userHasPolicies.contains(Constants.REMOVE))
+            addPolicyToItem(context, item, Constants.REMOVE, epa);
         if(!userHasPolicies.contains(Constants.ADD))
             addPolicyToItem(context, item, Constants.ADD, epa);
     }

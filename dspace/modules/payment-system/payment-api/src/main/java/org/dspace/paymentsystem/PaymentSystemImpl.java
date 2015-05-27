@@ -18,6 +18,7 @@ import org.dspace.app.xmlui.wing.element.Text;
 import org.dspace.app.xmlui.wing.element.Xref;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.content.*;
+import org.dspace.content.authority.Concept;
 import org.dspace.core.Context;
 import org.dspace.eperson.EPerson;
 import org.dspace.submit.utils.DryadJournalSubmissionUtils;
@@ -205,6 +206,15 @@ public class PaymentSystemImpl implements PaymentSystemService {
             if(shoppingCarts.size()>0)
             {
                 return shoppingCarts.get(0);
+            } else {
+                // if the original item doesn't have a shopping cart,
+                // this item must've been created before the payment system was in place.
+                // We should create a completed placeholder cart for the original item, but make sure it is marked
+                // that it was created for versioning and should not be re-charged.
+                ShoppingCart versionCart = createNewShoppingCart(context,itemId,context.getCurrentUser().getID(),"",ShoppingCart.CURRENCY_US,ShoppingCart.STATUS_COMPLETED);
+                versionCart.setNote("cart created for versioning; do not charge");
+                versionCart.update();
+                return versionCart;
             }
 
         }
@@ -343,7 +353,7 @@ public class PaymentSystemImpl implements PaymentSystemService {
 
                 }
                 //update the journal and journal subscribtion
-                updateJournal(shoppingcart,journal);
+                updateJournal(context,shoppingcart,journal);
 
             }
         return shoppingcart.getJournalSub();
@@ -370,8 +380,8 @@ public class PaymentSystemImpl implements PaymentSystemService {
         if(journal!=null)
         {
             try{
-                DryadJournalSubmissionUtils util = new DryadJournalSubmissionUtils();
-                Map<String, String> properties = util.journalProperties.get(journal);
+
+                Map<String, String> properties = DryadJournalSubmissionUtils.findJournalProperties(context,journal);
                 if(properties!=null){
                 String subscription = properties.get("integrated");
                 if(subscription==null || !subscription.equals(ShoppingCart.FREE))
@@ -405,7 +415,7 @@ public class PaymentSystemImpl implements PaymentSystemService {
     public boolean hasDiscount(Context context,ShoppingCart shoppingcart,String journal)throws SQLException{
         //this method check all the discount: journal,country,voucher
             Boolean journalSubscription =  getJournalSubscription(context, shoppingcart, journal);
-            Boolean countryDiscount = getCountryWaiver(context,shoppingcart,journal);
+            Boolean countryDiscount = getCountryWaiver(context,shoppingcart);
             Boolean voucherDiscount = voucherValidate(context,shoppingcart);
 
             if(journalSubscription||countryDiscount||voucherDiscount){
@@ -420,7 +430,7 @@ public class PaymentSystemImpl implements PaymentSystemService {
     public int getWaiver(Context context,ShoppingCart shoppingcart,String journal)throws SQLException{
         //this method check all the discount: journal,country,voucher
         Boolean journalSubscription =  getJournalSubscription(context, shoppingcart, journal);
-        Boolean countryDiscount = getCountryWaiver(context,shoppingcart,journal);
+        Boolean countryDiscount = getCountryWaiver(context,shoppingcart);
         Boolean voucherDiscount = voucherValidate(context,shoppingcart);
 
         if(countryDiscount){
@@ -434,7 +444,7 @@ public class PaymentSystemImpl implements PaymentSystemService {
         return ShoppingCart.NO_WAIVER;
     }
     
-    public boolean getCountryWaiver(Context context, ShoppingCart shoppingCart, String journal) throws SQLException{
+    public boolean getCountryWaiver(Context context, ShoppingCart shoppingCart) throws SQLException{
         PaymentSystemConfigurationManager manager = new PaymentSystemConfigurationManager();
         Properties countryArray = manager.getAllCountryProperty();
 
@@ -471,12 +481,12 @@ public class PaymentSystemImpl implements PaymentSystemService {
         return payerName;
     }
 
-    private void updateJournal(ShoppingCart shoppingCart,String journal){
+    private void updateJournal(Context c,ShoppingCart shoppingCart,String journal){
         if(!shoppingCart.getStatus().equals(ShoppingCart.STATUS_COMPLETED))
         {
             if(journal!=null&&journal.length()>0) {
                 //update shoppingcart journal
-                Map<String, String> properties = DryadJournalSubmissionUtils.journalProperties.get(journal);
+                Map<String, String> properties = DryadJournalSubmissionUtils.findJournalProperties(c,journal);
                 Boolean subscription = false;
                 if(properties!=null){
                     if(StringUtils.equals(properties.get("subscriptionPaid"), ShoppingCart.FREE))
