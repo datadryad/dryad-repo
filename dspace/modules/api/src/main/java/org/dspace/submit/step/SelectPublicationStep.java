@@ -5,6 +5,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Logger;
 import org.dspace.JournalUtils;
 import org.dspace.content.*;
+import org.dspace.content.authority.AuthorityMetadataValue;
 import org.dspace.content.authority.Choices;
 import org.dspace.content.authority.Concept;
 import org.dspace.content.authority.Scheme;
@@ -458,6 +459,14 @@ public class SelectPublicationStep extends AbstractProcessingStep {
                 log.debug("adding journal title to item: " + title);
                 addEmailsAndEmbargoSettings(journalConcept, item);
                 addSingleMetadataValueFromJournal(context, item, "journalName", journalConcept.getPreferredLabel(), journalConcept.getIdentifier(), Choices.CF_ACCEPTED);
+                AuthorityMetadataValue[] values = journalConcept.getMetadata("journal","journalID",null,"");
+                for(AuthorityMetadataValue value : values)
+                {
+                    String journalID = value.getValue();
+                    if(journalID != null)
+                        addSingleMetadataValueFromJournal(context, item, "journalCode", journalID, journalID, Choices.CF_ACCEPTED);
+                }
+
                 item.update();
             }
             else {
