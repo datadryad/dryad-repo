@@ -28,5 +28,8 @@ META-INF/
 !build.properties
 notes.txt
 
+## Ignore Vim swap files
+*.swp
+
 ## ignore OSX system files
 .DS_Store
