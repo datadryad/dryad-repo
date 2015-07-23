@@ -9,4 +9,4 @@ tar xzf /tmp/apache-maven-2.2.1-bin.tar.gz
 
 echo "export M2_HOME=$TRAVIS_BUILD_DIR/apache-maven-2.2.1" > "$HOME/.mavenrc"
 ls -l $HOME/
-more $HOME/.m2/settings.xml
+cat $HOME/.m2/settings.xml
