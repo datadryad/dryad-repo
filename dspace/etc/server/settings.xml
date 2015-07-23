@@ -20,7 +20,7 @@
 				<!-- Where is this Dryad instance? British Library? NCSU? -->
 				<default.dryad.home>North Carolina State University</default.dryad.home>
 				<!-- Where the Dryad runtime/deployed directory is on the machine -->
-				<default.dspace.dir>/opt/dryad</default.dspace.dir>
+				<default.dspace.dir>/opt/dryad/FOO</default.dspace.dir>
 				<!-- The hostname... set to what displays in browser: dev.datadryad.org,  etc. -->
 				<default.dspace.hostname>localhost</default.dspace.hostname>
 				<!-- Port at which Dryad/Tomcat responds -->
