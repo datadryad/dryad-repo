@@ -865,6 +865,7 @@ public class ConfigurationManager
             try
             {
                 configProperty = System.getProperty("dspace.configuration");
+                log.info("FOO! Trying to load config from " + configProperty);
             }
             catch (SecurityException se)
             {
@@ -876,13 +877,13 @@ public class ConfigurationManager
             // should only occur after a flush()
             if (loadedFile != null)
             {
-                info("Reloading current config file: " + loadedFile.getAbsolutePath());
+                info("FOO! Reloading current config file: " + loadedFile.getAbsolutePath());
                 
                 url = loadedFile.toURI().toURL();
             }
             else if (configFile != null)
             {
-                info("Loading provided config file: " + configFile);
+                info("FOO! Loading provided config file: " + configFile);
                 
                 loadedFile = new File(configFile);
                 url = loadedFile.toURI().toURL();
@@ -891,7 +892,7 @@ public class ConfigurationManager
             // Has the default configuration location been overridden?
             else if (configProperty != null)
             {
-                info("Loading system provided config property (-Ddspace.configuration): " + configProperty);
+                info("FOO! Loading system provided config property (-Ddspace.configuration): " + configProperty);
                 
                 // Load the overriding configuration
                 loadedFile = new File(configProperty);
@@ -900,6 +901,7 @@ public class ConfigurationManager
             // Load configuration from default location
             else
             {
+                info("FOO! Loading config from default");
                 url = ConfigurationManager.class.getResource("/dspace.cfg");
                 if (url != null)
                 {
