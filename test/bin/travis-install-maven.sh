@@ -8,3 +8,5 @@ tar xzf /tmp/apache-maven-2.2.1-bin.tar.gz
 # Need to override this variable in ~/.mavenrc to use our maven2.
 
 echo "export M2_HOME=$TRAVIS_BUILD_DIR/apache-maven-2.2.1" > "$HOME/.mavenrc"
+ls -l $HOME/.mavenrc
+more $HOME/.mavenrc/settings.xml
