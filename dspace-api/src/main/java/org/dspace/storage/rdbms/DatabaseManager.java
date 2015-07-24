@@ -1467,7 +1467,7 @@ public class DatabaseManager
         try
         {
             String jndiName = ConfigurationManager.getProperty("db.jndi");
-            log.info("initializing DB from " + jndiName);
+            System.out.println("initializing DB from " + jndiName);
             if (!StringUtils.isEmpty(jndiName))
             {
                 try
