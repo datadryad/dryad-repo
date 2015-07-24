@@ -865,7 +865,7 @@ public class ConfigurationManager
             try
             {
                 configProperty = System.getProperty("dspace.configuration");
-                log.info("FOO! Trying to load config from " + configProperty);
+                log.info("FOO! Trying to load config from " + configFile);
             }
             catch (SecurityException se)
             {
