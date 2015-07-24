@@ -866,7 +866,7 @@ public class ConfigurationManager
             try
             {
                 configProperty = System.getProperty("dspace.configuration");
-                log.info("FOO! Trying to load config from " + configProperty);
+                info("FOO! value of configProperty is " + configProperty);
             }
             catch (SecurityException se)
             {
@@ -874,7 +874,7 @@ public class ConfigurationManager
                 // This isn't really a fatal error though, so catch and ignore
                 log.warn("Unable to access system properties, ignoring.", se);
             }
-            
+
             // should only occur after a flush()
             if (loadedFile != null)
             {
@@ -893,7 +893,7 @@ public class ConfigurationManager
             // Has the default configuration location been overridden?
             else if (configProperty != null)
             {
-                info("FOO! Loading system provided config property (-Ddspace.configuration): " + configProperty);
+                info("FOO! Loading system provided config property: " + configProperty);
                 
                 // Load the overriding configuration
                 loadedFile = new File(configProperty);
