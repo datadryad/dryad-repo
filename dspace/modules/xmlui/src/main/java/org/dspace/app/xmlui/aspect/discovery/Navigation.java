@@ -7,7 +7,6 @@
  */
 package org.dspace.app.xmlui.aspect.discovery;
 
-import org.apache.cocoon.caching.CacheableProcessingComponent;
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.util.HashUtil;
@@ -41,7 +40,7 @@ import java.sql.SQLException;
  *
  * This class has been adjusted to leave out the community browse option
  */
-public class Navigation extends AbstractDSpaceTransformer implements CacheableProcessingComponent
+public class Navigation extends AbstractDSpaceTransformer
 {
     /** Language Strings */
     private static final Message T_head_all_of_dspace =
@@ -60,6 +59,8 @@ public class Navigation extends AbstractDSpaceTransformer implements CacheablePr
         message("xmlui.ArtifactBrowser.Navigation.head_this_community");
     private static final Message T_navigation_workflow_overview =
             message("xmlui.Discovery.Navigation.workflow-overview");
+    private static final Message T_navigation_my_tasks =
+            message("xmlui.Submission.MyTasks.title");
 
 
     private static final Message T_administrative_head = 
@@ -154,7 +155,7 @@ public class Navigation extends AbstractDSpaceTransformer implements CacheablePr
         }
         */
 
-        if(AuthorizeManager.isCuratorOrAdmin(context)){
+        if(AuthorizeManager.isCurator(context)){
             List admin = options.addList("administrative");
             admin.setHead(T_administrative_head);
 

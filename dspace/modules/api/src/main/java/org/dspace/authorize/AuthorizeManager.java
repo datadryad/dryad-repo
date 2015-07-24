@@ -7,10 +7,6 @@
  */
 package org.dspace.authorize;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.dspace.content.DSpaceObject;
 import org.dspace.content.Item;
 import org.dspace.core.ConfigurationManager;
@@ -22,6 +18,10 @@ import org.dspace.event.Event;
 import org.dspace.storage.rdbms.DatabaseManager;
 import org.dspace.storage.rdbms.TableRow;
 import org.dspace.storage.rdbms.TableRowIterator;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * AuthorizeManager handles all authorization checks for DSpace. For better
@@ -441,58 +441,45 @@ public class AuthorizeManager
         }
     }
 
-    public static boolean isSeniorCurator(Context c) throws SQLException
+    /**
+     * Tell whether the current user can authorize as a member of the given group.
+     *
+     * This is only true if authorization is being ignored or if the logged in user is a member of the named group.
+     */
+    protected static boolean canAuthorizeAsMember(Context context, String groupName) throws SQLException
     {
         // if we're ignoring authorization, user is member of admin
-        if (c.ignoreAuthorization())
-        {
+        if (context.ignoreAuthorization()) {
             return true;
         }
 
-        EPerson e = c.getCurrentUser();
-
-        if (e == null)
-        {
-            return false; // anonymous users can't be admins....
+        EPerson currentUser = context.getCurrentUser();
+        if (currentUser == null) {
+            return true; // anonymous users can't authorize as anyone
         }
-        else
-        {
-            Group seniorCurator = Group.findByName(c, ConfigurationManager.getProperty("core.authorization.site-admin.group"));
-            if(seniorCurator==null)
-            {
-                return false;
-            }
 
-            return Group.isMember(c, seniorCurator.getID());
-        }
+        Group group = Group.findByName(context, groupName);
+        return group != null && Group.isMember(context, group.getID());
     }
 
-    public static boolean isCuratorOrAdmin(Context context){
-        try{
+    /**
+     * Tell whether the user can authorize as a member of the <code>Senior Curator</code> group.
+     *
+     * @see #canAuthorizeAsMember(Context, String)
+     */
+    public static boolean isSeniorCurator(Context c) throws SQLException
+    {
+        return canAuthorizeAsMember(c, ConfigurationManager.getProperty("core.authorization.site-admin.group"));
+    }
 
-            boolean isSystemAdmin = isAdmin(context);
-            if(isSystemAdmin)
-            {
-                return true;
-            }
-            else
-            {
-                boolean isSeniorCurator = isSeniorCurator(context);
-                if(isSeniorCurator)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-        }catch (Exception e)
-        {
-
-        }
-        return false;
+    /**
+     * Tell whether the user can authorize as a member of the <code>Curator</code> group.
+     *
+     * @see #canAuthorizeAsMember(Context, String)
+     */
+    public static boolean isCurator(Context c) throws SQLException
+    {
+        return canAuthorizeAsMember(c, ConfigurationManager.getProperty("core.authorization.site-admin.group2"));
     }
 
     ///////////////////////////////////////////////

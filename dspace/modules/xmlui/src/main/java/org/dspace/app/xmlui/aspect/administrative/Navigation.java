@@ -7,14 +7,8 @@
  */
 package org.dspace.app.xmlui.aspect.administrative;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.sql.SQLException;
-import java.util.Map;
-
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.ProcessingException;
-import org.apache.cocoon.caching.CacheableProcessingComponent;
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.environment.SourceResolver;
@@ -41,6 +35,11 @@ import org.dspace.core.Constants;
 import org.dspace.eperson.Group;
 import org.xml.sax.SAXException;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Map;
+
 /**
  *
  * Create the navigation options for everything in the administrative aspects. This includes 
@@ -51,7 +50,7 @@ import org.xml.sax.SAXException;
  * @author Alexey Maslov
  * @author Jay Paz
  */
-public class Navigation extends AbstractDSpaceTransformer implements CacheableProcessingComponent
+public class Navigation extends AbstractDSpaceTransformer
 {
     private static final Message T_context_head 				= message("xmlui.administrative.Navigation.context_head");
     private static final Message T_context_edit_item 			= message("xmlui.administrative.Navigation.context_edit_item");
@@ -216,7 +215,7 @@ public class Navigation extends AbstractDSpaceTransformer implements CacheablePr
             {
                 context.setHead(T_context_head);
                 context.addItem().addXref(contextPath+"/admin/item?itemID="+item.getID(), T_context_edit_item);
-                if (AuthorizeManager.isAdmin(this.context, dso)||AuthorizeManager.isCuratorOrAdmin(this.context))
+                if (AuthorizeManager.isAdmin(this.context, dso)||AuthorizeManager.isCurator(this.context))
                 {
                     context.addItem().addXref(contextPath+"/admin/export?itemID="+item.getID(), T_context_export_item );
                     context.addItem().addXref(contextPath+ "/csv/handle/"+dso.getHandle(),T_context_export_metadata );
