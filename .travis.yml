@@ -5,8 +5,8 @@ cache:
     - $HOME/.m2
 before_install:
 - ./test/bin/travis-install-maven.sh
-- psql -U postgres -c "create user dryad_test_user with createdb;"
-- createdb -U dryad_test_user dryad_test
+- psql -U postgres -c "create user dryad_app with createdb;"
+- createdb -U dryad_app dryad_test
 - psql dryad_test -U dryad_test_user < ./dspace/etc/postgres/database_schema.sql
 - psql dryad_test -U dryad_test_user < ./dspace/etc/postgres/database_create_doi_table.sql
 - psql dryad_test -U dryad_test_user < ./dspace/etc/postgres/database_change_payment_system.sql
