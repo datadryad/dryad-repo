@@ -853,6 +853,7 @@ public class ConfigurationManager
     {
         if (properties != null)
         {
+            log.info("FOO! Already loaded config");
             return;
         }
 
@@ -865,7 +866,7 @@ public class ConfigurationManager
             try
             {
                 configProperty = System.getProperty("dspace.configuration");
-                log.info("FOO! Trying to load config from " + configFile);
+                log.info("FOO! Trying to load config from " + configProperty);
             }
             catch (SecurityException se)
             {
@@ -884,10 +885,10 @@ public class ConfigurationManager
             else if (configFile != null)
             {
                 info("FOO! Loading provided config file: " + configFile);
-                
+
                 loadedFile = new File(configFile);
                 url = loadedFile.toURI().toURL();
-                
+
             }
             // Has the default configuration location been overridden?
             else if (configProperty != null)
