@@ -853,7 +853,6 @@ public class ConfigurationManager
     {
         if (properties != null)
         {
-            log.info("FOO! Already loaded config");
             return;
         }
 
@@ -866,7 +865,6 @@ public class ConfigurationManager
             try
             {
                 configProperty = System.getProperty("dspace.configuration");
-                info("FOO! value of configProperty is " + configProperty);
             }
             catch (SecurityException se)
             {
@@ -874,26 +872,26 @@ public class ConfigurationManager
                 // This isn't really a fatal error though, so catch and ignore
                 log.warn("Unable to access system properties, ignoring.", se);
             }
-
+            
             // should only occur after a flush()
             if (loadedFile != null)
             {
-                info("FOO! Reloading current config file: " + loadedFile.getAbsolutePath());
+                info("Reloading current config file: " + loadedFile.getAbsolutePath());
                 
                 url = loadedFile.toURI().toURL();
             }
             else if (configFile != null)
             {
-                info("FOO! Loading provided config file: " + configFile);
-
+                info("Loading provided config file: " + configFile);
+                
                 loadedFile = new File(configFile);
                 url = loadedFile.toURI().toURL();
-
+                
             }
             // Has the default configuration location been overridden?
             else if (configProperty != null)
             {
-                info("FOO! Loading system provided config property: " + configProperty);
+                info("Loading system provided config property (-Ddspace.configuration): " + configProperty);
                 
                 // Load the overriding configuration
                 loadedFile = new File(configProperty);
@@ -902,7 +900,6 @@ public class ConfigurationManager
             // Load configuration from default location
             else
             {
-                info("FOO! Loading config from default");
                 url = ConfigurationManager.class.getResource("/dspace.cfg");
                 if (url != null)
                 {
