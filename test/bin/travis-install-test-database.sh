@@ -12,8 +12,8 @@ DRYAD_CODE_DIR=.
 # Drop the dryad_test database
 # dropdb/createdb require PGPASSWORD
 #export PGPASSWORD=`grep $PGUSER $HOME/.pgpass | awk -F ':' '{print $5}'`
-psql -U postgres -c "create user $PGUSER with createdb;"
-createdb $PGDATABASE
+psql -U postgres -c "create user dryad_test_user with createdb;"
+createdb -U dryad_test_user dryad_test_db
 
 # Load database schema
 psql < ${DRYAD_CODE_DIR}/dspace/etc/postgres/database_schema.sql
