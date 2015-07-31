@@ -48,7 +48,7 @@ import org.xml.sax.SAXException;
  *
  * @author pvillega
  */
-//@UsingMocksAndStubs({MockDatabaseManager.class, MockBrowseCreateDAOOracle.class})
+@UsingMocksAndStubs({MockDatabaseManager.class, MockBrowseCreateDAOOracle.class})
 public class AbstractUnitTest
 {
     /** The service manager kernel */
