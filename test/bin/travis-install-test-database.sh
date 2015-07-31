@@ -11,9 +11,8 @@ DRYAD_CODE_DIR=.
 
 # Drop the dryad_test database
 # dropdb/createdb require PGPASSWORD
-export PGPASSWORD=`grep $PGUSER $HOME/.pgpass | awk -F ':' '{print $5}'`
-
-dropdb $PGDATABASE
+#export PGPASSWORD=`grep $PGUSER $HOME/.pgpass | awk -F ':' '{print $5}'`
+psql -U postgres -c "create user $PGUSER with createdb;"
 createdb $PGDATABASE
 
 # Load database schema
@@ -47,7 +46,7 @@ cp -p -r "${DRYAD_CODE_DIR}/dspace/config/dspace-solr-search.cfg" "${DRYAD_TEST_
 # Ansible provisioning installs password into .pgpass, so fish it out of there
 
 cat "${DRYAD_CODE_DIR}/dspace/config/dspace.cfg" \
-  | sed "s|db.password =.*|db.password = ${PGPASSWORD}|g" \
+#  | sed "s|db.password =.*|db.password = ${PGPASSWORD}|g" \
   | sed "s|db.username =.*|db.username = ${PGUSER}|g" \
 #   | sed "s|db.url =.*|db.url = jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}|g" \
   | sed "s|dspace.dir = .*|dspace.dir = ${DRYAD_TEST_DIR}|g" \
