@@ -7,6 +7,7 @@
 export PGUSER=dryad_test_user
 export PGDATABASE=dryad_test_db
 
+export DRYAD_CODE_DIR=.
 
 # Drop the dryad_test database
 # dropdb/createdb require PGPASSWORD
