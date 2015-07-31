@@ -30,12 +30,8 @@ psql < ${DRYAD_CODE_DIR}/test/etc/postgres/test-journal-landing.sql
 # Copy test directory to local filesystem, outside of source repo, and owned by dryad user
 DRYAD_TEST_DIR="/opt/dryad/test"
 
-if [ -d $DRYAD_TEST_DIR ]; then
-  rm -rf "${DRYAD_TEST_DIR}"
-fi
-
 cp -L -p -r "${DRYAD_CODE_DIR}/test" "${DRYAD_TEST_DIR}"
-
+mkdir ${DRYAD_TEST_DIR}/config
 # These are needed somehow by bagit ingest tests
 cp -p -r "${DRYAD_CODE_DIR}/dspace/config/crosswalks" "${DRYAD_TEST_DIR}/config/"
 cp -p -r "${DRYAD_CODE_DIR}/dspace/config/dspace-solr-search.cfg" "${DRYAD_TEST_DIR}/config/"
