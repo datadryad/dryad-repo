@@ -44,9 +44,7 @@ cp -p -r "${DRYAD_CODE_DIR}/dspace/config/dspace-solr-search.cfg" "${DRYAD_TEST_
 # Ansible provisioning installs password into .pgpass, so fish it out of there
 
 cat "${DRYAD_CODE_DIR}/dspace/config/dspace.cfg" \
-#  | sed "s|db.password =.*|db.password = ${PGPASSWORD}|g" \
   | sed "s|db.username =.*|db.username = ${PGUSER}|g" \
-#   | sed "s|db.url =.*|db.url = jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}|g" \
   | sed "s|dspace.dir = .*|dspace.dir = ${DRYAD_TEST_DIR}|g" \
   | sed "s|doi.service.testmode= .*|doi.service.testmode= true|g" \
   | sed "s|doi.datacite.connected = .*|doi.datacite.connected = false|g" \
