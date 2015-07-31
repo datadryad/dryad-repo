@@ -5,6 +5,8 @@ cache:
     - $HOME/.m2
 before_install:
 - ./test/bin/travis-install-maven.sh
+- psql -U postgres -c "create user dryad_test_user with createdb;"
+- createdb -U dryad_test_user dryad_test_db
 - ./test/bin/travis-install-test-database.sh
 - export PATH="$TRAVIS_BUILD_DIR/apache-maven-2.2.1/bin:$PATH"
 install:
@@ -13,6 +15,7 @@ install:
 script: mvn package -DskipTests=false -Ddefault.dspace.dir=/opt/dryad-test
 after_failure: find . -type f -path "*/surefire-reports/*" -name "*.txt" -print -exec cat {} \;
 notifications:
+  email: false
   slack:
     secure: EqYW7e3FhVxoZzVS4FR52ajePoDbyeOsYcXA9b2BjUWDNc5WNFxRDwNfkxmD09BOAI1g7fKH+Fj5VrtnsUwh7kYosNBj9anjl9CleJ8xGQR35avoaXMJQ3BcULIBfSsUUEwaT+M8uHnM1PNC9DW1uq5w+Hd/9wASwJR5g5BU49I=
 
