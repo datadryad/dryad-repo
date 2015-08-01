@@ -43,7 +43,7 @@ pwd
 #  sudo: yes
 #  sudo_user: postgres
 #
-psql -U postgres -c "create user dryad_app with createdb;" 
+psql -U postgres -c "create user dryad_app with createdb;" -d template1
 #- name: Create Postgres database for dryad
 #  postgresql_db: owner={{ dryad.db.user }} name={{ dryad.db.name }} login_user={{ dryad.db.user }} login_password={{ dryad.db.password }} login_host={{ dryad.db.host }} port={{ dryad.db.port }} encoding={{ postgresql.encoding }} lc_ctype='{{ postgresql.locale }}.{{ postgresql.encoding }}' lc_collate='{{ postgresql.locale }}.{{ postgresql.encoding }}'
 createdb -U dryad_app dryad_repo
@@ -51,7 +51,7 @@ createdb -U dryad_app dryad_repo
 #  postgresql_user: name={{ dryad.testdb.user }} role_attr_flags=CREATEDB password={{ dryad.testdb.password }}
 #  sudo: yes
 #  sudo_user: postgres
-psql -U postgres -c "create user dryad_test_user with createdb;"
+psql -U postgres -c "create user dryad_test_user with createdb;" -d template1
 #- name: Create Postgres database for dryad test
 #  postgresql_db: owner={{ dryad.testdb.user }} name={{ dryad.testdb.name }} login_user={{ dryad.testdb.user }} login_password={{ dryad.testdb.password }} login_host={{ dryad.testdb.host }} port={{ dryad.testdb.port }} encoding={{ postgresql.encoding }} lc_ctype='{{ postgresql.locale }}.{{ postgresql.encoding }}' lc_collate='{{ postgresql.locale }}.{{ postgresql.encoding }}'
 createdb -U dryad_test_user dryad_test_db
