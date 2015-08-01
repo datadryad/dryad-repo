@@ -1,9 +1,7 @@
 language: java
 jdk: openjdk6
 env:
-- PGUSER=dryad_test_user
-- PGDATABASE=dryad_test_db
-- DRYAD_CODE_DIR=.
+- PGUSER=dryad_test_user PGDATABASE=dryad_test_db DRYAD_CODE_DIR=.
 cache:
     directories:
     - $HOME/.m2

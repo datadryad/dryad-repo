@@ -4,11 +4,6 @@
 # createdb -U dryad_test_user dryad_test
 
 # export PGPORT={{ dryad.testdb.port }}
-export PGUSER=dryad_test_user
-export PGDATABASE=dryad_test_db
-
-export DRYAD_CODE_DIR=.
-
 # Drop the dryad_test database
 # dropdb/createdb require PGPASSWORD
 #export PGPASSWORD=`grep $PGUSER $HOME/.pgpass | awk -F ':' '{print $5}'`
