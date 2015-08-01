@@ -1,21 +1,15 @@
 language: java
 jdk: openjdk6
-env:
-- PGUSER=dryad_test_user PGDATABASE=dryad_test_db DRYAD_CODE_DIR=.
 cache:
     directories:
     - $HOME/.m2
 before_install:
 - ./test/bin/travis-install-maven.sh
-- psql -U postgres -c "create user dryad_test_user with createdb;"
-- createdb -U dryad_test_user dryad_test_db
 - export PATH="$TRAVIS_BUILD_DIR/apache-maven-2.2.1/bin:$PATH"
 install:
 - ./test/bin/travis-install-missing-poms.sh
 - ./test/bin/travis-install-dryad-dir.sh
 - ./test/bin/travis-install-test-database.sh
-- psql -c '\l'
-- psql -c '\du'
 script: mvn package -DskipTests=false -Ddefault.dspace.dir=/opt/dryad/test
 after_failure: find . -type f -path "*/surefire-reports/*" -name "*.txt" -print -exec cat {} \;
 notifications:
