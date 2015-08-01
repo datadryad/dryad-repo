@@ -1,15 +1,25 @@
 language: java
 jdk: openjdk6
+env:
+- DSPACE_DIR=/opt/dryad/test
 cache:
     directories:
     - $HOME/.m2
 before_install:
 - ./test/bin/travis-install-maven.sh
 - export PATH="$TRAVIS_BUILD_DIR/apache-maven-2.2.1/bin:$PATH"
+- export DRYAD_CODE_DIR=.
+- export DRYAD_TEST_DIR=${DSPACE_DIR}
+- export PGUSER=dryad_test_user
+- export PGDATABASE=dryad_test_db
+- export PGPASSWORD=
+- export PGHOST=127.0.0.1
+- export PGPORT=5432
+
 install:
 - ./test/bin/travis-install-missing-poms.sh
 - ./test/bin/travis-install-dryad-dir.sh
-script: mvn package -DskipTests=false -Ddefault.dspace.dir=/opt/dryad/test
+script: mvn package -DskipTests=false -Ddefault.dspace.dir=$DSPACE_DIR
 after_failure: find . -type f -path "*/surefire-reports/*" -name "*.txt" -print -exec cat {} \;
 notifications:
   email: false
