@@ -274,7 +274,7 @@ public class PGDOIDatabase implements org.springframework.beans.factory.Initiali
         // Obtain Context
         Context context = getContext();
         if(context == null) { // fail early
-            LOG.error("Unable to create a context for set: " + aDOI.toString() + ", failing");
+            System.out.println("Unable to create a context for set: " + aDOI.toString() + ", failing");
             return returnDoi;
         }
         System.out.println("okay");
