@@ -26,4 +26,7 @@ cat "${DRYAD_CODE_DIR}/dspace/config/dspace.cfg" \
   | sed "s|doi.service.testmode= .*|doi.service.testmode= true|g" \
   | sed "s|doi.datacite.connected = .*|doi.datacite.connected = false|g" \
   | sed "s|dspace.url = .*|dspace.url = http://localhost:9999|g" \
+  | sed "s|db.url = .*|db.url = jdbc:postgresql://127.0.0.1:5432/dryad_test_db|g" \
+  | sed "s|db.username = .*|db.username = dryad_test_user|g" \
+  | sed "s|db.password = .*|db.password =|g" \
   >"${DRYAD_TEST_DIR}/config/dspace.cfg"
