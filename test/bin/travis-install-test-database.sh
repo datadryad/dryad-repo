@@ -58,9 +58,6 @@ createdb -U dryad_test_user dryad_test_db
 #- psql -U postgres -c "create user dryad_test_user with createdb;"
 #- createdb -U dryad_test_user dryad_test_db
 
-psql -c '\l'
-psql -c '\du'
-
 
 # Drop the dryad_test database
 # dropdb/createdb require PGPASSWORD
