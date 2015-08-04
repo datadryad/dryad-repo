@@ -9,7 +9,7 @@ before_install:
 - ./test/bin/travis-install-maven.sh
 - export PATH="$TRAVIS_BUILD_DIR/apache-maven-2.2.1/bin:$PATH"
 - export DRYAD_CODE_DIR=.
-- pwd
+- echo "hello $TRAVIS_BUILD_DIR"
 - export DRYAD_TEST_DIR=${DSPACE_DIR}
 - export PGUSER=dryad_test_user
 - export PGDATABASE=dryad_test_db
