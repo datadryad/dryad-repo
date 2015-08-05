@@ -13,34 +13,34 @@
     </parent>
     <build>
         <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-war-plugin</artifactId>
-            <configuration>
-              <archiveClasses>false</archiveClasses>
-              <webResources>
-                <resource>
-                  <filtering>true</filtering>
-                  <directory>${basedir}/src/main/webapp</directory>
-                  <includes>
-                    <include>WEB-INF/web.xml</include>
-                  </includes>
-                </resource>
-              </webResources>
-            </configuration>
-            <executions>
-              <execution>
-                <phase>prepare-package</phase>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-<argLine>-Ddspace.configuration="${default.dspace.dir}/config/dspace.cfg"</argLine>
-            </configuration>
-          </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <archiveClasses>false</archiveClasses>
+                    <webResources>
+                        <resource>
+                            <filtering>true</filtering>
+                            <directory>${basedir}/src/main/webapp</directory>
+                            <includes>
+                                <include>WEB-INF/web.xml</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-Ddspace.configuration="${default.dspace.dir}/config/dspace.cfg"</argLine>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <profiles>
