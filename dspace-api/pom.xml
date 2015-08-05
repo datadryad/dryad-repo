@@ -60,18 +60,18 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <!--<argLine>-Ddspace.configuration="${default.dspace.dir}/config/dspace.cfg"</argLine>-->
-                    <excludes>
-                        <exclude>**/Abstract*</exclude>
-                        <!-- The MetadataSchemaTest fails randomly on Travis -->
-                        <exclude>org/dspace/content/MetadataSchemaTest.java</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-surefire-plugin</artifactId>-->
+                <!--<configuration>-->
+                    <!--&lt;!&ndash;<argLine>-Ddspace.configuration="${default.dspace.dir}/config/dspace.cfg"</argLine>&ndash;&gt;-->
+                    <!--<excludes>-->
+                        <!--<exclude>**/Abstract*</exclude>-->
+                        <!--&lt;!&ndash; The MetadataSchemaTest fails randomly on Travis &ndash;&gt;-->
+                        <!--<exclude>org/dspace/content/MetadataSchemaTest.java</exclude>-->
+                    <!--</excludes>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
