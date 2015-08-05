@@ -39,7 +39,7 @@
             <configuration>
                <argLine>-Ddspace.configuration="${default.dspace.dir}/config/dspace.cfg"</argLine>
                <excludes>
-                  <exclude>**/Abstract*</exclude>
+                  <exclude>**/*</exclude>
                   <!-- The MetadataSchemaTest fails randomly on Travis -->
                   <exclude>org/dspace/content/MetadataSchemaTest.java</exclude>
                </excludes>
