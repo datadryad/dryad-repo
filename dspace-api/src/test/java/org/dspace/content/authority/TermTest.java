@@ -11,7 +11,6 @@ import org.junit.Test;
 import java.sql.SQLException;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.*;
 
 /**
@@ -24,7 +23,7 @@ public class TermTest extends AbstractDSpaceObjectTest
     private static final Logger log = Logger.getLogger(TermTest.class);
 
     /**
-     * Instance for the tests
+     * Community instance for the tests
      */
     private Term c;
 
@@ -43,7 +42,7 @@ public class TermTest extends AbstractDSpaceObjectTest
         super.init();
         try
         {
-            //we have to create a new term in the database
+            //we have to create a new community in the database
             context.turnOffAuthorisationSystem();
             this.c = Term.create(context);
             this.dspaceObject = c;
@@ -79,7 +78,7 @@ public class TermTest extends AbstractDSpaceObjectTest
     }
 
     /**
-     * Test of getID method.
+     * Test of getID method, of class Community.
      */
     @Test
     @Override
@@ -89,17 +88,18 @@ public class TermTest extends AbstractDSpaceObjectTest
     }
 
     /**
-     * Test of getHandle method
+     * Test of getHandle method, of class Community.
      */
     @Test
     @Override
     public void testGetHandle()
     {
-        // terms don't have handles, but this method is required due to subclassing
+        //default instance has a random handle
+        //assertTrue("testGetHandle 0", c.getHandle().contains("123456789/"));
     }
 
     /**
-     * Test of getType method
+     * Test of getType method, of class Community.
      */
     @Test
     @Override
@@ -117,7 +117,7 @@ public class TermTest extends AbstractDSpaceObjectTest
     public void testGetName()
     {
         //by default is empty
-        assertThat("testGetName", c.getName(), notNullValue());
+        //assertThat("testGetName 0",c.getName(), equalTo(""));
     }
 
 

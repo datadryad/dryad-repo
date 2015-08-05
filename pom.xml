@@ -36,25 +36,27 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <!-- tests whose name starts by Abstract will be ignored -->
             <configuration>
-	        <excludes>
-	            <exclude>**/Abstract*</exclude>
-	            <!-- The MetadataSchemaTest fails randomly on Travis -->
-	            <exclude>org/dspace/content/MetadataSchemaTest.java</exclude>
-	        </excludes>
-                <!-- required when running JMockit under Java 1.5 -->
-                <argLine>-javaagent:"${settings.localRepository}"/org/dspace/dependencies/jmockit/dspace-jmockit/0.999.4/dspace-jmockit-0.999.4.jar</argLine>
+               <argLine>-Ddspace.configuration="${default.dspace.dir}/config/dspace.cfg"</argLine>
+               <!-- required when running JMockit under Java 1.5 -->
+               <argLine>-javaagent:"${settings.localRepository}"/org/dspace/dependencies/jmockit/dspace-jmockit/0.999.4/dspace-jmockit-0.999.4.jar</argLine>
             </configuration>
          </plugin>
          <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <!-- We'd rather this be an open-ended range of versions.
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <!-- We'd rather this be an open-ended range of versions.
                      But, because of a Maven bug, we must force a specific version:
                      http://jira.codehaus.org/browse/MNG-2742
                      Once the bug is fixed, we should put open-ended range in dspace-pom -->
-                <version>2.1.1</version>
+            <version>2.1.1</version>
+            <configuration>
+               <webResources>
+                  <resource>
+                     <filtering>true</filtering>
+                  </resource>
+               </webResources>
+            </configuration>
          </plugin>
       </plugins>
    </build>

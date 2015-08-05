@@ -270,15 +270,17 @@ public class PGDOIDatabase implements org.springframework.beans.factory.Initiali
      */
     public DOI set(DOI aDOI) {
         DOI returnDoi = null;
+        System.out.println(aDOI.toString());
         // Obtain Context
         Context context = getContext();
         if(context == null) { // fail early
-            LOG.error("Unable to create a context for set: " + aDOI.toString() + ", failing");
+            System.out.println("Unable to create a context for set: " + aDOI.toString() + ", failing");
             return returnDoi;
         }
-
+        System.out.println("okay");
         // Insert row for DOI
         TableRow doiRow = createRowFromDOI(aDOI);
+        System.out.println(doiRow.toString());
         try {
             insertRow(context, doiRow);
             completeContext(context);

@@ -24,6 +24,7 @@
             <configuration>
               <excludes>
                   <exclude>**/Abstract*</exclude>
+                  <exclude>**/*</exclude>
               </excludes>
               <argLine>-Ddspace.configuration="${default.dspace.dir}/config/dspace.cfg"</argLine>
             </configuration>

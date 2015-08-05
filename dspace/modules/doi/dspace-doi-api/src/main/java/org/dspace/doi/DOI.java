@@ -156,7 +156,7 @@ public class DOI {
 		     return new URL(external);
 		}
 		catch (MalformedURLException details) {
-			throw new RuntimeException(details); // shouldn't happen
+			throw new RuntimeException("couldn't make " + external + " !!! ", details); // shouldn't happen
 		}
 
 	}

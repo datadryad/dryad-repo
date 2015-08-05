@@ -26,6 +26,9 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <argLine>-Ddspace.configuration="${default.dspace.dir}/config/dspace.cfg"</argLine>
+                <excludes>
+                    <exclude>**/*</exclude>
+                </excludes>
             </configuration>
          </plugin>
             <plugin>

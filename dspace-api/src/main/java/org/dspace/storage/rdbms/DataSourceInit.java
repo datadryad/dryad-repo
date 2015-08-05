@@ -39,7 +39,7 @@ public class DataSourceInit {
                     .getProperty("db.driver"));
             Driver basicDriver = (Driver) driverClass.newInstance();
             DriverManager.registerDriver(basicDriver);
-
+            System.out.println ("looking for a datasource at " + ConfigurationManager.getProperty("db.driver") + "," + ConfigurationManager.getProperty("db.url") +  "," + ConfigurationManager.getProperty("db.username") +  "," + ConfigurationManager.getProperty("db.password"));
             // Read pool configuration parameter or use defaults
             // Note we check to see if property is null; getIntProperty returns
             // '0' if the property is not set OR if it is actually set to zero.
