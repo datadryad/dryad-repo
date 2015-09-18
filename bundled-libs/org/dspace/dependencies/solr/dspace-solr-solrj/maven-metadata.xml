@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.dspace.dependencies.solr</groupId>
+  <artifactId>dspace-solr-solrj</artifactId>
+  <versioning>
+    <versions>
+      <version>1.4.0.1-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20150918044202</lastUpdated>
+  </versioning>
+</metadata>
