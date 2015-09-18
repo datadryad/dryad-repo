@@ -54,7 +54,7 @@
                      But, because of a Maven bug, we must force a specific version:
                      http://jira.codehaus.org/browse/MNG-2742
                      Once the bug is fixed, we should put open-ended range in dspace-pom -->
-                <version>2.1.1</version>
+                <version>2.6</version>
          </plugin>
       </plugins>
    </build>
