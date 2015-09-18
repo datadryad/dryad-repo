@@ -132,7 +132,7 @@
                               <descriptorRef>src-release</descriptorRef>
                            </descriptorRefs>
                            <tarLongFileMode>gnu</tarLongFileMode>
-                           <finalName>dspace-${pom.version}</finalName>
+                           <finalName>dspace-${project.version}</finalName>
                         </configuration>
                         <phase>package</phase>
                         <goals>

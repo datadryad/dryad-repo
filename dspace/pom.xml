@@ -843,12 +843,12 @@
 	<dependency>
 	  <groupId>org.dspace.modules</groupId>
 	  <artifactId>bagit-api</artifactId>
-      <version>${pom.version}</version>
+      <version>${project.version}</version>
 	</dependency>
 	<dependency>
 	  <groupId>org.dspace.modules</groupId>
 	  <artifactId>doi-service</artifactId>
-	  <version>${pom.version}</version>
+	  <version>${project.version}</version>
 	  <exclusions>
 	    <exclusion>
 	      <artifactId>ehcache</artifactId>
