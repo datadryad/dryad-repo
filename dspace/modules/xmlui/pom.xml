@@ -199,7 +199,13 @@
          <version>${project.version}</version>
       </dependency>
 
-      <dependency>
+       <dependency>
+           <groupId>org.dspace</groupId>
+           <artifactId>dspace-stats</artifactId>
+           <version>${project.version}</version>
+       </dependency>
+
+       <dependency>
          <groupId>org.dspace.modules</groupId>
          <artifactId>bagit-api</artifactId>
           <version>${project.version}</version>

@@ -79,11 +79,6 @@
 
         <dependency>
             <groupId>org.dspace</groupId>
-            <artifactId>dspace-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.dspace</groupId>
             <artifactId>dspace-xmlui-api</artifactId>
             <exclusions>
                 <exclusion>
@@ -103,6 +98,13 @@
             <artifactId>api</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <!-- Force dependency on dspace-api to be evaluated -after- replacement module -->
+        <dependency>
+            <groupId>org.dspace</groupId>
+            <artifactId>dspace-api</artifactId>
+        </dependency>
+
         <!-- DSpace XMLUI Languages -->
         <dependency>
             <groupId>org.dspace</groupId>
