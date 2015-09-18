@@ -71,25 +71,25 @@
                <dependency>
                    <groupId>org.dspace.modules</groupId>
                    <artifactId>api</artifactId>
-                   <version>${pom.version}</version>
+                   <version>${project.version}</version>
                </dependency>
 
                <dependency>
                    <groupId>org.dspace.modules</groupId>
                    <artifactId>identifier-services</artifactId>
-                   <version>${pom.version}</version>
+                   <version>${project.version}</version>
                </dependency>
 
                <dependency>
                    <groupId>org.dspace.modules</groupId>
                    <artifactId>versioning-api</artifactId>
-                   <version>${pom.version}</version>
+                   <version>${project.version}</version>
                </dependency>
 
                <dependency>
                    <groupId>org.dspace.modules</groupId>
                    <artifactId>doi-service</artifactId>
-                   <version>${pom.version}</version>
+                   <version>${project.version}</version>
                </dependency>
 
                <dependency>
@@ -97,20 +97,20 @@
                    <artifactId>versioning-webapp</artifactId>
                    <type>jar</type>
                    <classifier>classes</classifier>
-                   <version>${pom.version}</version>
+                   <version>${project.version}</version>
                </dependency>
 
                <dependency>
                    <groupId>org.dspace.modules</groupId>
                    <artifactId>versioning-webapp</artifactId>
-                   <version>${pom.version}</version>
+                   <version>${project.version}</version>
                    <type>war</type>
                </dependency>
 
                <dependency>
                    <groupId>org.dspace.modules</groupId>
                    <artifactId>payment-api</artifactId>
-                   <version>${pom.version}</version>
+                   <version>${project.version}</version>
                </dependency>
 
                <dependency>
@@ -118,13 +118,13 @@
                    <artifactId>payment-webapp</artifactId>
                    <type>jar</type>
                    <classifier>classes</classifier>
-                   <version>${pom.version}</version>
+                   <version>${project.version}</version>
                </dependency>
 
                <dependency>
                    <groupId>org.dspace.modules</groupId>
                    <artifactId>payment-webapp</artifactId>
-                   <version>${pom.version}</version>
+                   <version>${project.version}</version>
                    <type>war</type>
                </dependency>
 
@@ -133,13 +133,13 @@
                    <artifactId>dryad-widgets-webapp</artifactId>
                    <type>jar</type>
                    <classifier>classes</classifier>
-                   <version>${pom.version}</version>
+                   <version>${project.version}</version>
                </dependency>
 
                <dependency>
                    <groupId>org.dspace.modules</groupId>
                    <artifactId>dryad-widgets-webapp</artifactId>
-                   <version>${pom.version}</version>
+                   <version>${project.version}</version>
                    <type>war</type>
                </dependency>
 
