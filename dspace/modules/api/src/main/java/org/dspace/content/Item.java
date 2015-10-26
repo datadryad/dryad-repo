@@ -1690,9 +1690,6 @@ public class Item extends DSpaceObject
         }
         updateMetadata();
 
-        Event newEvent = new Event(Event.MODIFY_METADATA, Constants.ITEM, internalItemId, getDetails());
-        ourContext.addEvent(newEvent);
-        log.debug ("update issued an event " + newEvent.toString());
         clearDetails();
 
         updateLastModified();
@@ -1701,6 +1698,9 @@ public class Item extends DSpaceObject
     public void updateMetadata() {
         if (dublinCore.metadataChanged) {
             modified = dublinCore.updateMetadata();
+            Event newEvent = new Event(Event.MODIFY_METADATA, Constants.ITEM, internalItemId, getDetails());
+            ourContext.addEvent(newEvent);
+            log.debug ("update issued an event " + newEvent.toString());
         }
     }
 
