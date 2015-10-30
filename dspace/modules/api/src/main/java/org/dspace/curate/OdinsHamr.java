@@ -141,6 +141,7 @@ public class OdinsHamr extends AbstractCurationTask {
         } finally {
             try {
                 if (context != null) {
+                    context.restoreAuthSystemState();
                     context.complete();
                 }
             } catch (SQLException e) {
@@ -234,7 +235,6 @@ public class OdinsHamr extends AbstractCurationTask {
                     item.addMetadata("dc", "contributor", "author", null, auth.value, auth.authority, auth.confidence);
                 }
                 item.update();
-                context.commit();
             }
             log.info(handle + " done.");
         } catch (Exception e) {
