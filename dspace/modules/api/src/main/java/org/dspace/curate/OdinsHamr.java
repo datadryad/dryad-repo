@@ -95,52 +95,50 @@ public class OdinsHamr extends AbstractCurationTask {
         try {
             context = new Context();
             context.turnOffAuthorisationSystem();
+
+            if (dso.getType() == Constants.COLLECTION) {
+                // output headers for the CSV file that will be created by processing all items in this collection
+                report("handle, itemDOI, articleDOI, orcidID, orcidName, dspaceName, hamrScore");
+            } else if (dso.getType() == Constants.ITEM) {
+                Item item = (Item) dso;
+                String handle = item.getHandle();
+                log.info("handle = " + handle);
+
+                if (handle == null) {
+                    // this item is still in workflow - no handle assigned
+                    context.abort();
+                    return Curator.CURATE_SKIP;
+                }
+                // article DOI
+                String articleDOI = "";
+                DCValue[] vals = item.getMetadata("dc.relation.isreferencedby");
+                if (vals.length == 0) {
+                    log.debug("Object has no articleDOI (dc.relation.isreferencedby) " + handle);
+                    articleDOI = "";
+                } else {
+                    articleDOI = vals[0].value;
+                }
+                log.debug("articleDOI = " + articleDOI);
+
+                int result = compareItemToORCID(item, articleDOI);
+                if (result != Curator.CURATE_SUCCESS) {
+                    return result;
+                }
+
+                // process this item's files too
+                try {
+                    Item[] files = DryadWorkflowUtils.getDataFiles(context, item);
+                    for (int i = 0; i < files.length; i++) {
+                        result = compareItemToORCID(files[i], articleDOI);
+                    }
+                } catch (SQLException e) {
+                    log.error("database error on files for package " + handle, e);
+                }
+            }
         } catch (SQLException e) {
             log.fatal("Unable to open database connection", e);
             return Curator.CURATE_FAIL;
-        }
-
-        if (dso.getType() == Constants.COLLECTION) {
-            // output headers for the CSV file that will be created by processing all items in this collection
-            report("handle, itemDOI, articleDOI, orcidID, orcidName, dspaceName, hamrScore");
-        } else if (dso.getType() == Constants.ITEM) {
-            Item item = (Item) dso;
-            String handle = item.getHandle();
-            log.info("handle = " + handle);
-
-            if (handle == null) {
-                // this item is still in workflow - no handle assigned
-                context.abort();
-                return Curator.CURATE_SKIP;
-            }
-            // article DOI
-            String articleDOI = "";
-            DCValue[] vals = item.getMetadata("dc.relation.isreferencedby");
-            if (vals.length == 0) {
-                log.debug("Object has no articleDOI (dc.relation.isreferencedby) " + handle);
-                articleDOI = "";
-            } else {
-                articleDOI = vals[0].value;
-            }
-            log.debug("articleDOI = " + articleDOI);
-
-            int result = compareItemToORCID(item, articleDOI);
-            if (result != Curator.CURATE_SUCCESS) {
-                return result;
-            }
-
-            // process this item's files too
-            try {
-                Item[] files = DryadWorkflowUtils.getDataFiles(context, item);
-                for (int i = 0; i < files.length; i++) {
-                    result = compareItemToORCID(files[i], articleDOI);
-                }
-            } catch (SQLException e) {
-                log.error("database error on files for package " + handle, e);
-            }
-
-        }
-        finally {
+        } finally {
             try {
                 if (context != null) {
                     context.complete();
