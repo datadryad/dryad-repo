@@ -228,12 +228,13 @@ public class OdinsHamr extends AbstractCurationTask {
             }
 
             if (modified == true) {
-                report ("updating item " + item.getID());
+                report("updating item " + item.getID() + ": " + handle);
                 item.clearMetadata("dc", "contributor", "author", Item.ANY);
                 for (DCValue auth : authors) {
                     item.addMetadata("dc", "contributor", "author", null, auth.value, auth.authority, auth.confidence);
                 }
                 item.update();
+                context.commit();
             }
             log.info(handle + " done.");
         } catch (Exception e) {
