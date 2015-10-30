@@ -125,15 +125,15 @@ public class OdinsHamr extends AbstractCurationTask {
                     return result;
                 }
 
-                // process this item's files too
-                try {
-                    Item[] files = DryadWorkflowUtils.getDataFiles(context, item);
-                    for (int i = 0; i < files.length; i++) {
-                        result = compareItemToORCID(files[i], articleDOI);
-                    }
-                } catch (SQLException e) {
-                    log.error("database error on files for package " + handle, e);
-                }
+//                // process this item's files too
+//                try {
+//                    Item[] files = DryadWorkflowUtils.getDataFiles(context, item);
+//                    for (int i = 0; i < files.length; i++) {
+//                        result = compareItemToORCID(files[i], articleDOI);
+//                    }
+//                } catch (SQLException e) {
+//                    log.error("database error on files for package " + handle, e);
+//                }
             }
         } catch (SQLException e) {
             log.fatal("Unable to open database connection", e);
