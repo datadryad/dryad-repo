@@ -202,6 +202,7 @@ public class OdinsHamr extends AbstractCurationTask {
             Iterator dspaceBiosIterator = dspaceBios.iterator();
 
             List<DCValue> authors = new ArrayList<DCValue>();
+            Boolean modified = false;
 
             for (DCValue dspaceBio : dspaceBios) {
                 DCValue authorMetadata = dspaceBio.copy();
@@ -217,8 +218,8 @@ public class OdinsHamr extends AbstractCurationTask {
                         report(handle + ", " + itemDOI + ", " + articleDOI + ", " + mappedOrcidEntry.getOrcid() + ", \"" + getName(mappedOrcidEntry) + "\", \"" + getName(mappedDSpaceEntry) + "\", " + hamrScore);
 
                         // if hamrScore is greater or = to 0.7, then add this to new metadata:
-
                         if (hamrScore(mappedDSpaceEntry, mappedOrcidEntry) >= 0.7) {
+                            modified = true;
                             authorMetadata.authority = AuthorityValueGenerator.GENERATE + "orcid" + AuthorityValueGenerator.SPLIT + mappedOrcidEntry.getOrcid();
                             authorMetadata.confidence = Choices.CF_UNCERTAIN;
                             item.addMetadata("dc", "description", "provenance", null, "ORCID authority added to " + getName(mappedDSpaceEntry) + " with a confidence of CF_UNCERTAIN: OdinsHamr match score " + hamrScore + " on " + DCDate.getCurrent().toString() + " (GMT)");
@@ -228,11 +229,13 @@ public class OdinsHamr extends AbstractCurationTask {
                 }
             }
 
-            item.clearMetadata("dc","contributor","author",Item.ANY);
-            for (DCValue auth : authors) {
-                item.addMetadata("dc", "contributor", "author", null, auth.value, auth.authority, auth.confidence);
+            if (modified == true) {
+                item.clearMetadata("dc", "contributor", "author", Item.ANY);
+                for (DCValue auth : authors) {
+                    item.addMetadata("dc", "contributor", "author", null, auth.value, auth.authority, auth.confidence);
+                }
+                item.update();
             }
-            item.update();
             log.info(handle + " done.");
         } catch (Exception e) {
             log.fatal("Skipping -- Exception in processing " + handle, e);
