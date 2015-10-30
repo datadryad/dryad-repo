@@ -203,8 +203,7 @@ public class OdinsHamr extends AbstractCurationTask {
 
             List<DCValue> authors = new ArrayList<DCValue>();
 
-            while(dspaceBiosIterator.hasNext()) {
-                DCValue dspaceBio = (DCValue) dspaceBiosIterator.next();
+            for (DCValue dspaceBio : dspaceBios) {
                 DCValue authorMetadata = dspaceBio.copy();
                 authors.add(authorMetadata);
 
