@@ -227,7 +227,7 @@ public class OdinsHamr extends AbstractCurationTask {
                 }
             }
 
-            item.clearMetadata("dc","contributor","author",null);
+            item.clearMetadata("dc","contributor","author",Item.ANY);
             for (DCValue auth : authors) {
                 item.addMetadata("dc", "contributor", "author", null, auth.value, auth.authority, auth.confidence);
             }
