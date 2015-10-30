@@ -207,21 +207,24 @@ public class OdinsHamr extends AbstractCurationTask {
                 DCValue authorMetadata = dspaceBio.copy();
                 authors.add(authorMetadata);
 
-                // if there was a hamr match, update this particular author with Orcid as authority.
-                if (mappedNames.containsKey(dspaceBio)) {
-                    Bio mappedOrcidEntry = (Bio)mappedNames.get(dspaceBio);
-                    Bio mappedDSpaceEntry = createBio("", dspaceBio.value);
-                    double hamrScore = hamrScore(mappedDSpaceEntry,mappedOrcidEntry);
-
-                    // if hamrScore is greater or = to 0.7, then add this to new metadata:
-
-                    if (hamrScore(mappedDSpaceEntry,mappedOrcidEntry) >= 0.7) {
-                        authorMetadata.authority = AuthorityValueGenerator.GENERATE + "orcid" + AuthorityValueGenerator.SPLIT + mappedOrcidEntry.getOrcid();
-                        authorMetadata.confidence = Choices.CF_UNCERTAIN;
-                        item.addMetadata("dc", "description", "provenance", null, "ORCID authority added to " + getName(mappedDSpaceEntry) + " with a confidence of CF_UNCERTAIN: OdinsHamr match score " + hamrScore + " on " + DCDate.getCurrent().toString() + " (GMT)");
+                // if this value has a confidence value of less than CF_UNCERTAIN, try using hamr
+                if (dspaceBio.confidence < Choices.CF_UNCERTAIN) {
+                    // if there was a hamr match, update this particular author with Orcid as authority.
+                    if (mappedNames.containsKey(dspaceBio)) {
+                        Bio mappedOrcidEntry = (Bio) mappedNames.get(dspaceBio);
+                        Bio mappedDSpaceEntry = createBio("", dspaceBio.value);
+                        double hamrScore = hamrScore(mappedDSpaceEntry, mappedOrcidEntry);
                         report(handle + ", " + itemDOI + ", " + articleDOI + ", " + mappedOrcidEntry.getOrcid() + ", \"" + getName(mappedOrcidEntry) + "\", \"" + getName(mappedDSpaceEntry) + "\", " + hamrScore);
+
+                        // if hamrScore is greater or = to 0.7, then add this to new metadata:
+
+                        if (hamrScore(mappedDSpaceEntry, mappedOrcidEntry) >= 0.7) {
+                            authorMetadata.authority = AuthorityValueGenerator.GENERATE + "orcid" + AuthorityValueGenerator.SPLIT + mappedOrcidEntry.getOrcid();
+                            authorMetadata.confidence = Choices.CF_UNCERTAIN;
+                            item.addMetadata("dc", "description", "provenance", null, "ORCID authority added to " + getName(mappedDSpaceEntry) + " with a confidence of CF_UNCERTAIN: OdinsHamr match score " + hamrScore + " on " + DCDate.getCurrent().toString() + " (GMT)");
+                        }
+                        setResult("Last processed item = " + handle + " -- " + itemDOI);
                     }
-                    setResult("Last processed item = " + handle + " -- " + itemDOI);
                 }
             }
 
