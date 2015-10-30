@@ -139,11 +139,14 @@ public class OdinsHamr extends AbstractCurationTask {
                 log.error("database error on files for package " + handle, e);
             }
 
+        }
+        finally {
             try {
-                context.restoreAuthSystemState();
-                context.complete();
+                if (context != null) {
+                    context.complete();
+                }
             } catch (SQLException e) {
-                log.fatal("Unable to close database connection", e);
+                context.abort();
             }
         }
         log.info("ODIN's Hamr complete");
@@ -159,7 +162,6 @@ public class OdinsHamr extends AbstractCurationTask {
             if (vals.length == 0) {
                 setResult("Object has no dc.identifier available " + handle);
                 log.error("Skipping -- no dc.identifier available for " + handle);
-                context.abort();
                 return Curator.CURATE_SKIP;
             } else {
                 for(int i = 0; i < vals.length; i++) {
@@ -236,7 +238,6 @@ public class OdinsHamr extends AbstractCurationTask {
             setResult("Object has a fatal error: " + handle + "\n" + e.getMessage());
             report("Object has a fatal error: " + handle + "\n" + e.getMessage());
 
-            context.abort();
             return Curator.CURATE_SKIP;
         }
         return Curator.CURATE_SUCCESS;
