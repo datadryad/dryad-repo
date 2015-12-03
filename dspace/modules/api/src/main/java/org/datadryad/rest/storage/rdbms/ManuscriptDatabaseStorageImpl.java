@@ -226,11 +226,14 @@ public class ManuscriptDatabaseStorageImpl extends AbstractManuscriptStorage {
             TableRow existingRow = DatabaseManager.querySingleTable(context, MANUSCRIPT_TABLE, query, msid, organizationId, ACTIVE_TRUE);
 
             if (existingRow != null) {
-                String json_data = writer.writeValueAsString(manuscript);
-                existingRow.setColumn(COLUMN_JSON_DATA, json_data);
-                existingRow.setColumn(COLUMN_STATUS, manuscript.getStatus());
-                existingRow.setColumn(COLUMN_DATE_ADDED, new Date());
-                DatabaseManager.update(context, existingRow);
+                // only update if the new manuscript can override the status of the existing one.
+                if (manuscript.canOverrideStatusOf(manuscriptFromTableRow(existingRow))) {
+                    String json_data = writer.writeValueAsString(manuscript);
+                    existingRow.setColumn(COLUMN_JSON_DATA, json_data);
+                    existingRow.setColumn(COLUMN_STATUS, manuscript.getStatus());
+                    existingRow.setColumn(COLUMN_DATE_ADDED, new Date());
+                    DatabaseManager.update(context, existingRow);
+                }
             }
         }
     }
