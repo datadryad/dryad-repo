@@ -170,6 +170,26 @@ public class Manuscript {
         return PUBLISHED_STATUSES.contains(status);
     }
 
+    public Boolean canOverrideStatusOf(Manuscript ms) {
+        // these are the most terminal statuses: nothing supersedes them.
+        if (ms.isPublished() || ms.isRejected()) {
+            return false;
+        }
+
+        if (this.isPublished() || this.isRejected()) {
+            return true;
+        }
+
+        if (ms.isSubmitted()) {
+            // this is the lowest status, of course we can override it.
+            return true;
+        }
+
+        // at this point, ms can only be Accepted and this can only be Submitted or Accepted.
+        // In either case, this cannot override ms.
+        return false;
+    }
+
     @JsonIgnore
     public Boolean isValid() {
         // Required fields are: manuscriptID, status, authors (though author identifiers are optional), and title. All other fields are optional.
