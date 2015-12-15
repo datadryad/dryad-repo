@@ -340,7 +340,8 @@ public class PaymentSystemImpl implements PaymentSystemService {
                     {
                         try{
                             //only take the first journal
-                            DCValue[] values = item.getMetadata("prism.publicationName");
+                            //DCValue[] values = item.getMetadata("prism.publicationName");
+                            DCValue[] values = item.getMetadata("dryad.journalCode");
                             if(values!=null && values.length > 0){
                                 journal=values[0].value;
                             }
@@ -366,7 +367,8 @@ public class PaymentSystemImpl implements PaymentSystemService {
             if(item!=null)
             {
                 try{
-                    DCValue[] values = item.getMetadata("prism.publicationName");
+                    //DCValue[] values = item.getMetadata("prism.publicationName");
+                    DCValue[] values = item.getMetadata("dryad.journalCode");
                     if(values!=null && values.length > 0){
                         journal=values[0].value;
                     }
@@ -800,7 +802,8 @@ public class PaymentSystemImpl implements PaymentSystemService {
     private void generatePayer(Context context,org.dspace.app.xmlui.wing.element.List info,ShoppingCart shoppingCart,Item item) throws WingException,SQLException{
         info.addLabel(T_Payer);
         String payerName = this.getPayer(context, shoppingCart, null);
-        DCValue[] values= item.getMetadata("prism.publicationName");
+        //DCValue[] values= item.getMetadata("prism.publicationName");
+        DCValue[] values = item.getMetadata("dryad.journalCode");
         if(values!=null&&values.length>0)
         {
             //on the first page don't generate the payer name, wait until user choose country or journal
