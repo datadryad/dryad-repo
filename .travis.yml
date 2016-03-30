@@ -21,7 +21,6 @@ before_install:
 - export PGPORT=5432
 
 install:
-- ./test/bin/travis-install-missing-poms.sh
 - ./test/bin/travis-install-dryad-dir.sh
 - ./test/bin/travis-broken-tests.sh
 script: mvn package -DskipTests=false -Ddefault.dspace.dir=$DSPACE_DIR

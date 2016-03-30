@@ -47,6 +47,7 @@
             <plugin>
                 <groupId>org.apache.cocoon</groupId>
                 <artifactId>cocoon-maven-plugin</artifactId>
+                <version>1.0.2</version>
                 <executions>
                     <execution>
                         <id>prepare</id>
@@ -61,6 +62,7 @@
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-war-plugin</artifactId>
+               <version>2.6</version>
                <configuration>
                   <archiveClasses>false</archiveClasses>
                   <attachClasses>true</attachClasses>

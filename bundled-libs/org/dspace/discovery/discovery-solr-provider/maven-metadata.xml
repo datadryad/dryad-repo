@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.dspace.discovery</groupId>
+  <artifactId>discovery-solr-provider</artifactId>
+  <versioning>
+    <versions>
+      <version>0.9.4-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20150918044130</lastUpdated>
+  </versioning>
+</metadata>

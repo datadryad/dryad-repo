@@ -28,6 +28,7 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-war-plugin</artifactId>
+            <version>2.6</version>
             <executions>
                <execution>
                   <phase>prepare-package</phase>
@@ -100,4 +101,11 @@
        <version>1.5.6</version>
     </dependency>
    </dependencies>
+
+   <repositories>
+       <repository>
+           <id>bundled-libs</id>
+           <url>file:${project.basedir}/../../../bundled-libs</url>
+       </repository>
+   </repositories>
 </project>
