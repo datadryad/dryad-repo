@@ -62,6 +62,15 @@
     </description>
   </context-param>
 
+   <!-- new ConfigurationService initialization for dspace.dir -->
+    <context-param>
+      <param-name>dspace.dir</param-name>
+      <param-value>${dspace.dir}</param-value>
+      <description>
+        The location of the main DSpace configuration file
+	</description>
+	</context-param>
+
   <context-param>
     <param-name>sword-server-class</param-name>
     <param-value>org.dspace.sword.DSpaceSWORDServer</param-value>

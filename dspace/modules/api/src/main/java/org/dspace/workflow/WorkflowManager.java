@@ -82,6 +82,29 @@ public class WorkflowManager {
         return wfi;
     }
 
+    /* The following is a dummy definition - it doesn't do what it
+     * says it does.  A correct version of this method is present in
+     * newer versions of DSpace.  Dryad doesn't need it; it only needs
+     * for it to be defined, because it's referenced in unused parts
+     * of the SWORD package. */
+
+    public static WorkflowItem startWithoutNotify(Context c, WorkspaceItem wsi)
+            throws SQLException, AuthorizeException, IOException
+    {
+        // make a hash table entry with item ID for no notify
+        // notify code checks no notify hash for item id
+        // noEMail.put(Integer.valueOf(wsi.getItem().getID()), Boolean.TRUE);
+
+	try {
+	    return start(c, wsi);
+	}
+	catch (SQLException e) { throw e; }
+	catch (AuthorizeException e) { throw e; }
+	catch (IOException e) { throw e; }
+	catch (RuntimeException e) { throw e; }
+	catch (Exception e) { throw new RuntimeException(e); }
+    }
+
     private static void activateFirstStep(Context context, Workflow wf, Step firstStep, WorkflowItem wfi) throws AuthorizeException, IOException, SQLException, TransformerException, WorkflowException, SAXException, WorkflowConfigurationException, ParserConfigurationException {
         WorkflowActionConfig firstActionConfig = firstStep.getUserSelectionMethod();
         firstActionConfig.getProcessingAction().activate(context, wfi);

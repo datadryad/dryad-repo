@@ -14,6 +14,19 @@
         <version>1.7.3-SNAPSHOT</version>
 	</parent>
 
+        <!-- copied from api-stats/pom.xml -->
+        <build>
+          <plugins>
+             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                  <argLine>-Ddspace.configuration="${default.dspace.dir}/config/dspace.cfg"</argLine>
+                </configuration>
+             </plugin>
+          </plugins>
+        </build>
+
 	<!--
 
 		mvn install:install-file -Dfile=target/bagit-3.6.jar
@@ -46,6 +59,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.dspace.modules</groupId>
+			<artifactId>api</artifactId>
+        		<version>1.7.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>org.dspace</groupId>
 			<artifactId>dspace-api</artifactId>
 		</dependency>
@@ -74,6 +92,28 @@
 			<artifactId>jersey-multipart</artifactId>
 			<version>1.4</version>
 		</dependency>
+                <dependency>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                    <version>2.4</version>
+                    <scope>provided</scope>
+                </dependency>
+
+		<!-- copied from dspace-doi-api -->
+               <dependency>
+                   <groupId>log4j</groupId>
+                   <artifactId>log4j</artifactId>
+               </dependency>
+
+               <!-- copied from api-stats -->
+               <dependency>
+                   <groupId>org.dspace.modules</groupId>
+                   <artifactId>api</artifactId>
+                   <version>${project.version}</version>
+                   <type>test-jar</type>
+                   <scope>test</scope>
+               </dependency>
+
 	</dependencies>
 
 </project>

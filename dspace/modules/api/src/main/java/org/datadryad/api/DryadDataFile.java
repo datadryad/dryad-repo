@@ -71,6 +71,26 @@ public class DryadDataFile extends DryadObject {
         return dataFile;
     }
 
+    public static DryadDataFile createInWorkspace(Context context, DryadDataPackage dataPackage) throws SQLException {
+        Collection collection = DryadDataFile.getCollection(context);
+        DryadDataFile dataFile = null;
+        try {
+            WorkspaceItem wsi = WorkspaceItem.create(context, collection, true);
+            Item item = wsi.getItem();
+            dataFile = new DryadDataFile(item);
+            dataFile.setIsPartOf(dataPackage);
+            dataFile.createIdentifier(context);
+            dataPackage.setHasPart(dataFile);
+        } catch (IdentifierException ex) {
+            log.error("Identifier exception creating a Data File", ex);
+        } catch (AuthorizeException ex) {
+            log.error("Authorize exception creating a Data File", ex);
+        } catch (IOException ex) {
+            log.error("IO exception creating a Data File", ex);
+        }
+        return dataFile;
+    }
+
     static DryadDataPackage getDataPackageContainingFile(Context context, DryadDataFile dataFile) throws SQLException {
         String fileIdentifier = dataFile.getIdentifier();
         DryadDataPackage dataPackage = null;

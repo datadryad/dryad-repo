@@ -64,6 +64,18 @@ public class DryadDataFileTest extends ContextUnitTest {
     }
 
     /**
+     * Test of createInWorkspace method, of class DryadDataFile.
+     */
+    @Test
+    public void testCreateInWorkspace() throws Exception {
+        log.info("createInWorkspace");
+        DryadDataPackage dataPackage = DryadDataPackage.createInWorkspace(context);
+        DryadDataFile result = DryadDataFile.create(context, dataPackage);
+        assertNotNull(result);
+        assertNotNull(result.getIdentifier());
+    }
+
+    /**
      * Test of parseDate method, of class DryadDataFile.
      */
     @Test

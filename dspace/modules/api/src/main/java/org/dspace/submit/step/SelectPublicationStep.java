@@ -265,7 +265,7 @@ public class SelectPublicationStep extends AbstractProcessingStep {
     /**
      Process a DOI entered by the submitter. Use the DOI metadata to initialize publication information.
      **/
-    private boolean processDOI(Context context, Item item, String identifier){
+    public static boolean processDOI(Context context, Item item, String identifier){
 
         // normalize and validate the identifier
         identifier = identifier.toLowerCase().trim();
@@ -343,7 +343,7 @@ public class SelectPublicationStep extends AbstractProcessingStep {
         return false;
     }
 
-    private Element retrieveXML(String urls) throws Exception{
+    private static Element retrieveXML(String urls) throws Exception{
         SAXBuilder builder = new SAXBuilder();
         org.jdom.Document doc = builder.build(urls);
         return doc.getRootElement();

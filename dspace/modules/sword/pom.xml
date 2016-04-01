@@ -111,6 +111,41 @@
    </profiles>
 
    <dependencies>
+      <!-- Dspace API -->
+      <dependency>
+         <groupId>org.dspace.modules</groupId>
+         <artifactId>api</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.dspace</groupId>
+         <artifactId>dspace-api</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+
+      <!-- Mark D suggested this one -->
+      <dependency>
+         <groupId>org.dspace.modules</groupId>
+         <artifactId>api-stats</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+
+      <!-- Need bagit -->
+      <dependency>
+         <groupId>org.dspace.modules</groupId>
+         <artifactId>bagit-api</artifactId>
+         <version>1.7.3-SNAPSHOT</version>
+      </dependency>
+
+      <!-- Need versioning-api ? -->
+
+      <!-- Need this due to spring configuration -->
+       <dependency>
+           <groupId>org.dspace.modules</groupId>
+           <artifactId>payment-api</artifactId>
+       </dependency>
+
       <dependency>
          <groupId>org.dspace</groupId>
          <artifactId>dspace-sword-webapp</artifactId>
@@ -120,10 +155,12 @@
          <groupId>org.dspace</groupId>
          <artifactId>dspace-sword-api</artifactId>
       </dependency>
+      <!-- 
       <dependency>
          <groupId>org.dspace</groupId>
          <artifactId>dspace-discovery-provider</artifactId>
       </dependency>
+ -->
       <dependency>
          <groupId>javax.servlet</groupId>
          <artifactId>servlet-api</artifactId>
