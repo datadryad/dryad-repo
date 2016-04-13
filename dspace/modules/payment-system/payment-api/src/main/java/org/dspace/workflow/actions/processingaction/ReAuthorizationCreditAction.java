@@ -7,8 +7,7 @@ import org.dspace.core.*;
 import org.dspace.paymentsystem.PaymentSystemService;
 import org.dspace.paymentsystem.ShoppingCart;
 import org.dspace.utils.DSpace;
-import org.dspace.workflow.Step;
-import org.dspace.workflow.WorkflowItem;
+import org.dspace.workflow.*;
 import org.dspace.workflow.actions.ActionResult;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +33,7 @@ public class ReAuthorizationCreditAction extends ProcessingAction  {
 
     @Override
     public ActionResult execute(Context c, WorkflowItem wfi, Step step, HttpServletRequest request) throws SQLException, AuthorizeException, IOException {
-
+        WorkflowManager.addProvenance(c, wfi, "ReAuthorizationCreditAction");
         try{
             Item item = wfi.getItem();
             PaymentSystemService paymentSystemService = new DSpace().getSingletonService(PaymentSystemService.class);

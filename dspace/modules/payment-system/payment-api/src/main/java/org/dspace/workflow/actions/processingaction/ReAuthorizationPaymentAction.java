@@ -37,14 +37,13 @@ public class ReAuthorizationPaymentAction extends ProcessingAction {
     @Override
     public void activate(Context c, WorkflowItem wfItem) {
         boolean test=true;
-        log.debug("here");
     }
 
     @Override
     public ActionResult execute(Context c, WorkflowItem wfi, Step step, HttpServletRequest request) throws SQLException, AuthorizeException, IOException {
 
         try{
-
+            WorkflowManager.addProvenance(c, wfi, "ReAuthorizationPaymentAction");
             return new ActionResult(ActionResult.TYPE.TYPE_OUTCOME, ActionResult.OUTCOME_COMPLETE);
 
 

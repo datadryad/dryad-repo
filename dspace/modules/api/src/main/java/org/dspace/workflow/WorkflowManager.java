@@ -654,4 +654,24 @@ public class WorkflowManager {
 
         return getEPersonName(e);
     }
+
+    public static void addProvenance(Context c, WorkflowItem wi, String message) throws SQLException, AuthorizeException {
+        EPerson ePerson = c.getCurrentUser();
+        Item myitem = wi.getItem();
+
+        // Get current date
+        String now = DCDate.getCurrent().toString();
+
+        // Here's what happened
+        String provDescription = "";
+        provDescription = "workflow state changed by " + getEPersonName(ePerson) + ", reason: "
+                + message + " on " + now + " (GMT) ";
+
+        // Add to item as a DC field
+        myitem.addMetadata(MetadataSchema.DC_SCHEMA, "description", "provenance", "en", provDescription);
+
+        myitem.update();
+
+    }
+
 }
