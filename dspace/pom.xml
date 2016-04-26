@@ -96,51 +96,6 @@
 			</modules>
 		</profile>
 
-		<!--
-           Builds OAI Gateway WAR for DSpace
-        -->
-		<profile>
-			<id>dspace-oai-api</id>
-			<activation>
-				<file>
-					<exists>../dspace-oai-api/pom.xml</exists>
-				</file>
-			</activation>
-			<modules>
-				<module>../dspace-oai-api</module>
-			</modules>
-		</profile>
-
-		<!--
-           Builds OAI Gateway WAR for DSpace
-        -->
-		<profile>
-			<id>dspace-oai-webapp</id>
-			<activation>
-				<file>
-					<exists>../dspace-oai-webapp/pom.xml</exists>
-				</file>
-			</activation>
-			<modules>
-				<module>../dspace-oai-webapp</module>
-			</modules>
-		</profile>
-
-		<!--
-           Builds OAI Gateway WAR for DSpace
-        -->
-		<profile>
-			<id>dspace-oai</id>
-			<activation>
-				<file>
-					<exists>../dspace-oai/pom.xml</exists>
-				</file>
-			</activation>
-			<modules>
-				<module>../dspace-oai</module>
-			</modules>
-		</profile>
-
         <!--
             Builds XOAI Gateway WAR for DSpace
          -->
