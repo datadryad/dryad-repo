@@ -25,10 +25,10 @@
 			TYPE="DSpace ITEM" PROFILE="DSpace METS SIP Profile 1.0"
 			xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd">
 			<xsl:attribute name="OBJID">
-				hdl:<xsl:value-of select="doc:metadata/doc:element[@name='others']/doc:field[@name='handle']/text()"></xsl:value-of>
+				<xsl:value-of select="string(doc:metadata/doc:element[@name='dc']/doc:element[@name='identifier']/doc:element[@name='none']/doc:element/doc:field)"></xsl:value-of>
 			</xsl:attribute>
 			<xsl:attribute name="ID">
-				DSpace_ITEM_<xsl:value-of select="translate(doc:metadata/doc:element[@name='others']/doc:field[@name='handle']/text(),'/','-')"></xsl:value-of>
+				DSpace_ITEM_<xsl:value-of select="translate(string(doc:metadata/doc:element[@name='dc']/doc:element[@name='identifier']/doc:element[@name='none']/doc:element/doc:field),'/','-')"></xsl:value-of>
 			</xsl:attribute>
 			<metsHdr>
 				<xsl:attribute name="CREATEDATE">
@@ -40,34 +40,34 @@
 			</metsHdr>
 			<dmdSec>
 				<xsl:attribute name="ID">
-					<xsl:value-of select="concat('DMD_', translate(doc:metadata/doc:element[@name='others']/doc:field[@name='handle']/text(), '/', '_'))" />
+					<xsl:value-of select="concat('DMD_', translate(string(doc:metadata/doc:element[@name='dc']/doc:element[@name='identifier']/doc:element[@name='none']/doc:element/doc:field), '/', '_'))" />
 				</xsl:attribute>
 				<mdWrap MDTYPE="MODS">
 					<xmlData xmlns:mods="http://www.loc.gov/mods/v3"
 						xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-1.xsd">
 						<mods:mods
 							xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-1.xsd">
-							<xsl:for-each select="doc:metadata/doc:element[@name='dc']/doc:element[@name='contributor']/doc:element">
-							<mods:name>
-								<mods:role>
-									<mods:roleTerm type="text"><xsl:value-of select="@name" /></mods:roleTerm>
-								</mods:role>
-								<mods:namePart><xsl:value-of select="doc:element/doc:field[@name='value']/text()" /></mods:namePart>
-							</mods:name>
+						    <xsl:for-each select="doc:metadata/doc:element[@name='dc']/doc:element[@name='contributor']/doc:element[@name='author']/doc:element/doc:field">
+    							<mods:name>
+    								<mods:role>
+    									<mods:roleTerm type="text">author</mods:roleTerm>
+    								</mods:role>
+    								<mods:namePart><xsl:value-of select="string(.)" /></mods:namePart>
+    							</mods:name>
 							</xsl:for-each>
 							<xsl:for-each select="doc:metadata/doc:element[@name='dc']/doc:element[@name='date']/doc:element[@name='accessioned']">
-							<mods:extension>
-								<mods:dateAccessioned encoding="iso8601">
-									<xsl:value-of select="doc:element/doc:field[@name='value']/text()" />
-								</mods:dateAccessioned>
-							</mods:extension>
+    							<mods:extension>
+    								<mods:dateAccessioned encoding="iso8601">
+    									<xsl:value-of select="doc:element/doc:field[@name='value']/text()" />
+    								</mods:dateAccessioned>
+    							</mods:extension>
 							</xsl:for-each>
 							<xsl:for-each select="doc:metadata/doc:element[@name='dc']/doc:element[@name='date']/doc:element[@name='available']">
-							<mods:extension>
-								<mods:dateAvailable encoding="iso8601">
-									<xsl:value-of select="doc:field[@name='value']/text()" />
-								</mods:dateAvailable>
-							</mods:extension>
+    							<mods:extension>
+    								<mods:dateAvailable encoding="iso8601">
+    									<xsl:value-of select="doc:element/doc:field[@name='value']/text()" />
+    								</mods:dateAvailable>
+    							</mods:extension>
 							</xsl:for-each>
 							<xsl:for-each select="doc:metadata/doc:element[@name='dc']/doc:element[@name='date']/doc:element[@name='issued']">
 							<mods:originInfo>
@@ -76,7 +76,7 @@
 								</mods:dateIssued>
 							</mods:originInfo>
 							</xsl:for-each>
-							<xsl:for-each select="doc:metadata/doc:element[@name='dc']/doc:element[@name='identifier']/doc:element">
+						    <xsl:for-each select="doc:metadata/doc:element[@name='dc']/doc:element[@name='identifier']/doc:element[not(@name='citation')]">
 							<mods:identifier>
 								<xsl:attribute name="type">
 									<xsl:value-of select="@name"></xsl:value-of>
@@ -84,6 +84,15 @@
 								<xsl:value-of select="doc:element/doc:field[@name='value']/text()" />
 							</mods:identifier>
 							</xsl:for-each>
+						    <xsl:for-each select="doc:metadata/doc:element[@name='dc']/doc:element[@name='identifier']/doc:element[@name='citation']">
+					        <mods:relatedItem type="host">
+					            <mods:part>
+					                <mods:text>
+					                    <xsl:value-of select="doc:element/doc:field[@name='value']/text()" />
+					                </mods:text>
+					            </mods:part>
+					        </mods:relatedItem>
+						    </xsl:for-each>					    
 							<xsl:for-each select="doc:metadata/doc:element[@name='dc']/doc:element[@name='description']/doc:element[@name='abstract']/doc:element">
 							<mods:abstract>
 								<xsl:value-of select="doc:field[@name='value']/text()" />
@@ -92,6 +101,29 @@
 							<mods:language>
 								<mods:languageTerm authority="rfc3066"><xsl:value-of select="doc:metadata/doc:element[@name='dc']/doc:element[@name='language']/doc:element/doc:element/doc:field[@name='value']"></xsl:value-of></mods:languageTerm>
 							</mods:language>
+						    
+						    <xsl:for-each select="doc:metadata/doc:element[@name='dc']/doc:element[@name='relation']/doc:element[@name='ispartofseries']/doc:element">
+						        <xsl:for-each select="doc:field[@name='value']">
+                                    <mods:relatedItem type="series">
+                                        <xsl:value-of select="text()" />
+                                    </mods:relatedItem>                                                                                       
+                                </xsl:for-each>
+						    </xsl:for-each>
+						    <xsl:for-each select="doc:metadata/doc:element[@name='dc']/doc:element[@name='relation']/doc:element[@name='haspart']/doc:element">
+						        <xsl:for-each select="doc:field[@name='value']">
+    						        <mods:relatedItem type="constituent">
+    						            <xsl:value-of select="text()" />
+    						        </mods:relatedItem>
+						        </xsl:for-each>
+						    </xsl:for-each>
+						    <xsl:for-each select="doc:metadata/doc:element[@name='dc']/doc:element[@name='relation']/doc:element[@name='isreferencedby']/doc:element">
+						        <xsl:for-each select="doc:field[@name='value']">
+    						        <mods:relatedItem type="isReferencedBy">
+    						            <xsl:value-of select="text()" />
+    						        </mods:relatedItem>
+						        </xsl:for-each>
+						    </xsl:for-each>
+						    
 							<mods:accessCondition type="useAndReproduction"><xsl:value-of select="doc:metadata/doc:element[@name='dc']/doc:element[@name='rights']/doc:element/doc:field[@name='value']"></xsl:value-of></mods:accessCondition>
 							<xsl:for-each select="doc:metadata/doc:element[@name='dc']/doc:element[@name='subject']/doc:element/doc:field[@name='value']">
 							<mods:subject>
@@ -109,11 +141,11 @@
 			<xsl:if test="doc:metadata/doc:element[@name='license']/doc:field[@name='bin']">
 			<amdSec>
 				<xsl:attribute name="ID">
-					<xsl:value-of select="concat('TMD_', translate(doc:metadata/doc:element[@name='others']/doc:field[@name='handle']/text(), '/', '_'))" />
+					<xsl:value-of select="concat('TMD_', translate(string(doc:metadata/doc:element[@name='dc']/doc:element[@name='identifier']/doc:element[@name='none']/doc:element/doc:field), '/', '_'))" />
 				</xsl:attribute>
 				<rightsMD>
 					<xsl:attribute name="ID">
-						<xsl:value-of select="concat('RIG_', translate(doc:metadata/doc:element[@name='others']/doc:field[@name='handle']/text(), '/', '_'))" />
+						<xsl:value-of select="concat('RIG_', translate(string(doc:metadata/doc:element[@name='dc']/doc:element[@name='identifier']/doc:element[@name='none']/doc:element/doc:field), '/', '_'))" />
 					</xsl:attribute>
 					<mdWrap MIMETYPE="text/plain" MDTYPE="OTHER" OTHERMDTYPE="DSpaceDepositLicense">
 						<binData><xsl:value-of select="doc:metadata/doc:element[@name='license']/doc:field[@name='bin']/text()" /></binData>
@@ -284,7 +316,7 @@
 			<structMap LABEL="DSpace Object" TYPE="LOGICAL">
 				<div TYPE="DSpace Object Contents">
 					<xsl:attribute name="ADMID">
-						<xsl:value-of select="concat('DMD_', translate(doc:metadata/doc:element[@name='others']/doc:field[@name='handle']/text(), '/', '_'))" />
+						<xsl:value-of select="concat('DMD_', translate(string(doc:metadata/doc:element[@name='dc']/doc:element[@name='identifier']/doc:element[@name='none']/doc:element/doc:field), '/', '_'))" />
 					</xsl:attribute>
 					<xsl:for-each select="doc:metadata/doc:element[@name='bundles']/doc:element/doc:field[text()='ORIGINAL']">
 					<xsl:for-each select="../doc:element[@name='bitstreams']/doc:element">

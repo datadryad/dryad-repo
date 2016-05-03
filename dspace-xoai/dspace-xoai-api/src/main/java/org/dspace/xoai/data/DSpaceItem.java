@@ -31,6 +31,8 @@ import com.lyncode.xoai.dataprovider.xml.xoai.Element.Field;
 public abstract class DSpaceItem extends AbstractItem
 {
 
+    private static final String itemIdMd = ConfigurationManager.getProperty("xoai","identifier.metadata");
+
 	private static List<Element> filter (List<Element> input, String name) {
     	return Lists.newArrayList(Collections2.filter(input, new MetadataNamePredicate(name)));
     }
@@ -101,6 +103,11 @@ public abstract class DSpaceItem extends AbstractItem
     @Override
     public String getIdentifier()
     {
-    	return buildIdentifier(getHandle());
+        if (itemIdMd != null && itemIdMd.length() > 0) {
+            List<String> mdvs = getMetadata(itemIdMd);
+            if (mdvs != null && mdvs.size() > 0)
+                return buildIdentifier(mdvs.get(0));
+        }
+        return buildIdentifier(getHandle());
     }
 }
