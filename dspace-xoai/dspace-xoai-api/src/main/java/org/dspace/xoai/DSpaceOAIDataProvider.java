@@ -10,11 +10,7 @@ package org.dspace.xoai;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -50,6 +46,8 @@ public class DSpaceOAIDataProvider extends HttpServlet
 {
     private static Logger log = LogManager
             .getLogger(DSpaceOAIDataProvider.class);
+
+    private static String compressionEncs = ConfigurationManager.getProperty("xoai", "compression");
 
     @Override
     public void init()
@@ -119,13 +117,20 @@ public class DSpaceOAIDataProvider extends HttpServlet
                 repository = new DSpaceItemDatabaseRepository(context);
             }
 
+            List<String> compressions = new ArrayList<String>();
+            if (compressionEncs != null && compressionEncs.length() > 0) {
+                for (String comp : compressionEncs.split("\\s*,\\s*")) {
+                    compressions.add(comp);
+                }
+            }
+
             log.debug("Creating OAI Data Provider Instance");
 
             String contextUrl = request.getPathInfo().replace("/","");
             DSpaceIdentify dsi = new DSpaceIdentify(context,request);
             DSpaceSetRepository dsr = new DSpaceSetRepository(context);
 
-            OAIDataProvider dataProvider = new OAIDataProvider(contextUrl, dsi, dsr, repository);
+            OAIDataProvider dataProvider = new OAIDataProvider(contextUrl, dsi, dsr, repository, compressions);
 
             log.debug("Reading parameters from request");
 
