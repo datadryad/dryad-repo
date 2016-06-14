@@ -52,16 +52,4 @@ public class JournalStatsTest extends JournalLandingBaseTest
         journalStats.setup(resolver, objectModel, src, parameters);
     }
 
-    private static String dataPackageCountXpath = "count(//dri:div[@n='journal-landing-stats-deps']//dri:reference) = 2";
-    @Test
-    public void testAddBody() throws Exception {
-        journalStats.setup(resolver, objectModel, src, parameters);
-        Body body = doc.setBody();
-        journalStats.addBody(body);
-        DRIContentHandler dch = new DRIContentHandler(body);
-        Document jdomDoc = dch.getDocument();
-        XPathExpression<Boolean> pkgExp =
-            XPathFactory.instance().compile(dataPackageCountXpath, Filters.fboolean(), vars, driNs);
-        assertTrue(pkgExp.evaluateFirst(jdomDoc));
-    }
 }
