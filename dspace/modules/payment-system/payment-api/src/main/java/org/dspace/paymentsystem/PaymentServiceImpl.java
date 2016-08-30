@@ -503,7 +503,7 @@ public class PaymentServiceImpl implements PaymentService {
                 if (!"".equals(StringUtils.stripToEmpty(grantInfo))) {
                     log.debug("nsf pays");
                     DryadOrganizationConcept organizationConcept = DryadOrganizationConcept.getOrganizationConceptMatchingCustomerID(context, "1292407");
-                    shoppingCart.setOrganizationConcept(organizationConcept);
+                    shoppingCart.setSponsoringOrganization(organizationConcept);
                     shoppingCart.setStatus(ShoppingCart.STATUS_COMPLETED);
                     shoppingCart.update();
                     paymentSystemService.updateTotal(context, shoppingCart);
