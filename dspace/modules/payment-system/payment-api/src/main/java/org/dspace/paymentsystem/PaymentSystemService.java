@@ -49,12 +49,13 @@ public interface PaymentSystemService
 
     public void updateTotal(Context context, ShoppingCart transaction) throws SQLException;
 
-    public void setCurrency(ShoppingCart shoppingCart,String currency)throws SQLException;
+    public void setCurrency(ShoppingCart shoppingCart,String currency) throws SQLException;
 
-    public int getWaiver(Context context,ShoppingCart shoppingcart,String journal)throws SQLException;
+    public String getWaiverMessage(Context context, ShoppingCart shoppingCart);
+
     public boolean getCountryWaiver(Context context, ShoppingCart transaction) throws SQLException;
 
-    public String getPayer(Context context, ShoppingCart shoppingcart)throws SQLException;
+    public String getPayer(Context context, ShoppingCart shoppingcart) throws SQLException;
 
     public String printShoppingCart(Context c, ShoppingCart shoppingCart);
 
