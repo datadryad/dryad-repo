@@ -94,6 +94,11 @@ public class DryadFunderConcept extends DryadOrganizationConcept {
         }
     }
 
+    @Override
+    public String getFullName() {
+        return super.getFullName() + " (" + getCountry() + ")";
+    }
+
     public String getFunderId() {
         return getConceptMetadataValue(metadataProperties.getProperty(FUNDER_ID));
     }
