@@ -2,7 +2,6 @@ package org.datadryad.api;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.dspace.authorize.AuthorizeException;
 import org.dspace.content.authority.Concept;
 import org.dspace.content.authority.Scheme;
 import org.dspace.core.Context;
@@ -15,7 +14,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.lang.*;
 import java.lang.Exception;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -441,7 +439,7 @@ public class DryadJournalConcept extends DryadOrganizationConcept {
     public Journal getJournalFromJournalConcept() {
         Journal journal = new Journal();
         journal.conceptID = getUnderlyingConcept().getID();
-        journal.journalCode = getJournalID();
+        journal.journalID = getJournalID();
         journal.fullName = getFullName();
         journal.issn = getISSN();
         return journal;

@@ -56,15 +56,15 @@ public class JournalResource {
         }
     }
 
-    @Path("/{journalCode}")
+    @Path("/{journalRef}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getJournal(@PathParam(Journal.JOURNAL_CODE) String journalCode) {
-        StoragePath path = StoragePath.createJournalPath(journalCode);
+    public Response getJournal(@PathParam(Journal.JOURNAL_REF) String journalRef) {
+        StoragePath path = StoragePath.createJournalPath(journalRef);
         try {
             DryadJournalConcept journalConcept = journalStorage.findByPath(path);
             if (journalConcept == null) {
-                ErrorsResponse error = ResponseFactory.makeError("Journal with code " + journalCode + " does not exist", "Journal not found", uriInfo, Status.NOT_FOUND.getStatusCode());
+                ErrorsResponse error = ResponseFactory.makeError("Journal with code " + journalRef + " does not exist", "Journal not found", uriInfo, Status.NOT_FOUND.getStatusCode());
                 return Response.status(Status.NOT_FOUND).entity(error).build();
             } else {
                 return Response.ok(journalConcept).build();
@@ -95,7 +95,6 @@ public class JournalResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createJournal(DryadJournalConcept[] journalConcepts) {
-        Response response = null;
         ArrayList<DryadJournalConcept> concepts = new ArrayList<DryadJournalConcept>();
         DryadJournalConcept storedJournalConcept = null;
         for (int i=0; i<journalConcepts.length; i++) {
@@ -134,7 +133,6 @@ public class JournalResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateJournal(DryadJournalConcept[] journalConcepts) {
-        Response response = null;
         ArrayList<DryadJournalConcept> concepts = new ArrayList<DryadJournalConcept>();
         DryadJournalConcept storedJournalConcept = null;
         for (int i=0; i<journalConcepts.length; i++) {
@@ -153,12 +151,12 @@ public class JournalResource {
         }
     }
 
-    @Path("/{journalCode}")
+    @Path("/{journalRef}")
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteJournal(@PathParam(Journal.JOURNAL_CODE) String journalCode) {
-        StoragePath path = StoragePath.createJournalPath(journalCode);
+    public Response deleteJournal(@PathParam(Journal.JOURNAL_REF) String journalRef) {
+        StoragePath path = StoragePath.createJournalPath(journalRef);
         try {
             journalStorage.deleteByPath(path);
         } catch (StorageException ex) {

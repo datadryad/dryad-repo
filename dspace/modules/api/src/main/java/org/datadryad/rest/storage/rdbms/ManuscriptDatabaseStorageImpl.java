@@ -162,18 +162,18 @@ public class ManuscriptDatabaseStorageImpl extends AbstractManuscriptStorage {
         }
     }
 
-    private static Manuscript getManuscriptById(Context context, String msid, String journalCode) throws SQLException, IOException {
+    private static Manuscript getManuscriptById(Context context, String msid, String journalRef) throws SQLException, IOException {
         Manuscript manuscript = null;
-        TableRow row = getTableRowByManuscriptId(context, msid, journalCode);
+        TableRow row = getTableRowByManuscriptId(context, msid, journalRef);
         if (row != null) {
             manuscript = manuscriptFromTableRow(row);
-            manuscript.setJournalConcept(JournalUtils.getJournalConceptByJournalID(journalCode));
+            manuscript.setJournalConcept(JournalUtils.getJournalConceptByJournalID(journalRef));
         }
         return manuscript;
     }
 
-    private static TableRow getTableRowByManuscriptId(Context context, String msid, String journalCode) throws SQLException, IOException {
-        Journal journal = JournalDatabaseStorageImpl.getJournalByCodeOrISSN(context, journalCode);
+    private static TableRow getTableRowByManuscriptId(Context context, String msid, String journalRef) throws SQLException, IOException {
+        Journal journal = JournalDatabaseStorageImpl.getJournalByCodeOrISSN(context, journalRef);
         if (journal == null) {
             return null;
         } else {
@@ -239,9 +239,9 @@ public class ManuscriptDatabaseStorageImpl extends AbstractManuscriptStorage {
         return finalRows;
     }
 
-    private static List<Manuscript> getManuscripts(Context context, String journalCode, int limit) throws SQLException, IOException {
+    private static List<Manuscript> getManuscripts(Context context, String journalRef, int limit) throws SQLException, IOException {
         List<Manuscript> manuscripts = new ArrayList<Manuscript>();
-        Journal journal = JournalDatabaseStorageImpl.getJournalByCodeOrISSN(context, journalCode);
+        Journal journal = JournalDatabaseStorageImpl.getJournalByCodeOrISSN(context, journalRef);
         if (journal == null) {
             return manuscripts;
         } else {
@@ -257,9 +257,9 @@ public class ManuscriptDatabaseStorageImpl extends AbstractManuscriptStorage {
         }
     }
 
-    private static List<Manuscript> getManuscriptsMatchingQuery(Context context, String journalCode, String searchParam, int limit) throws SQLException, IOException {
+    private static List<Manuscript> getManuscriptsMatchingQuery(Context context, String journalRef, String searchParam, int limit) throws SQLException, IOException {
         List<Manuscript> manuscripts = new ArrayList<Manuscript>();
-        Journal journal = JournalDatabaseStorageImpl.getJournalByCodeOrISSN(context, journalCode);
+        Journal journal = JournalDatabaseStorageImpl.getJournalByCodeOrISSN(context, journalRef);
         if (journal == null) {
             return manuscripts;
         } else {
@@ -282,7 +282,7 @@ public class ManuscriptDatabaseStorageImpl extends AbstractManuscriptStorage {
         String manuscriptID = path.getManuscriptId();
         try {
             Context context = getContext();
-            Journal journal = JournalDatabaseStorageImpl.getJournalByCodeOrISSN(context, path.getJournalCode());
+            Journal journal = JournalDatabaseStorageImpl.getJournalByCodeOrISSN(context, path.getJournalRef());
             if (journal != null) {
                 Integer journalConceptID = journal.conceptID;
                 TableRowIterator rows = null;
@@ -321,8 +321,8 @@ public class ManuscriptDatabaseStorageImpl extends AbstractManuscriptStorage {
         return manuscripts;
     }
 
-    private static void insertManuscript(Context context, Manuscript manuscript, String journalCode) throws SQLException, IOException {
-        Journal journal = JournalDatabaseStorageImpl.getJournalByCodeOrISSN(context, journalCode);
+    private static void insertManuscript(Context context, Manuscript manuscript, String journalRef) throws SQLException, IOException {
+        Journal journal = JournalDatabaseStorageImpl.getJournalByCodeOrISSN(context, journalRef);
         if (journal != null) {
             Integer journalConceptID = journal.conceptID;
             TableRow row = tableRowFromManuscript(manuscript, journalConceptID);
@@ -343,11 +343,11 @@ public class ManuscriptDatabaseStorageImpl extends AbstractManuscriptStorage {
         }
     }
 
-    private static void deleteManuscript(Context context, Manuscript manuscript, String journalCode) throws SQLException, IOException {
+    private static void deleteManuscript(Context context, Manuscript manuscript, String journalRef) throws SQLException, IOException {
         if(manuscript.getManuscriptId() == null) {
             throw new SQLException("NULL ID");
         }
-        Journal journal = JournalDatabaseStorageImpl.getJournalByCodeOrISSN(context, journalCode);
+        Journal journal = JournalDatabaseStorageImpl.getJournalByCodeOrISSN(context, journalRef);
         if (journal != null) {
             Integer journalConceptID = journal.conceptID;
             Integer manuscriptId = getManuscriptInternalId(context, manuscript.getManuscriptId(), journalConceptID);
@@ -380,7 +380,6 @@ public class ManuscriptDatabaseStorageImpl extends AbstractManuscriptStorage {
     // This call is always limited to the default limit of entries, so as not to tie up the connection pool.
     @Override
     protected void addResults(StoragePath path, List<Manuscript> manuscripts, String searchParam, Integer limit) throws StorageException {
-        String journalCode = path.getJournalCode();
         String manuscriptId = path.getManuscriptId();
         int limitInt = DEFAULT_LIMIT;
         if (limit != null) {
@@ -388,15 +387,16 @@ public class ManuscriptDatabaseStorageImpl extends AbstractManuscriptStorage {
         }
         try {
             Context context = getContext();
+            Journal journal = JournalDatabaseStorageImpl.getJournalByCodeOrISSN(context, path.getJournalRef());
             if (manuscriptId != null) {
-                Manuscript manuscript = getManuscriptById(context, manuscriptId, journalCode);
+                Manuscript manuscript = getManuscriptById(context, manuscriptId, journal.journalID);
                 if (manuscript != null) {
                     manuscripts.add(manuscript);
                 }
             } else if (searchParam == null) {
-                manuscripts.addAll(getManuscripts(context, journalCode, limitInt));
+                manuscripts.addAll(getManuscripts(context, journal.journalID, limitInt));
             } else {
-                manuscripts.addAll(getManuscriptsMatchingQuery(context, journalCode, searchParam, limitInt));
+                manuscripts.addAll(getManuscriptsMatchingQuery(context, journal.journalID, searchParam, limitInt));
             }
             completeContext(context);
         } catch (SQLException ex) {
@@ -412,10 +412,10 @@ public class ManuscriptDatabaseStorageImpl extends AbstractManuscriptStorage {
             log.error("object exists");
             throw new StorageException("Unable to create, manuscript already exists");
         }
-        String journalCode = path.getJournalCode();
+        String journalRef = path.getJournalRef();
         try {
             Context context = getContext();
-            insertManuscript(context, manuscript, journalCode);
+            insertManuscript(context, manuscript, journalRef);
             completeContext(context);
         } catch (SQLException ex) {
             throw new StorageException("Exception saving manuscript", ex);
@@ -426,11 +426,11 @@ public class ManuscriptDatabaseStorageImpl extends AbstractManuscriptStorage {
 
     @Override
     protected Manuscript readObject(StoragePath path) throws StorageException {
-        String journalCode = path.getJournalCode();
+        String journalRef = path.getJournalRef();
         String manuscriptId = path.getManuscriptId();
         try {
             Context context = getContext();
-            Manuscript manuscript = getManuscriptById(context, manuscriptId, journalCode);
+            Manuscript manuscript = getManuscriptById(context, manuscriptId, journalRef);
             completeContext(context);
             return manuscript;
         } catch (SQLException ex) {
@@ -442,16 +442,16 @@ public class ManuscriptDatabaseStorageImpl extends AbstractManuscriptStorage {
 
     @Override
     protected void deleteObject(StoragePath path) throws StorageException {
-        String journalCode = path.getJournalCode();
+        String journalRef = path.getJournalRef();
         String manuscriptId = path.getManuscriptId();
         try {
             Context context = getContext();
-            Manuscript manuscript = getManuscriptById(context, manuscriptId, journalCode);
+            Manuscript manuscript = getManuscriptById(context, manuscriptId, journalRef);
             if(manuscript == null) {
                 log.error("manuscript " + manuscriptId + " does not exist");
                 throw new StorageException("Manuscript does not exist");
             }
-            deleteManuscript(context, manuscript, journalCode);
+            deleteManuscript(context, manuscript, journalRef);
             completeContext(context);
         } catch (SQLException ex) {
             throw new StorageException("Exception deleting manuscript", ex);

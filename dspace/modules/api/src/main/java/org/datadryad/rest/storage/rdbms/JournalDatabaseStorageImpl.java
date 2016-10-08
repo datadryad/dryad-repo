@@ -89,7 +89,7 @@ public class JournalDatabaseStorageImpl extends AbstractJournalStorage {
         if(row != null) {
             Journal journal = new Journal();
             journal.conceptID = row.getIntColumn(COLUMN_ID);
-            journal.journalCode = row.getStringColumn(COLUMN_CODE);
+            journal.journalID = row.getStringColumn(COLUMN_CODE);
             journal.fullName = row.getStringColumn(COLUMN_NAME);
             journal.issn = row.getStringColumn(COLUMN_ISSN);
             if (journal.issn == null) {
@@ -185,21 +185,17 @@ public class JournalDatabaseStorageImpl extends AbstractJournalStorage {
 
     @Override
     protected DryadJournalConcept readObject(StoragePath path) throws StorageException {
-        String journalCode = path.getJournalCode();
+        DryadJournalConcept journalConcept = null;
         Context context = null;
         try {
             context = getContext();
-            Journal journal = getJournalByCodeOrISSN(context, journalCode);
-            if (journalCode.equals(journal.issn)) {
-                // this is an ISSN, replace journalCode with the journal's code.
-                journalCode = journal.journalCode;
-            }
+            Journal journal = getJournalByCodeOrISSN(context, path.getJournalRef());
+            journalConcept = JournalUtils.getJournalConceptByISSN(journal.issn);
             completeContext(context);
         } catch (Exception e) {
             abortContext(context);
             throw new StorageException("Exception reading journal: " + e.getMessage());
         }
-        DryadJournalConcept journalConcept = JournalUtils.getJournalConceptByJournalID(journalCode);
         return journalConcept;
     }
 

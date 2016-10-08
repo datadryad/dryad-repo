@@ -22,7 +22,7 @@ import java.net.URI;
  *
  * @author Dan Leehr <dan.leehr@nescent.org>
  */
-@Path("organizations/{journalCode}/manuscripts")
+@Path("organizations/{journalRef}/manuscripts")
 
 public class ManuscriptResource {
     private static final Logger log = Logger.getLogger(ManuscriptResource.class);
@@ -34,7 +34,7 @@ public class ManuscriptResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getManuscripts(@PathParam(Journal.JOURNAL_CODE) String journalCode, @QueryParam("search") String searchParam, @QueryParam("count") Integer resultParam) {
+    public Response getManuscripts(@PathParam(StoragePath.JOURNAL_PATH) String journalCode, @QueryParam("search") String searchParam, @QueryParam("count") Integer resultParam) {
         try {
             // Returning a list requires POJO turned on
             StoragePath path = StoragePath.createJournalPath(journalCode);
@@ -49,7 +49,7 @@ public class ManuscriptResource {
     @Path("/{manuscriptId}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getManuscript(@PathParam(Journal.JOURNAL_CODE) String journalCode, @PathParam(Manuscript.MANUSCRIPT_ID) String manuscriptId) {
+    public Response getManuscript(@PathParam(StoragePath.JOURNAL_PATH) String journalCode, @PathParam(StoragePath.MANUSCRIPT_PATH) String manuscriptId) {
         try {
             StoragePath manuscriptPath = StoragePath.createManuscriptPath(journalCode, manuscriptId);
             Manuscript manuscript = manuscriptStorage.findByPath(manuscriptPath);
@@ -69,7 +69,7 @@ public class ManuscriptResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createManuscript(@PathParam(Journal.JOURNAL_CODE) String journalCode, Manuscript manuscript) {
+    public Response createManuscript(@PathParam(StoragePath.JOURNAL_PATH) String journalCode, Manuscript manuscript) {
         StoragePath journalPath = StoragePath.createJournalPath(journalCode);
         if(manuscript.isValid()) {
             try {
@@ -96,7 +96,7 @@ public class ManuscriptResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateManuscript(@PathParam(Journal.JOURNAL_CODE) String journalCode, @PathParam(Manuscript.MANUSCRIPT_ID) String manuscriptId, Manuscript manuscript) {
+    public Response updateManuscript(@PathParam(StoragePath.JOURNAL_PATH) String journalCode, @PathParam(StoragePath.MANUSCRIPT_PATH) String manuscriptId, Manuscript manuscript) {
         StoragePath path = StoragePath.createManuscriptPath(journalCode, manuscriptId);
         if(manuscript.isValid()) {
             try {
@@ -120,7 +120,7 @@ public class ManuscriptResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateManuscript(@PathParam(Journal.JOURNAL_CODE) String journalCode, Manuscript manuscript) {
+    public Response updateManuscript(@PathParam(StoragePath.JOURNAL_PATH) String journalCode, Manuscript manuscript) {
         String manuscriptId = manuscript.getManuscriptId();
         StoragePath path = StoragePath.createManuscriptPath(journalCode, manuscriptId);
         if(manuscript.isValid()) {
@@ -146,7 +146,7 @@ public class ManuscriptResource {
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteManuscript(@PathParam(Journal.JOURNAL_CODE) String journalCode, @PathParam(Manuscript.MANUSCRIPT_ID) String manuscriptId) {
+    public Response deleteManuscript(@PathParam(StoragePath.JOURNAL_PATH) String journalCode, @PathParam(StoragePath.MANUSCRIPT_PATH) String manuscriptId) {
         StoragePath path = StoragePath.createManuscriptPath(journalCode, manuscriptId);
         try {
             manuscriptStorage.deleteByPath(path);

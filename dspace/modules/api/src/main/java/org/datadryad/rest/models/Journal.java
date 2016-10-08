@@ -17,9 +17,8 @@ import java.lang.Override;
 @XmlRootElement
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Journal {
-    public static final String JOURNAL_CODE = "journalCode";
     public Integer conceptID;
-    public String journalCode = "";
+    public String journalID = "";
     public String fullName = "";
     public String issn = "";
 
@@ -28,20 +27,20 @@ public class Journal {
 
     public Journal(DryadJournalConcept dryadJournalConcept) {
         conceptID = new Integer(dryadJournalConcept.getConceptID());
-        journalCode = dryadJournalConcept.getJournalID();
+        journalID = dryadJournalConcept.getJournalID();
         fullName = dryadJournalConcept.getFullName();
         issn = dryadJournalConcept.getISSN();
     }
 
     public Boolean isValid() {
-        return (journalCode != null && journalCode.length() > 0);
+        return (journalID != null && journalID.length() > 0);
     }
 
     @Override
     public boolean equals(Object o) {
         if (o.getClass().equals(this.getClass())) {
             Journal journal = (Journal) o;
-            if (this.journalCode.equals(journal.journalCode) && this.fullName.equals(journal.fullName) && this.issn.equals(journal.issn)) {
+            if (this.journalID.equals(journal.journalID) && this.fullName.equals(journal.fullName) && this.issn.equals(journal.issn)) {
                 return true;
             }
         }
