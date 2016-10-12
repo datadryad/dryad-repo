@@ -3,10 +3,9 @@
 package org.datadryad.rest.resources.v1;
 
 import org.datadryad.api.DryadJournalConcept;
-import org.datadryad.rest.models.Journal;
 import org.datadryad.rest.responses.ErrorsResponse;
 import org.datadryad.rest.responses.ResponseFactory;
-import org.datadryad.rest.storage.AbstractJournalStorage;
+import org.datadryad.rest.storage.AbstractJournalConceptStorage;
 import org.datadryad.rest.storage.StorageException;
 import org.datadryad.rest.storage.StoragePath;
 import org.dspace.JournalUtils;
@@ -25,9 +24,9 @@ import java.util.List;
  */
 
 @Path("organizations")
-public class JournalResource {
+public class JournalConceptResource {
     @Context
-    AbstractJournalStorage journalStorage;
+    AbstractJournalConceptStorage journalStorage;
     @Context UriInfo uriInfo;
     @Context HttpServletRequest request;
 
@@ -59,7 +58,7 @@ public class JournalResource {
     @Path("/{journalRef}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getJournal(@PathParam(Journal.JOURNAL_REF) String journalRef) {
+    public Response getJournal(@PathParam(StoragePath.JOURNAL_PATH) String journalRef) {
         StoragePath path = StoragePath.createJournalPath(journalRef);
         try {
             DryadJournalConcept journalConcept = journalStorage.findByPath(path);
@@ -155,7 +154,7 @@ public class JournalResource {
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteJournal(@PathParam(Journal.JOURNAL_REF) String journalRef) {
+    public Response deleteJournal(@PathParam(StoragePath.JOURNAL_PATH) String journalRef) {
         StoragePath path = StoragePath.createJournalPath(journalRef);
         try {
             journalStorage.deleteByPath(path);

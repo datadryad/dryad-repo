@@ -32,10 +32,11 @@ import static org.datadryad.api.DryadJournalConcept.WEBSITE;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DryadOrganizationConcept implements Comparable<DryadOrganizationConcept> {
     // Organization Concepts can have the following metadata properties:
-    public static final String FULLNAME = "fullname";
+    public static final String FULLNAME = "fullName";
     public static final String CUSTOMER_ID = "customerID";
     public static final String DESCRIPTION = "description";
     public static final String WEBSITE = "website";
+    public static final String PAYMENT_PLAN = "paymentPlanType";
 
     public static final String SUBSCRIPTION_PLAN = "SUBSCRIPTION";
     public static final String PREPAID_PLAN = "PREPAID";

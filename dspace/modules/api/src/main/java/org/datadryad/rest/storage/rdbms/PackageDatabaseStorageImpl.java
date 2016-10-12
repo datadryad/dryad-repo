@@ -4,7 +4,7 @@ package org.datadryad.rest.storage.rdbms;
 
 import org.apache.log4j.Logger;
 import org.datadryad.api.DryadDataPackage;
-import org.datadryad.rest.models.Journal;
+import org.datadryad.api.DryadJournalConcept;
 import org.datadryad.rest.models.Package;
 import org.datadryad.rest.storage.AbstractPackageStorage;
 import org.datadryad.rest.storage.StorageException;
@@ -84,8 +84,8 @@ public class PackageDatabaseStorageImpl extends AbstractPackageStorage {
         Context context = null;
         try {
             context = getContext();
-            Journal journal = JournalDatabaseStorageImpl.getJournalByCodeOrISSN(context, path.getJournalRef());
-            LinkedHashMap<Item, String> packages = JournalUtils.getArchivedPackagesSortedRecent(context, journal.fullName, limit);
+            DryadJournalConcept journal = JournalConceptDatabaseStorageImpl.getJournalConceptByCodeOrISSN(context, path.getJournalRef());
+            LinkedHashMap<Item, String> packages = JournalUtils.getArchivedPackagesSortedRecent(context, journal.getFullName(), limit);
             for (Item item : packages.keySet()) {
                 Package dataPackage = new Package(new DryadDataPackage(item));
                 packageList.add(dataPackage);

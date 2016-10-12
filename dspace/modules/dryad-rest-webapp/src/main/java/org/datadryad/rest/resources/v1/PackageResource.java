@@ -5,7 +5,7 @@ package org.datadryad.rest.resources.v1;
 import org.apache.log4j.Logger;
 import org.datadryad.rest.responses.ErrorsResponse;
 import org.datadryad.rest.responses.ResponseFactory;
-import org.datadryad.rest.storage.AbstractJournalStorage;
+import org.datadryad.rest.storage.AbstractJournalConceptStorage;
 import org.datadryad.rest.storage.AbstractPackageStorage;
 import org.datadryad.rest.storage.StorageException;
 import org.datadryad.rest.storage.StoragePath;
@@ -22,7 +22,8 @@ import javax.ws.rs.core.Response.Status;
 
 public class PackageResource {
     private static final Logger log = Logger.getLogger(PackageResource.class);
-    @Context AbstractJournalStorage journalStorage;
+    @Context
+    AbstractJournalConceptStorage journalStorage;
     @Context
     AbstractPackageStorage packageStorage;
     @Context UriInfo uriInfo;
