@@ -43,7 +43,7 @@ public class StoragePath extends ArrayList<StoragePathElement> {
         return true;
     }
 
-    // Methods for accessing/creating StoragePaths for Manuscripts and Organizations
+    // Methods for accessing/creating StoragePaths for Manuscripts and Journals
 
     public static StoragePath createJournalPath(String journalRef) {
         StoragePath path = new StoragePath();
@@ -56,6 +56,10 @@ public class StoragePath extends ArrayList<StoragePathElement> {
         path.addPathElement(StoragePath.JOURNAL_PATH, journalRef);
         path.addPathElement(StoragePath.MANUSCRIPT_PATH, manuscriptId);
         return path;
+    }
+
+    public static StoragePath createPackagesPath(String journalRef) {
+        return createManuscriptPath(journalRef, "packages");
     }
 
     public void setJournalCode(String journalRef) {

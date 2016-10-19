@@ -33,6 +33,7 @@ public class Author {
         String suffix = "";
 
         if (authorString != null) {
+            authorString = StringEscapeUtils.unescapeHtml(authorString);
             authorString = StringUtils.stripToEmpty(authorString);
             // Remove any leading title, like Dr.
             authorString = authorString.replaceAll("^[D|M]+rs*\\.*\\s*","");
