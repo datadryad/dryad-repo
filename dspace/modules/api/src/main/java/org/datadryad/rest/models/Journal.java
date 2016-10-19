@@ -2,6 +2,7 @@
  */
 package org.datadryad.rest.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.datadryad.api.DryadJournalConcept;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -17,8 +18,8 @@ import java.lang.Override;
 @XmlRootElement
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Journal {
+    @JsonIgnore
     public Integer conceptID;
-    public String journalID = "";
     public String fullName = "";
     public String issn = "";
 
@@ -27,20 +28,20 @@ public class Journal {
 
     public Journal(DryadJournalConcept dryadJournalConcept) {
         conceptID = new Integer(dryadJournalConcept.getConceptID());
-        journalID = dryadJournalConcept.getJournalID();
         fullName = dryadJournalConcept.getFullName();
         issn = dryadJournalConcept.getISSN();
     }
 
+    @JsonIgnore
     public Boolean isValid() {
-        return (journalID != null && journalID.length() > 0);
+        return (fullName != null && fullName.length() > 0 && issn != null && issn.length() > 0);
     }
 
     @Override
     public boolean equals(Object o) {
         if (o.getClass().equals(this.getClass())) {
             Journal journal = (Journal) o;
-            if (this.journalID.equals(journal.journalID) && this.fullName.equals(journal.fullName) && this.issn.equals(journal.issn)) {
+            if (this.issn.equals(journal.issn) && this.fullName.equals(journal.fullName)) {
                 return true;
             }
         }
