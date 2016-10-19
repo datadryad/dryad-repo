@@ -18,7 +18,7 @@ import javax.ws.rs.core.Response.Status;
  *
  * @author Dan Leehr <dan.leehr@nescent.org>
  */
-@Path("journals/{journalRef}")
+@Path("journals/{journalRef}/packages")
 
 public class PackageResource {
     private static final Logger log = Logger.getLogger(PackageResource.class);
