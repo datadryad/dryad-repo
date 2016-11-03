@@ -2,46 +2,43 @@
  */
 package org.datadryad.rest.resources.v1;
 
-import java.net.URI;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
 import org.apache.log4j.Logger;
 import org.datadryad.rest.handler.ManuscriptHandlerGroup;
-import org.datadryad.rest.models.Manuscript;
 import org.datadryad.rest.models.Journal;
+import org.datadryad.rest.models.Manuscript;
 import org.datadryad.rest.responses.ErrorsResponse;
 import org.datadryad.rest.responses.ResponseFactory;
+import org.datadryad.rest.storage.AbstractJournalConceptStorage;
 import org.datadryad.rest.storage.AbstractManuscriptStorage;
-import org.datadryad.rest.storage.AbstractJournalStorage;
 import org.datadryad.rest.storage.StorageException;
 import org.datadryad.rest.storage.StoragePath;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import javax.ws.rs.core.Response.Status;
+import java.net.URI;
 
 /**
  *
  * @author Dan Leehr <dan.leehr@nescent.org>
  */
-@Path("organizations/{journalCode}/manuscripts")
+@Path("organizations/{journalRef}/manuscripts")
 
 public class ManuscriptResource {
     private static final Logger log = Logger.getLogger(ManuscriptResource.class);
     @Context AbstractManuscriptStorage manuscriptStorage;
-    @Context AbstractJournalStorage journalStorage;
+    @Context
+    AbstractJournalConceptStorage journalStorage;
     @Context UriInfo uriInfo;
     @Context SecurityContext securityContext;
     @Context ManuscriptHandlerGroup handlers;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getManuscripts(@PathParam(Journal.JOURNAL_CODE) String journalCode, @QueryParam("search") String searchParam, @QueryParam("count") Integer resultParam) {
+    public Response getManuscripts(@PathParam(StoragePath.JOURNAL_PATH) String journalRef, @QueryParam("search") String searchParam, @QueryParam("count") Integer resultParam) {
         try {
             // Returning a list requires POJO turned on
-            StoragePath path = StoragePath.createJournalPath(journalCode);
+            StoragePath path = StoragePath.createJournalPath(journalRef);
             return Response.ok(manuscriptStorage.getResults(path, searchParam, resultParam)).build();
         } catch (StorageException ex) {
             log.error("Exception getting manuscripts", ex);
@@ -53,7 +50,7 @@ public class ManuscriptResource {
     @Path("/{manuscriptId}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getManuscript(@PathParam(Journal.JOURNAL_CODE) String journalCode, @PathParam(Manuscript.MANUSCRIPT_ID) String manuscriptId) {
+    public Response getManuscript(@PathParam(StoragePath.JOURNAL_PATH) String journalCode, @PathParam(StoragePath.MANUSCRIPT_PATH) String manuscriptId) {
         try {
             StoragePath manuscriptPath = StoragePath.createManuscriptPath(journalCode, manuscriptId);
             Manuscript manuscript = manuscriptStorage.findByPath(manuscriptPath);
@@ -73,7 +70,7 @@ public class ManuscriptResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createManuscript(@PathParam(Journal.JOURNAL_CODE) String journalCode, Manuscript manuscript) {
+    public Response createManuscript(@PathParam(StoragePath.JOURNAL_PATH) String journalCode, Manuscript manuscript) {
         StoragePath journalPath = StoragePath.createJournalPath(journalCode);
         if(manuscript.isValid()) {
             try {
@@ -100,7 +97,7 @@ public class ManuscriptResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateManuscript(@PathParam(Journal.JOURNAL_CODE) String journalCode, @PathParam(Manuscript.MANUSCRIPT_ID) String manuscriptId, Manuscript manuscript) {
+    public Response updateManuscript(@PathParam(StoragePath.JOURNAL_PATH) String journalCode, @PathParam(StoragePath.MANUSCRIPT_PATH) String manuscriptId, Manuscript manuscript) {
         StoragePath path = StoragePath.createManuscriptPath(journalCode, manuscriptId);
         if(manuscript.isValid()) {
             try {
@@ -124,7 +121,7 @@ public class ManuscriptResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateManuscript(@PathParam(Journal.JOURNAL_CODE) String journalCode, Manuscript manuscript) {
+    public Response updateManuscript(@PathParam(StoragePath.JOURNAL_PATH) String journalCode, Manuscript manuscript) {
         String manuscriptId = manuscript.getManuscriptId();
         StoragePath path = StoragePath.createManuscriptPath(journalCode, manuscriptId);
         if(manuscript.isValid()) {
@@ -150,7 +147,7 @@ public class ManuscriptResource {
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteManuscript(@PathParam(Journal.JOURNAL_CODE) String journalCode, @PathParam(Manuscript.MANUSCRIPT_ID) String manuscriptId) {
+    public Response deleteManuscript(@PathParam(StoragePath.JOURNAL_PATH) String journalCode, @PathParam(StoragePath.MANUSCRIPT_PATH) String manuscriptId) {
         StoragePath path = StoragePath.createManuscriptPath(journalCode, manuscriptId);
         try {
             manuscriptStorage.deleteByPath(path);

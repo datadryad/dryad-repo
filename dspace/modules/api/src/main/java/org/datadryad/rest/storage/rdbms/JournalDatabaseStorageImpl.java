@@ -21,6 +21,8 @@ import org.dspace.storage.rdbms.DatabaseManager;
 import org.dspace.storage.rdbms.TableRow;
 import org.dspace.JournalUtils;
 
+import static org.datadryad.rest.storage.rdbms.JournalConceptDatabaseStorageImpl.COLUMN_CODE;
+
 /**
  *
  * @author Dan Leehr <dan.leehr@nescent.org>
@@ -28,16 +30,13 @@ import org.dspace.JournalUtils;
 public class JournalDatabaseStorageImpl extends AbstractJournalStorage {
     private static Logger log = Logger.getLogger(JournalDatabaseStorageImpl.class);
 
-    // Database objects: still named organization, even though we've refactored to journal in the codebase
-    static final String JOURNAL_TABLE = "organization";
+    static final String JOURNAL_TABLE = "journal";
 
-    static final String COLUMN_ID = "organization_id";
-    static final String COLUMN_CODE = "code";
+    static final String COLUMN_ID = "concept_id";
     static final String COLUMN_NAME = "name";
     static final String COLUMN_ISSN = "issn";
     static final List<String> JOURNAL_COLUMNS = Arrays.asList(
             COLUMN_ID,
-            COLUMN_CODE,
             COLUMN_NAME,
             COLUMN_ISSN
     );
@@ -86,37 +85,22 @@ public class JournalDatabaseStorageImpl extends AbstractJournalStorage {
         }
     }
 
-    static Journal journalFromTableRow(TableRow row) {
-        if(row != null) {
-            Journal journal = new Journal();
+    public static Journal getJournalByISSN(Context context, String issn) throws SQLException {
+        String query = "SELECT * FROM " + JOURNAL_TABLE + " WHERE UPPER(" + COLUMN_ISSN + ") = UPPER(?)";
+        TableRow row = DatabaseManager.querySingleTable(context, JOURNAL_TABLE, query, issn);
+        Journal journal = null;
+        if (row != null) {
+            journal = new Journal();
             journal.conceptID = row.getIntColumn(COLUMN_ID);
-            journal.journalCode = row.getStringColumn(COLUMN_CODE);
-            journal.fullName = row.getStringColumn(COLUMN_NAME);
             journal.issn = row.getStringColumn(COLUMN_ISSN);
-            if (journal.issn == null) {
-                journal.issn = "";
-            }
-            return journal;
-        } else {
-            return null;
+            journal.fullName = row.getStringColumn(COLUMN_NAME);
         }
-    }
-
-    public static Journal getJournalByCodeOrISSN(Context context, String codeOrISSN) throws SQLException {
-        String query = "SELECT * FROM " + JOURNAL_TABLE + " WHERE UPPER(" + COLUMN_CODE + ") = UPPER(?) OR UPPER(" + COLUMN_ISSN + ") = UPPER(?)";
-        TableRow row = DatabaseManager.querySingleTable(context, JOURNAL_TABLE, query, codeOrISSN, codeOrISSN);
-        return journalFromTableRow(row);
-    }
-
-    public static Journal getJournalByConceptID(Context context, int conceptID) throws SQLException {
-        String query = "SELECT * FROM " + JOURNAL_TABLE + " WHERE " + COLUMN_ID + " = ?";
-        TableRow row = DatabaseManager.querySingleTable(context, JOURNAL_TABLE, query, conceptID);
-        return journalFromTableRow(row);
+        return journal;
     }
 
     @Override
-    public Boolean objectExists(StoragePath path, DryadJournalConcept journalConcept) {
-        String name = journalConcept.getFullName();
+    public Boolean objectExists(StoragePath path, Journal journal) {
+        String name = journal.fullName;
         Boolean result = false;
         if (JournalUtils.getJournalConceptByJournalName(name) != null) {
             result = true;
@@ -124,28 +108,31 @@ public class JournalDatabaseStorageImpl extends AbstractJournalStorage {
         return result;
     }
 
-    protected void addAll(StoragePath path, List<DryadJournalConcept> journalConcepts) throws StorageException {
+    protected void addAll(StoragePath path, List<Journal> journalConcepts) throws StorageException {
         // passing in a limit of null to addResults should return all records
         addResults(path, journalConcepts, null, null);
     }
 
     @Override
-    protected void addResults(StoragePath path, List<DryadJournalConcept> journalConcepts, String searchParam, Integer limit) throws StorageException {
+    protected void addResults(StoragePath path, List<Journal> journals, String searchParam, Integer limit) throws StorageException {
         Context context = null;
         try {
-            ArrayList<DryadJournalConcept> allJournalConcepts = new ArrayList<DryadJournalConcept>();
+            ArrayList<DryadJournalConcept> allJournals = new ArrayList<DryadJournalConcept>();
             context = getContext();
-            DryadJournalConcept[] dryadJournalConcepts = JournalUtils.getAllJournalConcepts();
-            allJournalConcepts.addAll(Arrays.asList(dryadJournalConcepts));
+            DryadJournalConcept[] dryadJournals = JournalUtils.getAllJournalConcepts();
+            allJournals.addAll(Arrays.asList(dryadJournals));
             completeContext(context);
-            if (searchParam != null) {
-                for (DryadJournalConcept journalConcept : allJournalConcepts) {
-                    if (journalConcept.getJournalID().equalsIgnoreCase(searchParam)) {
-                        journalConcepts.add(journalConcept);
+            for (DryadJournalConcept journalConcept : allJournals) {
+                Journal journal = new Journal(journalConcept);
+                if (journal.isValid()) {
+                    if (searchParam != null) {
+                        if (journalConcept.getISSN().equalsIgnoreCase(searchParam)) {
+                            journals.add(journal);
+                        }
+                    } else {
+                        journals.add(journal);
                     }
                 }
-            } else {
-                journalConcepts.addAll(allJournalConcepts);
             }
         } catch (SQLException ex) {
             abortContext(context);
@@ -154,83 +141,32 @@ public class JournalDatabaseStorageImpl extends AbstractJournalStorage {
     }
 
     @Override
-    protected void createObject(StoragePath path, DryadJournalConcept journalConcept) throws StorageException {
-        // if this object is the same as an existing one, delete this temporary one and throw an exception.
-        String name = journalConcept.getFullName();
-        Context context = null;
-        if (JournalUtils.getJournalConceptByJournalName(name) != null) {
-            try {
-                // remove this journal concept because it's a temporary concept.
-                context = getContext();
-                context.turnOffAuthorisationSystem();
-                JournalUtils.removeDryadJournalConcept(context, journalConcept);
-                context.restoreAuthSystemState();
-                completeContext(context);
-            } catch (Exception ex) {
-                abortContext(context);
-                throw new StorageException("Can't create new journal: couldn't remove temporary journal.");
-            }
-        } else {
-            try {
-                context = getContext();
-                context.turnOffAuthorisationSystem();
-                JournalUtils.addDryadJournalConcept(context, journalConcept);
-                context.restoreAuthSystemState();
-                completeContext(context);
-            } catch (Exception ex) {
-                abortContext(context);
-                throw new StorageException("Exception creating journal: " + ex.getMessage(), ex);
-            }
-        }
+    protected void createObject(StoragePath path, Journal journalConcept) throws StorageException {
+        throw new StorageException("Can't create a journal");
     }
 
     @Override
-    protected DryadJournalConcept readObject(StoragePath path) throws StorageException {
-        String journalCode = path.getJournalCode();
+    protected Journal readObject(StoragePath path) throws StorageException {
+        Journal journalConcept = null;
         Context context = null;
         try {
             context = getContext();
-            Journal journal = getJournalByCodeOrISSN(context, journalCode);
-            if (journalCode.equals(journal.issn)) {
-                // this is an ISSN, replace journalCode with the journal's code.
-                journalCode = journal.journalCode;
-            }
+            journalConcept = getJournalByISSN(context, path.getJournalRef());
             completeContext(context);
         } catch (Exception e) {
             abortContext(context);
             throw new StorageException("Exception reading journal: " + e.getMessage());
         }
-        DryadJournalConcept journalConcept = JournalUtils.getJournalConceptByJournalID(journalCode);
         return journalConcept;
     }
 
     @Override
     protected void deleteObject(StoragePath path) throws StorageException {
-        throw new StorageException("can't delete an journal");
+        throw new StorageException("Can't delete an journal");
     }
 
     @Override
-    protected void updateObject(StoragePath path, DryadJournalConcept journalConcept) throws StorageException {
-        // we need to compare the new journal concept that was created to any matching existing concepts.
-        // then we need to update the original concept with the new one
-        // then we delete the new one.
-        Context context = null;
-        try {
-            context = getContext();
-            context.turnOffAuthorisationSystem();
-            String name = journalConcept.getFullName();
-            String status = journalConcept.getStatus();
-            context.commit();
-            DryadJournalConcept conceptToUpdate = JournalUtils.getJournalConceptByJournalName(name);
-            conceptToUpdate.transferFromJournalConcept(context, journalConcept);
-            JournalUtils.removeDryadJournalConcept(context, journalConcept);
-            context.restoreAuthSystemState();
-            completeContext(context);
-        } catch (Exception ex) {
-            abortContext(context);
-            throw new StorageException("Exception updating journal: " + ex.getMessage(), ex);
-        }
+    protected void updateObject(StoragePath path, Journal journalConcept) throws StorageException {
+        throw new StorageException("Can't update a journal");
     }
-
-
 }
