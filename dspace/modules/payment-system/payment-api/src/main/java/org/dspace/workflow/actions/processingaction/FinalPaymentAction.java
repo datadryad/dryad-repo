@@ -9,11 +9,8 @@ package org.dspace.workflow.actions.processingaction;
 
 import org.apache.log4j.Logger;
 import org.datadryad.anywhere.AssociationAnywhere;
+import org.datadryad.api.DryadOrganizationConcept;
 import org.dspace.authorize.AuthorizeException;
-import org.dspace.content.Item;
-import org.dspace.content.authority.AuthorityMetadataValue;
-import org.dspace.content.authority.Concept;
-import org.dspace.content.authority.Scheme;
 import org.dspace.core.*;
 import org.dspace.identifier.DOIIdentifierProvider;
 import org.dspace.paymentsystem.PaymentSystemService;
@@ -115,7 +112,6 @@ public class FinalPaymentAction extends ProcessingAction {
                     log.error("unable to tally credit due to missing concept");
                 }
             }
-
 
             // process payment via PayPal
             PaymentService paymentService = new DSpace().getSingletonService(PaymentService.class);
