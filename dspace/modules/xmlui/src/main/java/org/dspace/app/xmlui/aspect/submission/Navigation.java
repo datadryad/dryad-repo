@@ -39,25 +39,16 @@
  */
 package org.dspace.app.xmlui.aspect.submission;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Locale;
-
 import org.apache.cocoon.caching.CacheableProcessingComponent;
-import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.environment.ObjectModelHelper;
+import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.util.HashUtil;
 import org.apache.excalibur.source.SourceValidity;
 import org.apache.excalibur.source.impl.validity.NOPValidity;
 import org.apache.log4j.Logger;
 import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
-import org.dspace.app.xmlui.utils.AuthenticationUtil;
-import org.dspace.app.xmlui.utils.UIException;
 import org.dspace.app.xmlui.utils.DSpaceValidity;
+import org.dspace.app.xmlui.utils.UIException;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
 import org.dspace.app.xmlui.wing.element.Item;
@@ -65,14 +56,17 @@ import org.dspace.app.xmlui.wing.element.List;
 import org.dspace.app.xmlui.wing.element.Options;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.authorize.AuthorizeManager;
-import org.dspace.core.LogManager;
-import org.dspace.eperson.EPerson;
-import org.dspace.handle.HandleManager;
 import org.dspace.content.Collection;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.eperson.Group;
-import org.dspace.workflow.*;
+import org.dspace.handle.HandleManager;
 import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Enumeration;
+import java.util.Locale;
 
 /**
  * Simple navigation class to add the top level link to
@@ -204,7 +198,7 @@ public class Navigation extends AbstractDSpaceTransformer implements CacheablePr
 	    account.setHead(T_my_account);
         account.addItemXref(contextPath+"/submissions",T_submissions);
 
-            if(AuthorizeManager.isCuratorOrAdmin(context))
+            if (AuthorizeManager.isCurator(context))
             {
                 account.addItemXref(contextPath+"/my-tasks",T_my_tasks);
             }

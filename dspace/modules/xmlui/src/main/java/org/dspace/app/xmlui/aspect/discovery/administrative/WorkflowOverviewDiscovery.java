@@ -14,7 +14,10 @@ import org.dspace.app.xmlui.utils.ContextUtil;
 import org.dspace.app.xmlui.utils.UIException;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.*;
+import org.dspace.app.xmlui.wing.element.Division;
+import org.dspace.app.xmlui.wing.element.PageMeta;
+import org.dspace.app.xmlui.wing.element.Row;
+import org.dspace.app.xmlui.wing.element.Table;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.authorize.AuthorizeManager;
 import org.dspace.content.DSpaceObject;
@@ -22,7 +25,6 @@ import org.dspace.content.Item;
 import org.dspace.discovery.SearchServiceException;
 import org.dspace.discovery.SearchUtils;
 import org.dspace.eperson.EPerson;
-import org.dspace.handle.HandleManager;
 import org.dspace.workflow.ClaimedTask;
 import org.dspace.workflow.DryadWorkflowUtils;
 import org.dspace.workflow.PoolTask;
@@ -31,7 +33,6 @@ import org.dspace.workflow.WorkflowItem;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.List;
 
 /**
  * User: kevin (kevin at atmire.com)
@@ -53,7 +54,7 @@ public class WorkflowOverviewDiscovery extends SimpleSearch {
     public void addPageMeta(PageMeta pageMeta) throws WingException, SQLException, AuthorizeException {
         pageMeta.addMetadata("title").addContent(T_title);
 
-        if(!AuthorizeManager.isCuratorOrAdmin(ContextUtil.obtainContext(objectModel))){
+        if(!AuthorizeManager.isCurator(ContextUtil.obtainContext(objectModel))){
             throw new AuthorizeException();
         }
     }

@@ -183,8 +183,8 @@ public class Voucher {
     public static Voucher create(Context context) throws SQLException,AuthorizeException
 
     {
-        if(!AuthorizeManager.isCuratorOrAdmin(context)){
-            throw new AuthorizeException("you have to be a admin or senior curator to add a new voucher");
+        if(!AuthorizeManager.isSeniorCurator(context)){
+            throw new AuthorizeException("You must be a senior curator to add a new voucher");
         }
 
         // Create a table row
@@ -466,8 +466,8 @@ public class Voucher {
     }
 
     public void delete()throws SQLException,AuthorizeException{
-        if(!AuthorizeManager.isCuratorOrAdmin(myContext)){
-            throw new AuthorizeException("you have to be a admin to delete a new voucher");
+        if(!AuthorizeManager.isSeniorCurator(myContext)){
+            throw new AuthorizeException("You must be a senior curator to delete a new voucher");
         }
         // Remove from cache
         myContext.removeCached(this, getID());

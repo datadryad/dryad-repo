@@ -7,13 +7,6 @@
  */
 package org.dspace.app.xmlui.aspect.shoppingcart;
 
-import org.apache.cocoon.caching.CacheableProcessingComponent;
-import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
-import java.io.IOException;
-import java.io.Serializable;
-import java.sql.SQLException;
-import java.util.Map;
-
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.ProcessingException;
 import org.apache.cocoon.environment.ObjectModelHelper;
@@ -23,6 +16,7 @@ import org.apache.cocoon.util.HashUtil;
 import org.apache.excalibur.source.SourceValidity;
 import org.apache.excalibur.source.impl.validity.NOPValidity;
 import org.dspace.app.itemexport.ItemExport;
+import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
 import org.dspace.app.xmlui.utils.DSpaceValidity;
 import org.dspace.app.xmlui.utils.HandleUtil;
 import org.dspace.app.xmlui.utils.UIException;
@@ -32,10 +26,15 @@ import org.dspace.app.xmlui.wing.element.List;
 import org.dspace.app.xmlui.wing.element.Options;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.authorize.AuthorizeManager;
-import org.dspace.content.*;
+import org.dspace.content.DSpaceObject;
+import org.dspace.content.Item;
 import org.dspace.eperson.Group;
-import org.dspace.paymentsystem.PaymentSystemConfigurationManager;
 import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Map;
 
 /**
  * Navigation Class that support Navigation Options for Shopping Cart User Interface
@@ -44,7 +43,7 @@ import org.xml.sax.SAXException;
  * @author Fabio Bolognesi, fabio at atmire.com
  * @author Lantian Gai, lantian at atmire.com
  */
-public class Navigation extends AbstractDSpaceTransformer implements CacheableProcessingComponent {
+public class Navigation extends AbstractDSpaceTransformer  {
 
     private static final Message T_administrative_head 				= message("xmlui.administrative.Navigation.administrative_head");
 
@@ -167,7 +166,7 @@ public class Navigation extends AbstractDSpaceTransformer implements CacheablePr
 
 
         //Check if a system administrator
-        boolean isSystemAdmin = AuthorizeManager.isCuratorOrAdmin(this.context);
+        boolean isSystemAdmin = AuthorizeManager.isSeniorCurator(this.context);
 
 
         if(isSystemAdmin){

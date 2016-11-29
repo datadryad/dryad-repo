@@ -7,10 +7,6 @@ package org.dspace.app.xmlui.aspect.shoppingcart;
  */
 
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Properties;
-
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Request;
 import org.apache.commons.lang.StringUtils;
@@ -20,13 +16,19 @@ import org.dspace.app.xmlui.utils.UIException;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
 import org.dspace.app.xmlui.wing.element.*;
-import org.dspace.app.xmlui.wing.element.Item;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.authorize.AuthorizeManager;
-import org.dspace.content.*;
+import org.dspace.content.DCValue;
 import org.dspace.eperson.EPerson;
-import org.dspace.paymentsystem.*;
+import org.dspace.paymentsystem.PaymentSystemConfigurationManager;
+import org.dspace.paymentsystem.PaymentSystemService;
+import org.dspace.paymentsystem.ShoppingCart;
+import org.dspace.paymentsystem.Voucher;
 import org.dspace.utils.DSpace;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Properties;
 
 
 
@@ -112,7 +114,7 @@ public class EditShoppingcartForm  extends AbstractDSpaceTransformer
     public void addBody(Body body) throws WingException, SQLException, AuthorizeException
     {
         // Get all our parameters
-        boolean admin = AuthorizeManager.isCuratorOrAdmin(context);
+        boolean admin = AuthorizeManager.isSeniorCurator(context);
 
         Request request = ObjectModelHelper.getRequest(objectModel);
 
