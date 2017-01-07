@@ -425,7 +425,7 @@ public class JournalUtils {
             ArrayList<String> lastNames = new ArrayList<String>();
             for (Author a : queryManuscript.getAuthorList()) {
                 // replace any hyphens in the last names with spaces for tokenizing.
-                lastNames.add(a.familyName.replaceAll("-"," "));
+                lastNames.add(a.getNormalizedFamilyName().replaceAll("-"," "));
             }
             queryString.append(StringUtils.join(lastNames.toArray(), " ").replaceAll("[^a-zA-Z\\s]", ""));
             queryString.append(" ");
@@ -444,7 +444,7 @@ public class JournalUtils {
             if (itemsNode != null && itemsNode.isArray()) {
                 JsonNode bestItem = itemsNode.get(0);
                 float score = bestItem.path("score").floatValue();
-                if (score > 2.0) {
+                if (score > 3.0) {
                     matchedManuscript = manuscriptFromCrossRefJSON(bestItem, queryManuscript.getJournalConcept());
                 }
             } else {
@@ -465,6 +465,16 @@ public class JournalUtils {
             }
             String s = sb.toString();
             log.error("Exception of type " + e.getClass().getName() + ": url is " + crossRefURL + "\n" + s);
+        }
+
+        // sanity check:
+        if (matchedManuscript != null) {
+            double matchScore = getHamrScore(queryManuscript.getTitle(), matchedManuscript.getTitle());
+            if (matchScore < 0.5) {
+                log.error(queryManuscript.getTitle() + " matched " + matchedManuscript.getTitle() + " with score " + matchScore);
+                log.error("crossref url was " + crossRefURL);
+                return null;
+            }
         }
         return matchedManuscript;
     }
