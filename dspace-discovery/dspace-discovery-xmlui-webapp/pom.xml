@@ -65,6 +65,7 @@
             <plugin>
                 <groupId>org.apache.cocoon</groupId>
                 <artifactId>cocoon-maven-plugin</artifactId>
+                <version>1.0.2</version>
                 <executions>
                     <execution>
                         <id>prepare</id>
