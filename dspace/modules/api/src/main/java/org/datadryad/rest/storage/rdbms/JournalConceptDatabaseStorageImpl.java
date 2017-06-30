@@ -45,7 +45,7 @@ public class JournalConceptDatabaseStorageImpl extends AbstractOrganizationConce
             JOURNALCODE_FIELD = MetadataField.findByElement(context, DryadJournalConcept.metadataProperties.getProperty(DryadJournalConcept.JOURNAL_ID)).getFieldID();
             FULLNAME_FIELD = MetadataField.findByElement(context, DryadJournalConcept.metadataProperties.getProperty(DryadJournalConcept.FULLNAME)).getFieldID();
             context.complete();
-            log.error("found fields " + ISSN_FIELD + ", " + JOURNALCODE_FIELD + ", " + FULLNAME_FIELD);
+            log.info("found fields " + ISSN_FIELD + ", " + JOURNALCODE_FIELD + ", " + FULLNAME_FIELD);
         } catch (SQLException e) {
             log.error("couldn't find metadata fields");
             context.abort();
