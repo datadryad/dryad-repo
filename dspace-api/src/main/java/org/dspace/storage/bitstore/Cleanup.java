@@ -15,6 +15,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 
 import org.apache.log4j.Logger;
+import org.dspace.storage.bitstore.factory.StorageServiceFactory;
 
 /**
  * Cleans up asset store.
@@ -30,8 +31,7 @@ public class Cleanup
     /**
      * Cleans up asset store.
      * 
-     * @param argv -
-     *            Command-line arguments
+     * @param argv the command line arguments given
      */
     public static void main(String[] argv)
     {
@@ -51,7 +51,7 @@ public class Cleanup
             options.addOption("h", "help", false, "Help");
             
             try
-            {            	
+            {
                 line = parser.parse(options, argv);
             }
             catch (ParseException e)
@@ -71,11 +71,11 @@ public class Cleanup
             // Prune stage
             if (line.hasOption('l'))
             {
-            	log.debug("option l used setting flag to leave db records");
+                log.debug("option l used setting flag to leave db records");
                 deleteDbRecords = false;    
             }
-           	log.debug("leave db records = " + deleteDbRecords);
-            BitstreamStorageManager.cleanup(deleteDbRecords, line.hasOption('v'));
+            log.debug("leave db records = " + deleteDbRecords);
+            StorageServiceFactory.getInstance().getBitstreamStorageService().cleanup(deleteDbRecords, line.hasOption('v'));
             
             System.exit(0);
         }

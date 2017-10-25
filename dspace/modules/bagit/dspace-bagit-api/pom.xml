@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>org.dspace.modules</groupId>
 		<artifactId>bagit-modules</artifactId>
-        <version>1.7.3-SNAPSHOT</version>
+        <version>7.0-SNAPSHOT</version>
 	</parent>
 
 	<!--

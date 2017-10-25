@@ -4,7 +4,6 @@
     <artifactId>dspace-api</artifactId>
     <name>DSpace Kernel :: API and Implementation</name>
     <description>DSpace core data model and service APIs.</description>
-    <url>http://projects.dspace.org/dspace-api</url>
 
     <!--
        A Parent POM that Maven inherits DSpace Defaults
@@ -13,40 +12,54 @@
     <parent>
         <groupId>org.dspace</groupId>
         <artifactId>dspace-parent</artifactId>
-        <version>1.7.3-SNAPSHOT</version>
+        <version>7.0-SNAPSHOT</version>
+	<relativePath>..</relativePath>
     </parent>
 
-    <!--
-       The Subversion repository location is used by Continuum to update against
-       when changes have occured, this spawns a new build cycle and releases snapshots
-       into the snapshot repository below.
-    -->
-    <scm>
-        <connection>scm:svn:http://scm.dspace.org/svn/repo/dspace/trunk/dspace</connection>
-        <developerConnection>scm:svn:https://scm.dspace.org/svn/repo/dspace/trunk/dspace</developerConnection>
-        <url>http://scm.dspace.org/svn/repo/dspace/trunk/dspace</url>
-    </scm>
+    <properties>
+      <!-- This is the path to the root [dspace-src] directory. -->
+      <root.basedir>${basedir}/..</root.basedir>
+    </properties>
 
     <!--
        Runtime and Compile Time dependencies for DSpace.
     -->
     <build>
-        <plugins>
+      <resources>
+	<resource>
+	  <directory>src/main/resources</directory>
+	  <includes>
+	    <include>maven.properties</include>
+	    <include>scm.properties</include>
+	  </includes>
+	  <filtering>true</filtering>
+	</resource>
+	<resource>
+	  <directory>src/main/resources</directory>
+	  <excludes>
+	    <exclude>maven.properties</exclude>
+	    <exclude>scm.properties</exclude>
+	  </excludes>
+	  <filtering>false</filtering>
+	</resource>
+      </resources>
+      <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.0.2</version>
-                <configuration>
-                    <debug>true</debug>
-                    <fork>true</fork>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <!--<showDeprecation>true</showDeprecation>-->
-                </configuration>
+	      <groupId>org.apache.maven.plugins</groupId>
+	      <artifactId>maven-compiler-plugin</artifactId>
+	      <version>3.1</version>
+	      <configuration>
+		<source>1.8</source>
+		<target>1.8</target>
+		<encoding>UTF-8</encoding>
+		<debug>true</debug>
+		<fork>true</fork>
+	      </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+		<version>3.0.2</version>
                 <configuration>
                     <archive>
                         <manifest>
@@ -64,26 +77,22 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <configuration>
-                    <header>http://scm.dspace.org/svn/repo/licenses/LICENSE_HEADER</header>
-                    <includes>
-                        <include>src/**</include>
-                    </includes>
-                    <excludes>
-                        <exclude>src/test/resources/dspaceFolder/**</exclude>
-                    </excludes>
-                    <properties />
-                    <encoding>UTF-8</encoding>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
+	      <groupId>org.codehaus.mojo</groupId>
+	      <artifactId>license-maven-plugin</artifactId>
+	      <version>1.14</version>
+            </plugin>
+            <plugin>
+	      <groupId>org.codehaus.mojo</groupId>
+	      <artifactId>build-helper-maven-plugin</artifactId>
+	      <version>1.9.1</version>
+	      <executions>
+		<execution>
+		  <phase>validate</phase>
+		  <goals>
+		    <goal>maven-version</goal>
+		  </goals>
+		</execution>
+	      </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -98,6 +107,41 @@
         </plugins>
     </build>
     <dependencies>
+      <dependency>
+	<groupId>org.apache.commons</groupId>
+	<artifactId>commons-lang3</artifactId>
+	<version>3.3.2</version>
+      </dependency>
+      <!-- Amazon AWS S3 -->
+      <dependency>
+	<groupId>com.amazonaws</groupId>
+	<artifactId>aws-java-sdk-s3</artifactId>
+	<version>1.10.50</version>
+	<exclusions>
+	  <exclusion>
+	    <groupId>joda-time</groupId>
+	    <artifactId>joda-time</artifactId>
+	  </exclusion>
+	  <exclusion>
+	    <groupId>com.fasterxml.jackson.core</groupId>
+	    <artifactId>jackson-databind</artifactId>
+	  </exclusion>
+	</exclusions>
+      </dependency>
+      <dependency>
+	<groupId>org.hibernate</groupId>
+	<artifactId>hibernate-core</artifactId>
+	<exclusions>
+	  <exclusion>
+	    <groupId>org.jboss.logging</groupId>
+	    <artifactId>jboss-logging</artifactId>
+	  </exclusion>
+	</exclusions>
+      </dependency>
+      <dependency>
+	<groupId>org.hibernate</groupId>
+	<artifactId>hibernate-ehcache</artifactId>
+      </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
@@ -258,15 +302,28 @@
             <groupId>org.dspace</groupId>
             <artifactId>oclc-harvester2</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.dspace</groupId>
-            <artifactId>dspace-services-api</artifactId>
-        </dependency>
-        <dependency>
+	<dependency>
+	  <groupId>org.dspace</groupId>
+	  <artifactId>dspace-services</artifactId>
+	  <version>7.0-SNAPSHOT</version>
+	</dependency>
+<!--
+         <dependency>
             <groupId>org.dspace</groupId>
             <artifactId>dspace-services-impl</artifactId>
-        </dependency>
-
+            <version>2.0.5-SNAPSHOT</version>
+         </dependency>
+         <dependency>
+            <groupId>org.dspace</groupId>
+            <artifactId>dspace-services-api</artifactId>
+            <version>2.0.5-SNAPSHOT</version>
+         </dependency>
+         <dependency>
+            <groupId>org.dspace</groupId>
+            <artifactId>dspace-services-utils</artifactId>
+            <version>2.0.5-SNAPSHOT</version>
+         </dependency>
+-->
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>

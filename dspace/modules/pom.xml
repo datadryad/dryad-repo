@@ -11,7 +11,7 @@
     <parent>
         <groupId>org.dspace</groupId>
         <artifactId>dspace-parent</artifactId>
-        <version>1.7.3-SNAPSHOT</version>
+        <version>7.0-SNAPSHOT</version>
         <relativePath>../../</relativePath>
     </parent>
 
@@ -27,7 +27,6 @@
         <module>identifier-services</module>
         <module>api</module>
         <module>api-tests</module>
-        <!--<module>discovery</module>-->
         <module>atmire-workflow</module>
         <module>xmlui</module>
         <module>bagit</module>
@@ -51,6 +50,7 @@
     <dependencyManagement>
            <dependencies>
 
+<!--
                <dependency>
                    <groupId>org.dspace</groupId>
                    <artifactId>dspace-services-api</artifactId>
@@ -66,32 +66,36 @@
                    <artifactId>dspace-services-utils</artifactId>
                    <version>2.0.5-SNAPSHOT</version>
                </dependency>
+-->
 
 
-
+               <dependency>
+                   <groupId>org.dspace</groupId>
+                   <artifactId>dspace-services</artifactId>
+               </dependency>
 
                <dependency>
                    <groupId>org.dspace.modules</groupId>
                    <artifactId>api</artifactId>
-                   <version>${pom.version}</version>
+                   <version>${project.version}</version>
                </dependency>
 
                <dependency>
                    <groupId>org.dspace.modules</groupId>
                    <artifactId>identifier-services</artifactId>
-                   <version>${pom.version}</version>
+                   <version>${project.version}</version>
                </dependency>
 
                <dependency>
                    <groupId>org.dspace.modules</groupId>
                    <artifactId>versioning-api</artifactId>
-                   <version>${pom.version}</version>
+                   <version>${project.version}</version>
                </dependency>
 
                <dependency>
                    <groupId>org.dspace.modules</groupId>
                    <artifactId>doi-service</artifactId>
-                   <version>${pom.version}</version>
+                   <version>${project.version}</version>
                </dependency>
 
                <dependency>
@@ -99,20 +103,20 @@
                    <artifactId>versioning-webapp</artifactId>
                    <type>jar</type>
                    <classifier>classes</classifier>
-                   <version>${pom.version}</version>
+                   <version>${project.version}</version>
                </dependency>
 
                <dependency>
                    <groupId>org.dspace.modules</groupId>
                    <artifactId>versioning-webapp</artifactId>
-                   <version>${pom.version}</version>
+                   <version>${project.version}</version>
                    <type>war</type>
                </dependency>
 
                <dependency>
                    <groupId>org.dspace.modules</groupId>
                    <artifactId>payment-api</artifactId>
-                   <version>${pom.version}</version>
+                   <version>${project.version}</version>
                </dependency>
 
                <dependency>
@@ -120,13 +124,13 @@
                    <artifactId>payment-webapp</artifactId>
                    <type>jar</type>
                    <classifier>classes</classifier>
-                   <version>${pom.version}</version>
+                   <version>${project.version}</version>
                </dependency>
 
                <dependency>
                    <groupId>org.dspace.modules</groupId>
                    <artifactId>payment-webapp</artifactId>
-                   <version>${pom.version}</version>
+                   <version>${project.version}</version>
                    <type>war</type>
                </dependency>
 
@@ -135,13 +139,13 @@
                    <artifactId>dryad-widgets-webapp</artifactId>
                    <type>jar</type>
                    <classifier>classes</classifier>
-                   <version>${pom.version}</version>
+                   <version>${project.version}</version>
                </dependency>
 
                <dependency>
                    <groupId>org.dspace.modules</groupId>
                    <artifactId>dryad-widgets-webapp</artifactId>
-                   <version>${pom.version}</version>
+                   <version>${project.version}</version>
                    <type>war</type>
                </dependency>
 

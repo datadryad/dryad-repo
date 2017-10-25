@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>org.dspace.modules</groupId>
 		<artifactId>versioning</artifactId>
-		<version>1.7.3-SNAPSHOT</version>
+		<version>7.0-SNAPSHOT</version>
 	</parent>
 
 	<profiles>
@@ -63,7 +63,7 @@
             <artifactId>servlet-api</artifactId>            
             <scope>provided</scope>
         </dependency>
-       
+      <!--
         <dependency>
             <groupId>org.dspace</groupId>
             <artifactId>dspace-services-api</artifactId>           
@@ -79,7 +79,7 @@
             <groupId>org.dspace</groupId>
             <artifactId>dspace-services-impl</artifactId>            
         </dependency>
-
+-->
 	</dependencies>
 
 </project>
