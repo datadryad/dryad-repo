@@ -12,11 +12,24 @@
       <url>http://www.dspace.org</url>
    </organization>
 
-   <parent>
-     <artifactId>dspace-pom</artifactId>
-     <groupId>org.dspace</groupId>
-     <version>12</version>
-   </parent>
+   <prerequisites>
+     <maven>3.0</maven>
+   </prerequisites>
+   
+   <properties>
+     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+     <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
+     <java.version>1.8</java.version>
+     <postgresql.driver.version>9.4.1211</postgresql.driver.version>
+     <solr.version>4.10.4</solr.version>
+     <jena.version>2.13.0</jena.version>
+     <slf4j.version>1.7.22</slf4j.version>
+     <hibernate.version>5.2.8.Final</hibernate.version>
+     <spring.version>4.3.6.RELEASE</spring.version>
+     <!-- 'root.basedir' is the path to the root [dspace-src] dir. It must be redefined by each child POM,                                       
+	  as it is used to reference the LICENSE_HEADER and *.properties file(s) in that directory. -->
+     <root.basedir>${basedir}</root.basedir>
+    </properties>
 
    <build>
       <plugins>
@@ -33,20 +46,37 @@
                 <autoVersionSubmodules>true</autoVersionSubmodules>
             </configuration>
          </plugin>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <!-- tests whose name starts by Abstract will be ignored -->
-            <configuration>
-	        <excludes>
-	            <exclude>**/Abstract*</exclude>
-	            <!-- The MetadataSchemaTest fails randomly on Travis -->
-	            <exclude>org/dspace/content/MetadataSchemaTest.java</exclude>
-	        </excludes>
-                <!-- required when running JMockit under Java 1.5 -->
-                <argLine>-javaagent:"${settings.localRepository}"/org/dspace/dependencies/jmockit/dspace-jmockit/0.999.4/dspace-jmockit-0.999.4.jar</argLine>
-            </configuration>
-         </plugin>
+	 <plugin>
+	   <groupId>org.apache.maven.plugins</groupId>
+	   <artifactId>maven-compiler-plugin</artifactId>
+	   <version>3.0</version>
+	   <configuration>
+	     <source>1.8</source>
+	     <target>1.8</target>
+	   </configuration>
+	 </plugin>
+	 <plugin>
+	   <groupId>org.apache.maven.plugins</groupId>
+	   <artifactId>maven-surefire-plugin</artifactId>
+	   <version>2.19.1</version>
+	   <configuration>
+	     <!-- Allow for the ability to pass JVM memory flags for Unit Tests. Since                                                   
+		  maven-surefire-plugin forks a new JVM, it ignores MAVEN_OPTS.-->
+	     <argLine>${test.argLine}</argLine>
+	     <excludes>
+	       <!-- tests whose name starts by Abstract will be ignored -->
+	       <exclude>**/Abstract*</exclude>
+	       <!-- The MetadataSchemaTest fails randomly on Travis -->
+	       <exclude>org/dspace/content/MetadataSchemaTest.java</exclude>
+	     </excludes>
+	   <!-- Detailed logs in reportsDirectory/testName-output.txt instead of stdout -->
+	   <redirectTestOutputToFile>true</redirectTestOutputToFile>
+	   <!--                                                                                                                        
+		Enable to debug Maven Surefire tests in remote proces                                                                       
+		<debugForkedProcess>true</debugForkedProcess>                                                                               
+	   -->
+	 </configuration>
+       </plugin>
          <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -77,6 +107,7 @@
          <modules>
             <module>dspace-api</module>
             <module>dspace-stats</module>
+            <module>dspace-services</module>
             <module>dspace-discovery</module>
             <module>dspace-jspui</module>
             <module>dspace-xmlui</module>
@@ -95,6 +126,21 @@
          <modules>
              <module>dspace-xoai</module>
          </modules>
+      </profile>
+
+      <!--                                                                                                                                        
+           Builds Services for DSpace 
+      -->
+      <profile>
+	<id>dspace-services</id>
+	<activation>
+	  <file>
+	    <exists>dspace-services/pom.xml</exists>
+	  </file>
+	</activation>
+	<modules>
+	  <module>dspace-services</module>
+	</modules>
       </profile>
 
       <!--
@@ -119,6 +165,22 @@
          </modules>
       </profile>
 
+      <!-- Allow for passing extra memory to Unit/Integration tests.                                                                              
+	   By default this gives unit tests 512MB of memory (when tests are enabled),                                                             
+	   unless tweaked on commandline (e.g. "-Dtest.argLine=-Xmx512m"). Since                                                                  
+	   m-surefire-p and m-failsafe-p both fork a new JVM for testing, they ignores MAVEN_OPTS. -->
+      <profile>
+	<id>test-argLine</id>
+	<activation>
+	  <property>
+	    <name>!test.argLine</name>
+	  </property>
+	</activation>
+	<properties>
+	  <test.argLine>-Xmx512m</test.argLine>
+	</properties>
+      </profile>
+      
       <!--
          Use 'mvn package -Pdistributions' to create distributions
          to upload to S.F.
@@ -269,7 +331,12 @@
             <artifactId>dspace-xmlui-wing</artifactId>
             <version>1.7.3-SNAPSHOT</version>
          </dependency>
-         <dependency>
+	 <dependency>
+	   <groupId>org.dspace</groupId>
+	   <artifactId>dspace-services</artifactId>
+	   <version>7.0-SNAPSHOT</version>
+	 </dependency>
+<!--         <dependency>
             <groupId>org.dspace</groupId>
             <artifactId>dspace-services-impl</artifactId>
             <version>2.0.5-SNAPSHOT</version>
@@ -284,6 +351,7 @@
             <artifactId>dspace-services-utils</artifactId>
             <version>2.0.5-SNAPSHOT</version>
          </dependency>
+-->
          <dependency>
             <groupId>org.dspace</groupId>
             <artifactId>dspace-stats</artifactId>
@@ -347,6 +415,32 @@
             <artifactId>dspace-tm-extractors</artifactId>
             <version>1.0.1</version>
          </dependency>
+	 <dependency>
+	   <groupId>org.slf4j</groupId>
+	   <artifactId>jcl-over-slf4j</artifactId>
+	   <version>${slf4j.version}</version>
+	 </dependency>
+	 <dependency>
+	   <groupId>org.slf4j</groupId>
+	   <artifactId>slf4j-api</artifactId>
+	   <version>${slf4j.version}</version>
+	 </dependency>
+	 <dependency>
+	   <groupId>org.slf4j</groupId>
+	   <artifactId>slf4j-jdk14</artifactId>
+	   <version>${slf4j.version}</version>
+	 </dependency>
+	 <dependency>
+	   <groupId>org.slf4j</groupId>
+	   <artifactId>slf4j-log4j12</artifactId>
+	   <version>${slf4j.version}</version>
+	 </dependency>
+	 <!-- Required by Commons Configuration -->
+	 <dependency>
+	   <groupId>commons-beanutils</groupId>
+	   <artifactId>commons-beanutils</artifactId>
+	   <version>1.9.2</version>
+	 </dependency>
          <dependency>
             <groupId>commons-cli</groupId>
             <artifactId>commons-cli</artifactId>
@@ -363,6 +457,11 @@
             <version>3.2</version>
             <!-- <version>3.1</version> xmlui - wing -->
          </dependency>
+	 <dependency>
+	   <groupId>commons-configuration</groupId>
+	   <artifactId>commons-configuration</artifactId>
+	   <version>1.10</version>
+	 </dependency>
          <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
@@ -412,7 +511,7 @@
          <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
-            <version>2.3</version>
+            <version>2.5</version>
          </dependency>
 
          <dependency>
@@ -564,16 +663,23 @@
             <artifactId>commons-httpclient</artifactId>
             <version>3.1</version>
          </dependency>
+	 <!-- JMockit, JUnit and Hamcrest are used for Unit/Integration tests -->
+	 <dependency> <!-- Keep jmockit before junit -->
+	   <groupId>org.jmockit</groupId>
+	   <artifactId>jmockit</artifactId>
+	   <version>1.21</version>
+	   <scope>test</scope>
+	 </dependency>
+	 <dependency>
+	   <groupId>org.dspace.dependencies.jmockit</groupId>
+	   <artifactId>dspace-jmockit</artifactId>
+	   <version>0.999.4</version>
+	   <scope>test</scope>
+         </dependency>
          <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.1</version>
-            <scope>test</scope>
-         </dependency>
-         <dependency>
-            <groupId>org.dspace.dependencies.jmockit</groupId>
-            <artifactId>dspace-jmockit</artifactId>
-            <version>0.999.4</version>
             <scope>test</scope>
          </dependency>
          <dependency>

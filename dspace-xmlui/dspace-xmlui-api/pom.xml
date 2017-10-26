@@ -38,6 +38,7 @@
             <groupId>org.dspace</groupId>
             <artifactId>dspace-api-lang</artifactId>
         </dependency>
+<!--
         <dependency>
             <groupId>org.dspace</groupId>
             <artifactId>dspace-services-impl</artifactId>
@@ -50,6 +51,7 @@
             <groupId>org.dspace</groupId>
             <artifactId>dspace-services-utils</artifactId>
         </dependency>
+-->
         <dependency>
             <groupId>org.dspace</groupId>
             <artifactId>dspace-stats</artifactId>

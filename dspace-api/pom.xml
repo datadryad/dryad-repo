@@ -33,16 +33,16 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.0.2</version>
-                <configuration>
-                    <debug>true</debug>
-                    <fork>true</fork>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <!--<showDeprecation>true</showDeprecation>-->
-                </configuration>
+	      <groupId>org.apache.maven.plugins</groupId>
+	      <artifactId>maven-compiler-plugin</artifactId>
+	      <version>3.1</version>
+	      <configuration>
+		<source>1.8</source>
+		<target>1.8</target>
+		<encoding>UTF-8</encoding>
+		<debug>true</debug>
+		<fork>true</fork>
+	      </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -258,6 +258,7 @@
             <groupId>org.dspace</groupId>
             <artifactId>oclc-harvester2</artifactId>
         </dependency>
+<!--
         <dependency>
             <groupId>org.dspace</groupId>
             <artifactId>dspace-services-api</artifactId>
@@ -266,7 +267,7 @@
             <groupId>org.dspace</groupId>
             <artifactId>dspace-services-impl</artifactId>
         </dependency>
-
+-->
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
