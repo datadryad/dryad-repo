@@ -96,55 +96,57 @@ public class OdinsHamr extends AbstractCurationTask {
         try {
             context = new Context();
             context.turnOffAuthorisationSystem();
+
+            if (dso.getType() == Constants.COLLECTION) {
+                // output headers for the CSV file that will be created by processing all items in this collection
+                report("handle, itemDOI, articleDOI, orcidID, orcidName, dspaceName, hamrScore");
+            } else if (dso.getType() == Constants.ITEM) {
+                Item item = (Item) dso;
+                String handle = item.getHandle();
+                log.info("handle = " + handle);
+
+                if (handle == null) {
+                    // this item is still in workflow - no handle assigned
+                    context.abort();
+                    return Curator.CURATE_SKIP;
+                }
+                // article DOI
+                String articleDOI = "";
+                DCValue[] vals = item.getMetadata("dc.relation.isreferencedby");
+                if (vals.length == 0) {
+                    log.debug("Object has no articleDOI (dc.relation.isreferencedby) " + handle);
+                    articleDOI = "";
+                } else {
+                    articleDOI = vals[0].value;
+                }
+                log.debug("articleDOI = " + articleDOI);
+
+                int result = compareItemToORCID(item, articleDOI);
+                if (result != Curator.CURATE_SUCCESS) {
+                    return result;
+                }
+
+//                // process this item's files too
+//                try {
+//                    Item[] files = DryadWorkflowUtils.getDataFiles(context, item);
+//                    for (int i = 0; i < files.length; i++) {
+//                        result = compareItemToORCID(files[i], articleDOI);
+//                    }
+//                } catch (SQLException e) {
+//                    log.error("database error on files for package " + handle, e);
+//                }
+            }
         } catch (SQLException e) {
             log.fatal("Unable to open database connection", e);
             return Curator.CURATE_FAIL;
-        }
-
-        if (dso.getType() == Constants.COLLECTION) {
-            // output headers for the CSV file that will be created by processing all items in this collection
-            report("itemDOI, articleDOI, orcidID, orcidName, dspaceORCID, dspaceName");
-        } else if (dso.getType() == Constants.ITEM) {
-            Item item = (Item) dso;
-            String handle = item.getHandle();
-            log.info("handle = " + handle);
-
-            if (handle == null) {
-                // this item is still in workflow - no handle assigned
-                context.abort();
-                return Curator.CURATE_SKIP;
-            }
-            // article DOI
-            String articleDOI = "";
-            DCValue[] vals = item.getMetadata("dc.relation.isreferencedby");
-            if (vals.length == 0) {
-                log.debug("Object has no articleDOI (dc.relation.isreferencedby) " + handle);
-                articleDOI = "";
-            } else {
-                articleDOI = vals[0].value;
-            }
-            log.debug("articleDOI = " + articleDOI);
-
-            int result = compareItemToORCID(item, articleDOI);
-            if (result != Curator.CURATE_SUCCESS) {
-                return result;
-            }
-
-            // process this item's files too
+        } finally {
             try {
-                Item[] files = DryadWorkflowUtils.getDataFiles(context, item);
-                for (int i = 0; i < files.length; i++) {
-                    result = compareItemToORCID(files[i], articleDOI);
+                if (context != null) {
+                    context.restoreAuthSystemState();
+                    context.complete();
                 }
             } catch (SQLException e) {
-                log.error("database error on files for package " + handle, e);
-            }
-
-            try {
-                context.restoreAuthSystemState();
-                context.complete();
-            } catch (SQLException e) {
-                log.fatal("Unable to close database connection", e);
+                context.abort();
             }
         }
         log.info("ODIN's Hamr complete");
@@ -160,7 +162,6 @@ public class OdinsHamr extends AbstractCurationTask {
             if (vals.length == 0) {
                 setResult("Object has no dc.identifier available " + handle);
                 log.error("Skipping -- no dc.identifier available for " + handle);
-                context.abort();
                 return Curator.CURATE_SKIP;
             } else {
                 for(int i = 0; i < vals.length; i++) {
@@ -201,43 +202,47 @@ public class OdinsHamr extends AbstractCurationTask {
             Iterator dspaceBiosIterator = dspaceBios.iterator();
 
             List<DCValue> authors = new ArrayList<DCValue>();
+            Boolean modified = false;
 
-            while(dspaceBiosIterator.hasNext()) {
-                DCValue dspaceBio = (DCValue) dspaceBiosIterator.next();
+            for (DCValue dspaceBio : dspaceBios) {
                 DCValue authorMetadata = dspaceBio.copy();
                 authors.add(authorMetadata);
 
-                // if there was a hamr match, update this particular author with Orcid as authority.
-                if (mappedNames.containsKey(dspaceBio)) {
-                    Bio mappedOrcidEntry = (Bio)mappedNames.get(dspaceBio);
-                    Bio mappedDSpaceEntry = createBio("", dspaceBio.value);
-                    double hamrScore = hamrScore(mappedDSpaceEntry,mappedOrcidEntry);
-                    report(itemDOI + ", " + articleDOI + ", " + mappedOrcidEntry.getOrcid() + ", \"" + getName(mappedOrcidEntry) + "\", " +
-                            mappedDSpaceEntry.getOrcid() + ", \"" + getName(mappedDSpaceEntry) + "\", " + hamrScore);
+                // if this value has a confidence value of less than CF_UNCERTAIN, try using hamr
+                if (dspaceBio.confidence < Choices.CF_UNCERTAIN) {
+                    // if there was a hamr match, update this particular author with Orcid as authority.
+                    if (mappedNames.containsKey(dspaceBio)) {
+                        Bio mappedOrcidEntry = (Bio) mappedNames.get(dspaceBio);
+                        Bio mappedDSpaceEntry = createBio("", dspaceBio.value);
+                        double hamrScore = hamrScore(mappedDSpaceEntry, mappedOrcidEntry);
+                        report(handle + ", " + itemDOI + ", " + articleDOI + ", " + mappedOrcidEntry.getOrcid() + ", \"" + getName(mappedOrcidEntry) + "\", \"" + getName(mappedDSpaceEntry) + "\", " + hamrScore);
 
-                    // if hamrScore is greater or = to 0.7, then add this to new metadata:
-
-                    if (hamrScore(mappedDSpaceEntry,mappedOrcidEntry) >= 0.7) {
-                        authorMetadata.authority = AuthorityValueGenerator.GENERATE + "orcid" + AuthorityValueGenerator.SPLIT + mappedOrcidEntry.getOrcid();
-                        authorMetadata.confidence = Choices.CF_UNCERTAIN;
-                        item.addMetadata("dc", "description", "provenance", null, "ORCID authority added to " + getName(mappedDSpaceEntry) + " with a confidence of CF_UNCERTAIN: OdinsHamr match score " + hamrScore + " on " + DCDate.getCurrent().toString() + " (GMT)");
+                        // if hamrScore is greater or = to 0.7, then add this to new metadata:
+                        if (hamrScore(mappedDSpaceEntry, mappedOrcidEntry) >= 0.7) {
+                            modified = true;
+                            authorMetadata.authority = AuthorityValueGenerator.GENERATE + "orcid" + AuthorityValueGenerator.SPLIT + mappedOrcidEntry.getOrcid();
+                            authorMetadata.confidence = Choices.CF_UNCERTAIN;
+                            item.addMetadata("dc", "description", "provenance", null, "ORCID authority added to " + getName(mappedDSpaceEntry) + " with a confidence of CF_UNCERTAIN: OdinsHamr match score " + hamrScore + " on " + DCDate.getCurrent().toString() + " (GMT)");
+                        }
+                        setResult("Last processed item = " + handle + " -- " + itemDOI);
                     }
-                    setResult("Last processed item = " + handle + " -- " + itemDOI);
                 }
             }
 
-            item.clearMetadata("dc","contributor","author",null);
-            for (DCValue auth : authors) {
-                item.addMetadata("dc", "contributor", "author", null, auth.value, auth.authority, auth.confidence);
+            if (modified == true) {
+                report("updating item " + item.getID() + ": " + handle);
+                item.clearMetadata("dc", "contributor", "author", Item.ANY);
+                for (DCValue auth : authors) {
+                    item.addMetadata("dc", "contributor", "author", null, auth.value, auth.authority, auth.confidence);
+                }
+                item.update();
             }
-            item.update();
             log.info(handle + " done.");
         } catch (Exception e) {
             log.fatal("Skipping -- Exception in processing " + handle, e);
             setResult("Object has a fatal error: " + handle + "\n" + e.getMessage());
             report("Object has a fatal error: " + handle + "\n" + e.getMessage());
 
-            context.abort();
             return Curator.CURATE_SKIP;
         }
         return Curator.CURATE_SUCCESS;

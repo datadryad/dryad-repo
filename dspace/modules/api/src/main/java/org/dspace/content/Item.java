@@ -2975,6 +2975,7 @@ public class Item extends DSpaceObject
                             {
                                 boolean matched = true;
                                 DCValue dcv   = currMetadata.get(dcIdx);
+                                log.debug ("comparing " + dcv.value + " to " + tr.getStringColumn("text_value"));
 
                                 // Check the metadata field is the same
                                 if (matched && dcFields[dcIdx].getFieldID() != tr.getIntColumn("metadata_field_id"))
