@@ -81,7 +81,6 @@
             <module>dspace-jspui</module>
             <module>dspace-xmlui</module>
             <module>dspace-lni</module>
-            <module>dspace-oai</module>
             <module>dspace-sword</module>
             <module>dspace</module>
          </modules>
@@ -113,8 +112,7 @@
             <module>dspace-jspui</module>
             <module>dspace-xmlui</module>
             <module>dspace-lni</module>
-            <module>dspace-oai</module>
-			<module>dspace-xoai</module>
+            <module>dspace-xoai</module>
             <module>dspace-sword</module>
          </modules>
       </profile>
@@ -210,17 +208,6 @@
          <dependency>
             <groupId>org.dspace</groupId>
             <artifactId>dspace-jspui-webapp</artifactId>
-            <version>1.7.3-SNAPSHOT</version>
-            <type>war</type>
-         </dependency>
-         <dependency>
-            <groupId>org.dspace</groupId>
-            <artifactId>dspace-oai-api</artifactId>
-            <version>1.7.3-SNAPSHOT</version>
-         </dependency>
-         <dependency>
-            <groupId>org.dspace</groupId>
-            <artifactId>dspace-oai-webapp</artifactId>
             <version>1.7.3-SNAPSHOT</version>
             <type>war</type>
          </dependency>
@@ -883,9 +870,6 @@
                   </link>
                   <link>
                      http://projects.dspace.org/dspace-jspui/apidocs
-                  </link>
-                  <link>
-                     http://projects.dspace.org/dspace-oai/apidocs
                   </link>
                   <link>http://java.sun.com/j2se/6/docs/api</link>
                   <link>

@@ -31,7 +31,6 @@
         <module>atmire-workflow</module>
         <module>xmlui</module>
         <module>bagit</module>
-        <module>oai</module>
         <module>xoai</module>
         <module>solr</module>
         <module>api-stats</module>
