@@ -26,12 +26,13 @@
             <groupId>org.dspace</groupId>
             <artifactId>dspace-api</artifactId>
         </dependency>
-    
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-        </dependency>
 
+	<dependency>
+	  <groupId>org.apache.httpcomponents</groupId>
+	  <artifactId>httpclient</artifactId>
+	  <version>4.5.3</version>
+	</dependency>
+	
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
