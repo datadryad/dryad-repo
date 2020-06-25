@@ -164,6 +164,9 @@ public class DryadEmailSubmission extends HttpServlet {
 
         if (contentType != null && contentType.startsWith("text/plain")) {
             return part;   //
+        } else if (contentType != null && contentType.startsWith("text/html")) {
+            LOGGER.warn("Content-Type is text/html; hoping we can get parseable text out of it");
+            return part;   //
         } else if (contentType != null &&
                 contentType.startsWith("multipart/alternative") ||
                 contentType.startsWith("multipart/mixed")) {    //could just use multipart as prefix, but what does this cover?
@@ -222,7 +225,7 @@ public class DryadEmailSubmission extends HttpServlet {
 
         String message;
         if (mime.getEncoding() != null) {
-            message = (String) part.getContent();
+            message = (String) part.getContent();            
         } else {
             InputStream in = part.getInputStream();
             InputStreamReader isr = new InputStreamReader(in, "UTF-8");
@@ -238,6 +241,16 @@ public class DryadEmailSubmission extends HttpServlet {
             message = builder.toString();
         }
 
+        // clean potential HTML content
+        if(message.contains("<br")) {
+            message = message.replaceAll("<br/>", "\n");
+            message = message.replaceAll("<br />", "\n");
+            message = message.replaceAll("<p>", "");
+            message = message.replaceAll("<p/>", "\n");
+            message = message.replaceAll("<p/>", "\n");
+        }
+        LOGGER.debug("message = |" + message + "|");
+        
         List<String> dryadContent = new ArrayList<String>();
         Scanner emailScanner = new Scanner(message);
         String journalName = null;
