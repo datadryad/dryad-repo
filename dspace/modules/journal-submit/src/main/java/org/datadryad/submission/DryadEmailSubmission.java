@@ -242,12 +242,19 @@ public class DryadEmailSubmission extends HttpServlet {
         }
 
         // clean potential HTML content
-        if(message.contains("<br")) {
+        if(message.contains("<br") || message.contains("<BR")) {
+            message = message.replaceAll("<br>", "\n");
+            message = message.replaceAll("<BR>", "\n");
             message = message.replaceAll("<br/>", "\n");
+            message = message.replaceAll("<BR/>", "\n");
             message = message.replaceAll("<br />", "\n");
-            message = message.replaceAll("<p>", "");
+            message = message.replaceAll("<BR />", "\n");
+            message = message.replaceAll("<p>", "\n");
+            message = message.replaceAll("<P>", "\n");
             message = message.replaceAll("<p/>", "\n");
-            message = message.replaceAll("<p/>", "\n");
+            message = message.replaceAll("<P/>", "\n");
+            message = message.replaceAll("<p />", "\n");
+            message = message.replaceAll("<P />", "\n");
         }
         LOGGER.debug("message = |" + message + "|");
         
