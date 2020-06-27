@@ -169,6 +169,7 @@ public class DryadEmailSubmission extends HttpServlet {
             return part;   //
         } else if (contentType != null &&
                 contentType.startsWith("multipart/alternative") ||
+                   contentType.startsWith("multipart/related") ||
                 contentType.startsWith("multipart/mixed")) {    //could just use multipart as prefix, but what does this cover?
             Multipart mp = (Multipart) part.getContent();
             for (int i = 0, count = mp.getCount(); i < count; i++) {
