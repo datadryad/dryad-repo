@@ -258,7 +258,7 @@ public class DataPackageStats extends AbstractCurationTask {
                 NodeList nl = viewdoc.getElementsByTagName("result");
                 numberOfViews = nl.item(0).getAttributes().getNamedItem("numFound").getTextContent();
                 */
-                numberOfViews = 0;
+                numberOfViews = "0";
                     
 		// count the files, and compute statistics that depend on the files
 		log.debug("getting data file info");
@@ -353,7 +353,7 @@ public class DataPackageStats extends AbstractCurationTask {
 			}
 			log.debug("max downloads (as of file " + fileID + ") = " + numberOfDownloads);
 			*/
-                        numberOfDownloads = 0;
+                        numberOfDownloads = "0";
 		    }
 
 		}
