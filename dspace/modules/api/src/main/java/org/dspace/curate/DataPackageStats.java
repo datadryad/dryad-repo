@@ -251,12 +251,15 @@ public class DataPackageStats extends AbstractCurationTask {
 
 		}
 
+                /*
                 URL viewStatURL = new URL("http://datadryad.org/solr/statistics/select/?q=isBot:false+id:" + item.getID());
                 log.debug("fetching " + viewStatURL);
                 Document viewdoc = docb.parse(viewStatURL.openStream());
                 NodeList nl = viewdoc.getElementsByTagName("result");
                 numberOfViews = nl.item(0).getAttributes().getNamedItem("numFound").getTextContent();
-                        
+                */
+                numberOfViews = 0;
+                    
 		// count the files, and compute statistics that depend on the files
 		log.debug("getting data file info");
 		DCValue[] dataFiles = item.getMetadata("dc.relation.haspart");
@@ -336,6 +339,7 @@ public class DataPackageStats extends AbstractCurationTask {
 			// must use the DSpace item ID, since the solr stats system is based on this ID
 			// The SOLR address is hardcoded to the production system here, because even when we run on test servers,
 			// it's easiest to use the real stats --the test servers typically don't have useful stats available
+                        /*
 			URL downloadStatURL = new URL("http://datadryad.org/solr/statistics/select/?indent=on&q=owningItem:" + fileItem.getID());
 			log.debug("fetching " + downloadStatURL);
 			Document statsdoc = docb.parse(downloadStatURL.openStream());
@@ -348,7 +352,8 @@ public class DataPackageStats extends AbstractCurationTask {
 			    numberOfDownloads = downloadsAtt;
 			}
 			log.debug("max downloads (as of file " + fileID + ") = " + numberOfDownloads);
-			
+			*/
+                        numberOfDownloads = 0;
 		    }
 
 		}
@@ -376,12 +381,14 @@ public class DataPackageStats extends AbstractCurationTask {
 	       numReadmes + ", " + wentThroughReview + ", " + dateAccessioned);
 
 	// slow this down a bit so we don't overwhelm the production SOLR server with requests
+        /*
 	try {
 	    Thread.sleep(20);
 	} catch(InterruptedException e) {
 	    // ignore it
 	}
-
+        */
+        
 	log.debug("DataPackageStats complete");
 
 	try { 
