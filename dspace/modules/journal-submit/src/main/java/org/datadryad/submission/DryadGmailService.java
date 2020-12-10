@@ -46,6 +46,10 @@ public class DryadGmailService {
      * @throws IOException
      */
     public DryadGmailService(File credentialPath, String clientsecretsFile, String scope, String user) {
+        LOGGER.debug("Initializing from " + credentialPath +
+                     "\n   clientsecretsFile " + clientsecretsFile +
+                     "\n   scope " + scope +
+                     "\n   user " + user);
         myUserID = "me";
         try {
             myDataStoreFactory = new FileDataStoreFactory(credentialPath);
@@ -54,7 +58,7 @@ public class DryadGmailService {
             myClientSecrets = GoogleClientSecrets.load(myJsonFactory, new StringReader (clientsecretsFile));
 
         } catch (IOException e) {
-            throw new RuntimeException("Client secret loading failed; please check the file at "+ clientsecretsFile.toString());
+            throw new RuntimeException("Client secret loading failed; please check the file at "+ clientsecretsFile.toString(), e);
         }
         try {
             myAuthCodeFlow = new GoogleAuthorizationCodeFlow.Builder(myHttpTransport, myJsonFactory, myClientSecrets, Arrays.asList(scope))
@@ -65,7 +69,7 @@ public class DryadGmailService {
                     .build();
             myCredential = getMyCredential();
         } catch (IOException e) {
-            throw new RuntimeException("Something is wrong with the stored credential file; please remove it and reauthorize.");
+            throw new RuntimeException("Something is wrong with the stored credential file; please remove it and reauthorize.", e);
         }
     }
 
@@ -75,6 +79,7 @@ public class DryadGmailService {
     }
 
     public void authorize (String code) {
+        LOGGER.debug("authorizing");
         try {
         myAuthCodeFlow = new GoogleAuthorizationCodeFlow.Builder(myHttpTransport, myJsonFactory, myClientSecrets, Arrays.asList(SCOPE))
                 .setDataStoreFactory(myDataStoreFactory)
@@ -86,6 +91,7 @@ public class DryadGmailService {
 
             GoogleTokenResponse response = codeTokenRequest.setRedirectUri(GoogleOAuthConstants.OOB_REDIRECT_URI).execute();
             myCredential = myAuthCodeFlow.createAndStoreCredential(response, getMyUserID());
+            LOGGER.debug("received credential");
         } catch (IOException e) {
             throw new RuntimeException("couldn't authorize: code was " + code + "\n" + e.toString());
         }
@@ -100,7 +106,7 @@ public class DryadGmailService {
         try {
             return myAuthCodeFlow.loadCredential(getMyUserID());
         } catch (IOException e) {
-            throw new RuntimeException("couldn't load credential: " + e.getMessage());
+            throw new RuntimeException("couldn't load credential: " + e.getMessage(), e);
         }
     }
 
@@ -121,6 +127,7 @@ public class DryadGmailService {
 
         ArrayList<String> labels = new ArrayList<String>();
         labels.add(ConfigurationManager.getProperty("submit.journal.email.testlabel"));
+        LOGGER.debug("testing search for emails with label " + labels);
 
         String result = "";
 

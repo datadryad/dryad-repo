@@ -52,7 +52,7 @@ public class DryadBlogFeed extends AbstractDSpaceTransformer implements
 			GetMethod get = new GetMethod("https://blog.datadryad.org/feed/");
 
 			int responseCode = new HttpClient().executeMethod(get);
-			LOGGER.debug("response code is " + responseCode);
+			//LOGGER.debug("response code is " + responseCode);
 			switch (responseCode) {
 			case 200:
 			case 201:
